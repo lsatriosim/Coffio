@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct coffioApp: App {
+    let authService: AuthenticationService = AuthenticationService.shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(authService)
         }
     }
 }

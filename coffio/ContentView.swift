@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab = 0
+    @EnvironmentObject var authService: AuthenticationService
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -26,7 +27,18 @@ struct ContentView: View {
                 }
                 .tag(1)
             
-            Text("Profile Menu")
+            Button(action: {
+                Task {
+                    do {
+                        try await authService.logout()
+                    }
+                    catch {
+                        
+                    }
+                }
+            }) {
+                Text("Profile Menu")
+            }
                 .tabItem {
                     Image(systemName: "person")
                         .foregroundStyle(selectedTab == 2 ? .orange : .black)
@@ -35,13 +47,8 @@ struct ContentView: View {
                 .tag(2)
         }
         .tint(.orange)
-        .task {
-            do {
-                try await AuthenticationService.shared.login(email: "Liefran123@gmail.com", password: "Abun2002")
-            }
-            catch {
-                print("[AuthService]: \(error)" )
-            }
+        .fullScreenCover(isPresented: $authService.showAuthPage) {
+            LoginView()
         }
     }
 }
