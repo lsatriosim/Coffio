@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DE67392C2F822CFF0091F49D /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = DE67392B2F822CFF0091F49D /* Auth */; };
+		DE67392E2F822CFF0091F49D /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = DE67392D2F822CFF0091F49D /* Functions */; };
+		DE6739302F822CFF0091F49D /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = DE67392F2F822CFF0091F49D /* PostgREST */; };
+		DE6739322F822CFF0091F49D /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = DE6739312F822CFF0091F49D /* Realtime */; };
+		DE6739342F822CFF0091F49D /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = DE6739332F822CFF0091F49D /* Storage */; };
+		DE6739362F822CFF0091F49D /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = DE6739352F822CFF0091F49D /* Supabase */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		DEF49A302F6AAC0100CCD901 /* coffio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = coffio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +32,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE6739302F822CFF0091F49D /* PostgREST in Frameworks */,
+				DE67392E2F822CFF0091F49D /* Functions in Frameworks */,
+				DE6739362F822CFF0091F49D /* Supabase in Frameworks */,
+				DE67392C2F822CFF0091F49D /* Auth in Frameworks */,
+				DE6739342F822CFF0091F49D /* Storage in Frameworks */,
+				DE6739322F822CFF0091F49D /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +80,12 @@
 			);
 			name = coffio;
 			packageProductDependencies = (
+				DE67392B2F822CFF0091F49D /* Auth */,
+				DE67392D2F822CFF0091F49D /* Functions */,
+				DE67392F2F822CFF0091F49D /* PostgREST */,
+				DE6739312F822CFF0091F49D /* Realtime */,
+				DE6739332F822CFF0091F49D /* Storage */,
+				DE6739352F822CFF0091F49D /* Supabase */,
 			);
 			productName = coffio;
 			productReference = DEF49A302F6AAC0100CCD901 /* coffio.app */;
@@ -94,6 +115,9 @@
 			);
 			mainGroup = DEF49A272F6AAC0100CCD901;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DEF49A312F6AAC0100CCD901 /* Products */;
 			projectDirPath = "";
@@ -324,6 +348,50 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DE67392B2F822CFF0091F49D /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		DE67392D2F822CFF0091F49D /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		DE67392F2F822CFF0091F49D /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		DE6739312F822CFF0091F49D /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		DE6739332F822CFF0091F49D /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		DE6739352F822CFF0091F49D /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DEF49A282F6AAC0100CCD901 /* Project object */;
 }

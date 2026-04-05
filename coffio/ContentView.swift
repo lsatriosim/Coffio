@@ -12,28 +12,37 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            Text("Discover")
+            HomeView()
                 .tabItem {
                     Image(selectedTab == 0 ? "ic_pin_orange" : "ic_pin_black")
                     Text("Discover")
                 }
                 .tag(0)
             
-            Text("Spending")
+            Text("Spending Menu")
                 .tabItem {
                     Image(selectedTab == 1 ? "ic_bill_orange" : "ic_bill_black")
                     Text("Spending")
                 }
                 .tag(1)
             
-            Text("Events")
+            Text("Profile Menu")
                 .tabItem {
-                    Image(selectedTab == 2 ? "ic_calendar_orange" : "ic_calendar_black")
-                    Text("Spending")
+                    Image(systemName: "person")
+                        .foregroundStyle(selectedTab == 2 ? .orange : .black)
+                    Text("Profile")
                 }
                 .tag(2)
         }
         .tint(.orange)
+        .task {
+            do {
+                try await AuthenticationService.shared.login(email: "Liefran123@gmail.com", password: "Abun2002")
+            }
+            catch {
+                print("[AuthService]: \(error)" )
+            }
+        }
     }
 }
 
