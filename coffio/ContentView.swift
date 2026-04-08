@@ -20,31 +20,28 @@ struct ContentView: View {
                 }
                 .tag(0)
             
-            Text("Spending Menu")
+            Text("Connect")
                 .tabItem {
-                    Image(selectedTab == 1 ? "ic_bill_orange" : "ic_bill_black")
-                    Text("Spending")
+                    Image(systemName: "bubble")
+                        .foregroundStyle(selectedTab == 1 ? .orange : .black)
+                    Text("Connect")
                 }
                 .tag(1)
             
-            Button(action: {
-                Task {
-                    do {
-                        try await authService.logout()
-                    }
-                    catch {
-                        
-                    }
-                }
-            }) {
-                Text("Profile Menu")
-            }
+            Text("Spending Menu")
                 .tabItem {
-                    Image(systemName: "person")
-                        .foregroundStyle(selectedTab == 2 ? .orange : .black)
-                    Text("Profile")
+                    Image(selectedTab == 2 ? "ic_bill_orange" : "ic_bill_black")
+                    Text("Spending")
                 }
                 .tag(2)
+            
+            ProfileView()
+                .tabItem {
+                    Image(systemName: "person")
+                        .foregroundStyle(selectedTab == 3 ? .orange : .black)
+                    Text("Profile")
+                }
+                .tag(3)
         }
         .tint(.orange)
         .fullScreenCover(isPresented: $authService.showAuthPage) {

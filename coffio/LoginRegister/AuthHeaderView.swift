@@ -17,8 +17,8 @@ struct AuthHeaderView: View {
         ZStack(alignment: .topTrailing) {
             LinearGradient(
                 colors: [
-                    Color.blue.opacity(0.9),
-                    Color.purple.opacity(0.9)
+                    Color(hex: "ad6928"),
+                    Color(hex: "563122")
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing

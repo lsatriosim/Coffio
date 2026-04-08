@@ -15,6 +15,9 @@ struct coffioApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(authService)
+                .task {
+                    print("INFO DICT:", Bundle.main.infoDictionary ?? [:])
+                }
         }
     }
 }

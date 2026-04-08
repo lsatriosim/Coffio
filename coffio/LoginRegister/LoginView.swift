@@ -13,7 +13,7 @@ struct LoginView: View {
     var body: some View {
         VStack(spacing: -80.0) {
             AuthHeaderView(
-                title: "Invoicely",
+                title: "Coffio",
                 ctaLabel: "Doesn't have an account?",
                 trailingText: "Get Started",
                 trailingAction: { viewModel.updateShowRegister(isPresented: true)
@@ -117,14 +117,7 @@ struct LoginView: View {
                     .padding(.vertical, 16.0)
                     .background {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill( LinearGradient(
-                                colors: [
-                                    Color.blue.opacity(0.9),
-                                    Color.purple.opacity(0.9)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ))
+                            .fill(Color(hex: "b17e54"))
                             .shadow(color: .black.opacity(0.1), radius: 10)
                     }
                 }
