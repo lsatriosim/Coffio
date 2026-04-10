@@ -9,19 +9,34 @@ import SwiftUI
 
 struct DiscoverFrontCardListView: View {
     @State var coffeeShop: [DiscoverCoffeeShopItem] = []
+    
+    private let columns: [GridItem] = [
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top)
+    ]
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 6.0) {
             Text("Coffio Popular's")
                 .font(.title2)
                 .bold()
                 .padding(.horizontal, 20.0)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .top, spacing: 12.0) {
-                    ForEach(coffeeShop, id: \.id) { coffeeShop in
-                        DiscoverFrontCardView(dataModel: coffeeShop)
+            
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                    
+                    if coffeeShop.isEmpty {
+                        ForEach(0..<6) { _ in
+                            DiscoverFrontCardSkeletonView()
+                        }
+                    } else {
+                        ForEach(coffeeShop, id: \.id) { coffeeShop in
+                            DiscoverFrontCardView(dataModel: coffeeShop)
+                        }
                     }
                 }
                 .padding(.horizontal, 20.0)
+                .padding(.top, 8)
             }
         }
         .task {
@@ -31,8 +46,7 @@ struct DiscoverFrontCardListView: View {
                 coffeeShop = response
                 
                 print("[Coffe Shop Fetcher]: \(response)")
-            }
-            catch {
+            } catch {
                 print("[Coffe Shop Fetcher]: \(error)")
             }
         }

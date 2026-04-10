@@ -73,8 +73,6 @@ struct HomeView: View {
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 24.0) {
                 DiscoverFrontCardListView()
-                DiscoverFrontCardListView()
-                DiscoverFrontCardListView()
             }
             .padding(.vertical, 20.0)
         }

@@ -15,6 +15,11 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
     let latitude: Float
     let longitude: Float
     let imageUrl: String?
+    let instagramUrl: String?
+    let mapUrl: String?
+    let priceMin: Int?
+    let priceMax: Int?
+    let facilities: [CoffeeShopFacilities]
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -24,18 +29,51 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
         case latitude
         case longitude
         case imageUrl = "image_url"
+        case instagramUrl = "instagram_url"
+        case mapUrl = "map_url"
+        case priceMin = "price_min"
+        case priceMax = "price_max"
+        case facilities
     }
+    
+    func getPriceRangeLabel() -> String? {
+        guard let priceMin, let priceMax else {
+            return nil
+        }
+        
+        return formatPriceRange(priceMin: priceMin, priceMax: priceMax)
+    }
+    
+    private func formatPriceRange(priceMin: Int, priceMax: Int) -> String {
+        func formatToK(_ value: Int) -> String {
+            let thousands = value / 1000
+            return "Rp\(thousands)k"
+        }
+        
+        return "\(formatToK(priceMin))-\(formatToK(priceMax))"
+    }
+}
+
+enum CoffeeShopFacilities: String, JSONDecodable {
+    case wifi = "wifi"
+    case powerOutlet = "power_outlet"
+    case outdoor = "outdoor"
 }
 
 let discoverCoffeeShopItemMock = [
     DiscoverCoffeeShopItem(
         id: "1",
-        name: "Cafe 1",
+        name: "Kopi Kenangan alam Sutera",
         description: nil,
         address: "jlds dsds",
         latitude: 10.0,
         longitude: 32.0,
-        imageUrl: nil
+        imageUrl: nil,
+        instagramUrl: nil,
+        mapUrl: nil,
+        priceMin: nil,
+        priceMax: nil,
+        facilities: []
     ),
     DiscoverCoffeeShopItem(
         id: "1",
@@ -44,7 +82,12 @@ let discoverCoffeeShopItemMock = [
         address: "jlds dsds",
         latitude: 10.0,
         longitude: 32.0,
-        imageUrl: nil
+        imageUrl: nil,
+        instagramUrl: nil,
+        mapUrl: nil,
+        priceMin: nil,
+        priceMax: nil,
+        facilities: []
     )
 ]
 
