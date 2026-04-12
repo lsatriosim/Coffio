@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DiscoverFrontCardListView: View {
-    @State var coffeeShop: [DiscoverCoffeeShopItem] = []
+    @StateObject var viewModel: DiscoverFrontCardListViewModel = .init()
     
     private let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 12, alignment: .top),
@@ -25,12 +25,12 @@ struct DiscoverFrontCardListView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     
-                    if coffeeShop.isEmpty {
+                    if viewModel.coffeeShop.isEmpty {
                         ForEach(0..<6) { _ in
                             DiscoverFrontCardSkeletonView()
                         }
                     } else {
-                        ForEach(coffeeShop, id: \.id) { coffeeShop in
+                        ForEach(viewModel.coffeeShop, id: \.id) { coffeeShop in
                             DiscoverFrontCardView(dataModel: coffeeShop)
                         }
                     }
@@ -40,18 +40,7 @@ struct DiscoverFrontCardListView: View {
             }
         }
         .task {
-            let fetcher = CoffeeShopFetcher()
-            do {
-                let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
-                coffeeShop = response
-                for index in 0..<coffeeShop.count {
-                    coffeeShop[index].updateDistanceLabel()
-                }
-                
-                print("[Coffe Shop Fetcher]: \(response)")
-            } catch {
-                print("[Coffe Shop Fetcher]: \(error)")
-            }
+            await viewModel.onViewDidLoad()
         }
     }
 }

@@ -37,27 +37,6 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
         case facilities
         case distanceLabel
     }
-    
-    mutating func updateDistanceLabel() {
-        distanceLabel = LocationProvider.shared.calculateDistance(latitude: Double(latitude), longitude: Double(longitude))
-    }
-    
-    func getPriceRangeLabel() -> String? {
-        guard let priceMin, let priceMax else {
-            return nil
-        }
-        
-        return formatPriceRange(priceMin: priceMin, priceMax: priceMax)
-    }
-    
-    private func formatPriceRange(priceMin: Int, priceMax: Int) -> String {
-        func formatToK(_ value: Int) -> String {
-            let thousands = value / 1000
-            return "Rp\(thousands)k"
-        }
-        
-        return "\(formatToK(priceMin))-\(formatToK(priceMax))"
-    }
 }
 
 enum CoffeeShopFacilities: String, JSONDecodable {

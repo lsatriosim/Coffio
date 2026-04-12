@@ -11,7 +11,7 @@ struct DiscoverFrontCardView: View {
     let cardWidth: CGFloat = 160
     let cardHeight: CGFloat = 160
     let index: [String] = ["1", "2", "3"]
-    let dataModel: DiscoverCoffeeShopItem
+    let dataModel: DiscoverCoffeeShopItemDataModel
     var body: some View {
         VStack(alignment: .leading, spacing: 8.0) {
             ZStack(alignment: .topLeading) {
@@ -84,8 +84,16 @@ struct DiscoverFrontCardView: View {
 #Preview {
     ScrollView(.horizontal, showsIndicators: false) {
         HStack {
-            DiscoverFrontCardView(dataModel: discoverCoffeeShopItemMock[0])
-            DiscoverFrontCardView(dataModel: discoverCoffeeShopItemMock[1])
+            DiscoverFrontCardView(
+                dataModel: DiscoverCoffeeShopItemDataModel(
+                    coffeeShopItem: discoverCoffeeShopItemMock[0]
+                )
+            )
+            DiscoverFrontCardView(
+                dataModel: DiscoverCoffeeShopItemDataModel(
+                    coffeeShopItem: discoverCoffeeShopItemMock[1]
+                )
+            )
         }
     }
 }
