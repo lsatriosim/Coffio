@@ -10,9 +10,13 @@ import SwiftUI
 
 final class DiscoverFrontCardListViewModel: ObservableObject {
     @Published var coffeeShop: [DiscoverCoffeeShopItemDataModel] = []
+    @Published var isLoading: Bool = false
+    @Published var hasViewModelLoaded: Bool = false
     
     func onViewDidLoad() async {
         do {
+            hasViewModelLoaded = true
+            await updateIsLoading(isLoading: true)
             let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
             
             var parsedDataModel: [DiscoverCoffeeShopItemDataModel] = []
@@ -31,14 +35,21 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
                 }
             }
             await updateCoffeeShop(newDataModel: parsedDataModel)
-        } catch {
-            
+            await updateIsLoading(isLoading: false)
+        }
+        catch {
+            await updateIsLoading(isLoading: false)
         }
     }
     
     @MainActor
     private func updateCoffeeShop(newDataModel: [DiscoverCoffeeShopItemDataModel]) {
         self.coffeeShop = newDataModel
+    }
+    
+    @MainActor
+    private func updateIsLoading(isLoading: Bool) {
+        self.isLoading = isLoading
     }
     
     private let fetcher = CoffeeShopFetcher()

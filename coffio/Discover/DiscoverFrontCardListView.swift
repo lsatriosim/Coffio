@@ -25,7 +25,7 @@ struct DiscoverFrontCardListView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     
-                    if viewModel.coffeeShop.isEmpty {
+                    if viewModel.isLoading {
                         ForEach(0..<6) { _ in
                             DiscoverFrontCardSkeletonView()
                         }
@@ -39,7 +39,8 @@ struct DiscoverFrontCardListView: View {
                 .padding(.top, 8)
             }
         }
-        .task {
+        .task() {
+            guard !viewModel.hasViewModelLoaded else { return }
             await viewModel.onViewDidLoad()
         }
     }

@@ -7,19 +7,26 @@
 
 import SwiftUI
 
+private let kImageHeight: CGFloat = 360.0
+
 struct DiscoverDetailView: View {
+    @Environment(\.dismiss) private var dismiss
     let dataModel: DiscoverCoffeeShopItemDataModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0.0) {
             ZStack(alignment: .topLeading) {
-                Image("mock_cafe_1")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .ignoresSafeArea(edges: .top)
+                TabView {
+                    ForEach(Array(dataModel.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
+                        carouselItem(imageUrl: imageUrl)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .automatic)) // native dots
+                .frame(height: kImageHeight)
+                
                 HStack {
                     DiscoverTopButtonView(iconName: "chevron.left") {
-                        
+                        dismiss()
                     }
                     Spacer()
                     DiscoverTopButtonView(iconName: "square.and.arrow.up") {
@@ -30,13 +37,17 @@ struct DiscoverDetailView: View {
                     }
                 }
                 .padding(.horizontal, 24.0)
-                .padding(.vertical, 16.0)
+                .padding(.top, 72.0)
             }
+            .frame(height: kImageHeight)
+            
             content
                 .padding(.horizontal, 24.0)
-                .padding(.vertical, -36.0)
+                .padding(.top, 24.0)
             Spacer()
         }
+        .ignoresSafeArea(edges: .top)
+        .navigationBarBackButtonHidden()
     }
     
     var content: some View {
@@ -65,6 +76,37 @@ struct DiscoverDetailView: View {
                 )
             }
         }
+    }
+    
+    @ViewBuilder
+    private func carouselItem(imageUrl: String) -> some View {
+        if let url = URL(string: imageUrl) {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                    
+                case .failure(_), .empty:
+                    placeholderView
+                    
+                @unknown default:
+                    placeholderView
+                }
+            }
+            .frame(height: kImageHeight)
+            .aspectRatio(1.2, contentMode: .fit) // adjust height ratio
+            .clipped()
+        } else {
+            placeholderView
+        }
+    }
+    
+    private var placeholderView: some View {
+        Rectangle()
+            .fill(Color.gray.opacity(0.2))
+            .aspectRatio(1.2, contentMode: .fit)
     }
 }
 

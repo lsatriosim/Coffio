@@ -23,6 +23,10 @@ struct DiscoverCoffeeShopItemDataModel {
     let distanceLabel: String?
     let images: [DiscoverCoffeeShopImage]
     
+    var imageUrls: [String] {
+        images.map { $0.imageUrl }
+    }
+    
     init(
         coffeeShopItem: DiscoverCoffeeShopItem,
         distanceLabel: String? = nil,
