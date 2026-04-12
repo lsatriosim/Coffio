@@ -58,7 +58,7 @@ let discoverCoffeeShopItemMock = [
         mapUrl: nil,
         priceMin: nil,
         priceMax: nil,
-        facilities: []
+        facilities: [.outdoor, .powerOutlet]
     ),
     DiscoverCoffeeShopItem(
         id: "1",
@@ -72,7 +72,7 @@ let discoverCoffeeShopItemMock = [
         mapUrl: nil,
         priceMin: nil,
         priceMax: nil,
-        facilities: []
+        facilities: [.wifi]
     )
 ]
 

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-private let kImageHeight: CGFloat = 360.0
+private let kImageHeight: CGFloat = 320.0
 
 struct DiscoverDetailView: View {
     @Environment(\.dismiss) private var dismiss
@@ -55,25 +55,40 @@ struct DiscoverDetailView: View {
             Text(dataModel.name)
                 .font(.title)
             VStack(alignment: .leading, spacing: 4.0) {
-                Text("★5.0 ‧ 3 review(s)")
-                Text("Tangerang Selatan, Indonesia")
+                Text("★ 5.0 ‧ 3 review(s)")
+                    .foregroundStyle(Color(hex: "563122"))
+                if let description = dataModel.description {
+                    Text(description)
+                }
             }
-            
-            Rectangle()
-                .fill(.gray)
-                .frame(height: 0.75)
-                .opacity(0.5)
-                .padding(.vertical, 12.0)
-            
-            VStack(alignment: .leading, spacing: 4.0) {
-                DiscoverDetailItemView(
-                    iconName: "mappin",
-                    text: dataModel.address
-                )
-                DiscoverDetailItemView(
-                    iconName: "clock",
-                    text: "08:00 - 22:00"
-                )
+    
+            VStack(alignment: .leading, spacing: 20.0) {
+                DiscoverDetailFacilitiesSectionView(facilities: dataModel.facilities)
+                
+                DiscoverDetailGeneralInfoSectionView(address: dataModel.address)
+                
+                Button(action: {
+                    if let mapUrl: String = dataModel.mapUrl, let url: URL = URL(string: mapUrl) {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                    HStack {
+                        Spacer()
+                        Text("Get Directions")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                        Image(systemName: "car")
+                            .foregroundStyle(.white)
+                        Spacer()
+                    }
+                }
+                .padding()
+                .background {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(hex: "ad6928"))
+                }
+                
+                DiscoverDetailReviewView()
             }
         }
     }
@@ -139,7 +154,7 @@ private struct DiscoverTopButtonView: View {
         .background(
             Circle()
                 .fill(.white)
-                .shadow(color: .black, radius: 4.0)
+                .shadow(color: .black.opacity(0.3), radius: 12.0)
         )
     }
 }
