@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DiscoverDetailView: View {
+    let dataModel: DiscoverCoffeeShopItemDataModel
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0.0) {
             ZStack(alignment: .topLeading) {
@@ -39,7 +41,7 @@ struct DiscoverDetailView: View {
     
     var content: some View {
         VStack(alignment: .leading, spacing: 12.0) {
-            Text("Bru Lab, Gading Serpong")
+            Text(dataModel.name)
                 .font(.title)
             VStack(alignment: .leading, spacing: 4.0) {
                 Text("★5.0 ‧ 3 review(s)")
@@ -55,7 +57,7 @@ struct DiscoverDetailView: View {
             VStack(alignment: .leading, spacing: 4.0) {
                 DiscoverDetailItemView(
                     iconName: "mappin",
-                    text: "Jl. Jalur Sutera.Kav.22C-2, RT.002/RW.006, Panunggangan Tim., Kec. Pinang, Kota Tangerang, Banten 15143"
+                    text: dataModel.address
                 )
                 DiscoverDetailItemView(
                     iconName: "clock",
@@ -101,5 +103,5 @@ private struct DiscoverTopButtonView: View {
 }
 
 #Preview {
-    DiscoverDetailView()
+    DiscoverDetailView(dataModel: .init(coffeeShopItem: discoverCoffeeShopItemMock[0]))
 }

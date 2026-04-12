@@ -13,7 +13,9 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
+            NavigationStack {
+                HomeView()
+            }
                 .tabItem {
                     Image(selectedTab == 0 ? "ic_pin_orange" : "ic_pin_black")
                     Text("Discover")
