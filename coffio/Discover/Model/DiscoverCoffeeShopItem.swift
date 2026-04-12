@@ -20,6 +20,7 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
     let priceMin: Int?
     let priceMax: Int?
     let facilities: [CoffeeShopFacilities]
+    var distanceLabel: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -34,6 +35,11 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
         case priceMin = "price_min"
         case priceMax = "price_max"
         case facilities
+        case distanceLabel
+    }
+    
+    mutating func updateDistanceLabel() {
+        distanceLabel = LocationProvider.shared.calculateDistance(latitude: Double(latitude), longitude: Double(longitude))
     }
     
     func getPriceRangeLabel() -> String? {

@@ -62,6 +62,11 @@ struct DiscoverFrontCardView: View {
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
+                if let distanceLabel = dataModel.distanceLabel {
+                    Text(distanceLabel)
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                }
             }
         }
         .frame(width: cardWidth)

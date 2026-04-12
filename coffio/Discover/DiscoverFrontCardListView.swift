@@ -44,6 +44,9 @@ struct DiscoverFrontCardListView: View {
             do {
                 let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
                 coffeeShop = response
+                for index in 0..<coffeeShop.count {
+                    coffeeShop[index].updateDistanceLabel()
+                }
                 
                 print("[Coffe Shop Fetcher]: \(response)")
             } catch {

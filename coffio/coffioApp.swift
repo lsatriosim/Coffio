@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct coffioApp: App {
     let authService: AuthenticationService = AuthenticationService.shared
+    let locationProvider: LocationProvider = LocationProvider.shared
     
     var body: some Scene {
         WindowGroup {
