@@ -14,37 +14,39 @@ struct DiscoverDetailView: View {
     let dataModel: DiscoverCoffeeShopItemDataModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0.0) {
-            ZStack(alignment: .topLeading) {
-                TabView {
-                    ForEach(Array(dataModel.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
-                        carouselItem(imageUrl: imageUrl)
+        ScrollView(.vertical) {
+            VStack(alignment: .leading, spacing: 0.0) {
+                ZStack(alignment: .topLeading) {
+                    TabView {
+                        ForEach(Array(dataModel.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
+                            carouselItem(imageUrl: imageUrl)
+                        }
                     }
+                    .tabViewStyle(.page(indexDisplayMode: .automatic)) // native dots
+                    .frame(height: kImageHeight)
+                    
+                    HStack {
+                        DiscoverTopButtonView(iconName: "chevron.left") {
+                            dismiss()
+                        }
+                        Spacer()
+                        DiscoverTopButtonView(iconName: "square.and.arrow.up") {
+                            
+                        }
+                        DiscoverTopButtonView(iconName: "heart") {
+                            
+                        }
+                    }
+                    .padding(.horizontal, 24.0)
+                    .padding(.top, 72.0)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .automatic)) // native dots
                 .frame(height: kImageHeight)
                 
-                HStack {
-                    DiscoverTopButtonView(iconName: "chevron.left") {
-                        dismiss()
-                    }
-                    Spacer()
-                    DiscoverTopButtonView(iconName: "square.and.arrow.up") {
-                        
-                    }
-                    DiscoverTopButtonView(iconName: "heart") {
-                        
-                    }
-                }
-                .padding(.horizontal, 24.0)
-                .padding(.top, 72.0)
+                content
+                    .padding(.horizontal, 24.0)
+                    .padding(.top, 24.0)
+                Spacer()
             }
-            .frame(height: kImageHeight)
-            
-            content
-                .padding(.horizontal, 24.0)
-                .padding(.top, 24.0)
-            Spacer()
         }
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden()
@@ -55,8 +57,10 @@ struct DiscoverDetailView: View {
             Text(dataModel.name)
                 .font(.title)
             VStack(alignment: .leading, spacing: 4.0) {
-                Text("★ 5.0 ‧ 3 review(s)")
-                    .foregroundStyle(Color(hex: "563122"))
+                if !dataModel.reviews.isEmpty {
+                    Text("★ \(dataModel.getAverageReviews(), specifier: "%.1f") ‧ \(dataModel.reviews.count) review(s)")
+                        .foregroundStyle(Color(hex: "563122"))
+                }
                 if let description = dataModel.description {
                     Text(description)
                 }
@@ -88,7 +92,7 @@ struct DiscoverDetailView: View {
                         .fill(Color(hex: "ad6928"))
                 }
                 
-                DiscoverDetailReviewView()
+                DiscoverDetailReviewView(reviews: dataModel.reviews)
             }
         }
     }

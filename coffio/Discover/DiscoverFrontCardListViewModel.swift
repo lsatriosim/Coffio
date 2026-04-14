@@ -15,7 +15,7 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     
     func onViewDidLoad() async {
         do {
-            hasViewModelLoaded = true
+            await updateHasViewModelLoaded(hasViewModelLoaded: true)
             await updateIsLoading(isLoading: true)
             let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
             
@@ -23,11 +23,13 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             for shop in response {
                 let distanceLabel = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
                 let images: [DiscoverCoffeeShopImage] = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
+                let reviews: [DiscoverCoffeeShopReview] = try await fetcher.fetchCoffeeShopReviews(shopId: shop.id)
                 parsedDataModel.append(
                     DiscoverCoffeeShopItemDataModel(
                         coffeeShopItem: shop,
                         distanceLabel: distanceLabel,
-                        images: images
+                        images: images,
+                        reviews: reviews
                     )
                 )
                 if !images.isEmpty {
@@ -50,6 +52,11 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     @MainActor
     private func updateIsLoading(isLoading: Bool) {
         self.isLoading = isLoading
+    }
+    
+    @MainActor
+    private func updateHasViewModelLoaded(hasViewModelLoaded: Bool) {
+        self.hasViewModelLoaded = hasViewModelLoaded
     }
     
     private let fetcher = CoffeeShopFetcher()

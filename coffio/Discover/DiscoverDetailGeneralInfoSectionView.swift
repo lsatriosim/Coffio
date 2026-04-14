@@ -17,7 +17,7 @@ struct DiscoverDetailGeneralInfoSectionView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(Color(hex: "563122"))
             
-            VStack(alignment: .leading, spacing: 4.0) {
+            VStack(alignment: .leading, spacing: 8.0) {
                 createInformationItemView(iconName: "map", label: address)
                 createInformationItemView(iconName: "clock", label: "08.00 - 20.00")
             }

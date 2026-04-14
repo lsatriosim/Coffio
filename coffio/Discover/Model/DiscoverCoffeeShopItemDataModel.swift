@@ -22,6 +22,7 @@ struct DiscoverCoffeeShopItemDataModel {
     let facilities: [CoffeeShopFacilities]
     let distanceLabel: String?
     let images: [DiscoverCoffeeShopImage]
+    let reviews: [DiscoverCoffeeShopReview]
     
     var imageUrls: [String] {
         images.map { $0.imageUrl }
@@ -30,7 +31,8 @@ struct DiscoverCoffeeShopItemDataModel {
     init(
         coffeeShopItem: DiscoverCoffeeShopItem,
         distanceLabel: String? = nil,
-        images: [DiscoverCoffeeShopImage] = []
+        images: [DiscoverCoffeeShopImage] = [],
+        reviews: [DiscoverCoffeeShopReview] = []
     ) {
         self.id = coffeeShopItem.id
         self.name = coffeeShopItem.name
@@ -46,6 +48,7 @@ struct DiscoverCoffeeShopItemDataModel {
         self.facilities = coffeeShopItem.facilities
         self.distanceLabel = distanceLabel
         self.images = images
+        self.reviews = reviews
     }
     
     func getPriceRangeLabel() -> String? {
@@ -54,6 +57,13 @@ struct DiscoverCoffeeShopItemDataModel {
         }
         
         return formatPriceRange(priceMin: priceMin, priceMax: priceMax)
+    }
+    
+    func getAverageReviews() -> Double {
+        guard !reviews.isEmpty else { return 0.0 }
+        
+        let avg = Double(reviews.map { $0.rating }.reduce(0, +)) / Double(reviews.count)
+        return (avg * 10).rounded() / 10
     }
     
     private func formatPriceRange(priceMin: Int, priceMax: Int) -> String {

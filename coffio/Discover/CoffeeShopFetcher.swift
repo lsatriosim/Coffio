@@ -35,4 +35,42 @@ final class CoffeeShopFetcher {
             return []
         }
     }
+    
+    func fetchCoffeeShopReviews(shopId: String) async throws -> [DiscoverCoffeeShopReview] {
+        do {
+            let response = try await supabaseClient
+                .from("cafe_reviews_with_user")
+                .select()
+                .eq("coffee_shop_id", value: shopId)
+                .execute()
+            
+            let decoder = JSONDecoder()
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [
+                .withInternetDateTime,
+                .withFractionalSeconds
+            ]
+
+            decoder.dateDecodingStrategy = .custom { decoder in
+                let container = try decoder.singleValueContainer()
+                let string = try container.decode(String.self)
+                
+                if let date = formatter.date(from: string) {
+                    return date
+                }
+                
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Invalid date: \(string)"
+                )
+            }
+            print("[Fetch Review]: \(String(data: response.data, encoding: .utf8)!)")
+            let parsedResponse = try decoder.decode([DiscoverCoffeeShopReview].self, from: response.data)
+            return parsedResponse
+        }
+        catch {
+            print("[Fetch Review]: \(error)")
+            return []
+        }
+    }
 }
