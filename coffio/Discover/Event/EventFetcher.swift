@@ -14,19 +14,6 @@ final class EventFetcher {
             .select()
             .execute()
         
-        if let jsonString = String(data: response.data, encoding: .utf8) {
-            print("📦 Raw Response:")
-            print(jsonString)
-        }
-
-        // Pretty print JSON (better readability)
-        if let jsonObject = try? JSONSerialization.jsonObject(with: response.data),
-           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
-           let prettyString = String(data: prettyData, encoding: .utf8) {
-            print("📦 Pretty JSON:")
-            print(prettyString)
-        }
-        
         let decoder = JSONDecoder()
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [

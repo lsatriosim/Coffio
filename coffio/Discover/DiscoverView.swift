@@ -45,7 +45,12 @@ struct HomeView: View {
     var contentView: some View {
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 24.0) {
-                DiscoverFrontCardListView()
+                if selectedCategory == 0 {
+                    DiscoverFrontCardListView()
+                }
+                else {
+                    DiscoverEventListView()
+                }
             }
             .padding(.vertical, 20.0)
         }

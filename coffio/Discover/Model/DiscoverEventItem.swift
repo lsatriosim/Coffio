@@ -48,3 +48,24 @@ struct PaymentInfo: JSONDecodable {
         case bankHolder = "bank_holder"
     }
 }
+
+let discoverEventMock: [DiscoverEventItem] = [
+    .init(
+        id: "1",
+        title: "Brew with Barista",
+        description: "Brewing with barista newdsaodjasoid pasjdpajd p",
+        imageUrl: nil,
+        location: "Jl Pamekarsa No 148",
+        eventDate: .now,
+        endDate: nil,
+        price: 100000,
+        capacity: 30,
+        cafeName: "Kopi Kenangan",
+        participantRegistered: 10,
+        paymentInfo: .init(
+            bankName: "BCA",
+            bankAccount: "8632321",
+            bankHolder: "Liefran Satrio"
+        )
+    )
+]
