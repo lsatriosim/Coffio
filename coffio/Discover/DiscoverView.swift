@@ -8,44 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var searchInput: String = ""
     @State var selectedCategory: Int = 0
     
     var body: some View {
         VStack(spacing: 0.0) {
-            searchBar
-            .padding(.horizontal, 24.0)
-            
             categoriesTab
             .padding(.horizontal, 24.0)
-            
-            Rectangle()
-                .fill(.gray)
-                .frame(width: .infinity, height: 1.0)
-                .opacity(0.25)
             
             contentView
             
             Spacer()
-        }
-    }
-    
-    var searchBar: some View {
-        HStack {
-            Spacer()
-            TextField(text: $searchInput) {
-                HStack(alignment: .bottom, spacing: 4.0) {
-                    Label("Start your Search", systemImage: "magnifyingglass")
-                }
-            }
-            Spacer()
-        }
-        .padding(.horizontal, 12.0)
-        .padding(.vertical, 8.0)
-        .overlay {
-            RoundedRectangle(cornerRadius: 16.0)
-                .fill(.clear)
-                .stroke(.black, lineWidth: 0.5)
         }
     }
     
@@ -66,7 +38,8 @@ struct HomeView: View {
             }
             Spacer()
         }
-        .padding(.top, 16.0)
+        .padding(.vertical, 16.0)
+        .background(.white)
     }
     
     var contentView: some View {
@@ -76,6 +49,7 @@ struct HomeView: View {
             }
             .padding(.vertical, 20.0)
         }
+        .background(Color(hex: "FAFAFA"))
     }
     
     func createCategoryMenu(
@@ -84,24 +58,20 @@ struct HomeView: View {
         isSelected: Bool,
         onClick: @escaping () -> Void
     ) -> some View {
-        VStack(alignment: .center, spacing: 4.0) {
-            Image(systemName: imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 36.0, height: 36.0)
-                .foregroundStyle(isSelected ? .orange : .black)
-            Text(label)
-                .font(.callout)
-                .foregroundStyle(isSelected ? .orange : .black)
-            
-            if isSelected {
-                RoundedRectangle(cornerRadius: 12.0)
-                    .fill(.orange)
-                    .frame(width: 16.0, height: 2.0)
+        Button(action: onClick) {
+            HStack {
+                Spacer()
+                Text(label)
+                    .font(.headline)
+                    .foregroundStyle(isSelected ? .white : .gray)
+                Spacer()
             }
-        }
-        .onTapGesture {
-            onClick()
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+            .background {
+                RoundedRectangle(cornerRadius: 12.0)
+                    .fill(isSelected ? Color(hex: "ad6928") : Color(hex: "d8cec5"))
+            }
         }
     }
 }

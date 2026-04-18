@@ -78,7 +78,7 @@ struct DiscoverFrontCardView: View {
     }
     
     var placeholderView: some View {
-        Image("mock_cafe_\(index.randomElement() ?? "")")
+        Image("il_cafe")
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: cardWidth, height: cardHeight)

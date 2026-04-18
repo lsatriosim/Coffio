@@ -17,14 +17,16 @@ struct DiscoverDetailFacilitiesSectionView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(Color(hex: "563122"))
             
-            HStack {
-                ForEach(facilities, id: \.rawValue) { facility in
-                    DiscoverDetailFacilitiesItemView(facility: facility)
-                }
+            WrappingHStack(horizontalSpacing: 8, verticalSpacing: 8) {
+               ForEach(facilities, id: \.rawValue) { facility in
+                   DiscoverDetailFacilitiesItemView(facility: facility)
+               }
             }
         }
     }
 }
+
+
 
 private struct DiscoverDetailFacilitiesItemView: View {
     let facility: CoffeeShopFacilities
@@ -37,6 +39,26 @@ private struct DiscoverDetailFacilitiesItemView: View {
             "poweroutlet.type.c.fill"
         case .outdoor:
             "leaf"
+        case .parking:
+            "parkingsign.circle"
+        case .petFriendly:
+            "pawprint.circle"
+        case .wfcFriendly:
+            "laptopcomputer"
+        case .meetingRoom:
+            "table.furniture"
+        case .book:
+            "book"
+        case .tv:
+            "tv"
+        case .microphone:
+            "microphone"
+        case .speakerAndTripod:
+            "speaker"
+        case .games:
+            "gamecontroller"
+        case .unknown:
+            ""
         }
     }
     

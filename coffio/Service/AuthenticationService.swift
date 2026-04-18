@@ -71,6 +71,10 @@ final class AuthenticationService: ObservableObject {
     func fetchUserProfile() async {
         do {
             let session: Session = try await supabaseClient.auth.session
+            guard !session.isExpired else {
+                try await logout()
+                return
+            }
             let user: User = session.user
             let userId: String = user.id.uuidString
             

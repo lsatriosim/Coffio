@@ -14,39 +14,46 @@ struct DiscoverDetailView: View {
     let dataModel: DiscoverCoffeeShopItemDataModel
     
     var body: some View {
-        ScrollView(.vertical) {
-            VStack(alignment: .leading, spacing: 0.0) {
-                ZStack(alignment: .topLeading) {
-                    TabView {
-                        ForEach(Array(dataModel.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
-                            carouselItem(imageUrl: imageUrl)
+        ZStack(alignment: .top) {
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 0.0) {
+                    ZStack(alignment: .topLeading) {
+                        if dataModel.imageUrls.isEmpty {
+                            placeholderView
+                        }
+                        else {
+                            TabView {
+                                ForEach(Array(dataModel.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
+                                    carouselItem(imageUrl: imageUrl)
+                                }
+                            }
+                            .tabViewStyle(.page(indexDisplayMode: .automatic))
+                            .frame(height: kImageHeight)
                         }
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .automatic)) // native dots
                     .frame(height: kImageHeight)
                     
-                    HStack {
-                        DiscoverTopButtonView(iconName: "chevron.left") {
-                            dismiss()
-                        }
-                        Spacer()
-                        DiscoverTopButtonView(iconName: "square.and.arrow.up") {
-                            
-                        }
-                        DiscoverTopButtonView(iconName: "heart") {
-                            
-                        }
-                    }
-                    .padding(.horizontal, 24.0)
-                    .padding(.top, 72.0)
+                    content
+                        .padding(.horizontal, 24.0)
+                        .padding(.top, 24.0)
+                    Spacer()
                 }
-                .frame(height: kImageHeight)
-                
-                content
-                    .padding(.horizontal, 24.0)
-                    .padding(.top, 24.0)
-                Spacer()
             }
+            
+            HStack {
+                DiscoverTopButtonView(iconName: "chevron.left") {
+                    dismiss()
+                }
+                Spacer()
+                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
+                    
+                }
+                DiscoverTopButtonView(iconName: "heart") {
+                    
+                }
+            }
+            .padding(.horizontal, 24.0)
+            .padding(.top, 72.0)
         }
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden()
@@ -67,29 +74,31 @@ struct DiscoverDetailView: View {
             }
     
             VStack(alignment: .leading, spacing: 20.0) {
-                DiscoverDetailFacilitiesSectionView(facilities: dataModel.facilities)
+                DiscoverDetailFacilitiesSectionView(facilities: dataModel.facilities.filter { $0 != .unknown })
                 
                 DiscoverDetailGeneralInfoSectionView(address: dataModel.address)
                 
-                Button(action: {
-                    if let mapUrl: String = dataModel.mapUrl, let url: URL = URL(string: mapUrl) {
-                        UIApplication.shared.open(url)
+                if let mapUrl = dataModel.mapUrl {
+                    Button(action: {
+                        if let url: URL = URL(string: mapUrl) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("Get Directions")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                            Image(systemName: "car")
+                                .foregroundStyle(.white)
+                            Spacer()
+                        }
                     }
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Get Directions")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                        Image(systemName: "car")
-                            .foregroundStyle(.white)
-                        Spacer()
+                    .padding()
+                    .background {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(hex: "ad6928"))
                     }
-                }
-                .padding()
-                .background {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(hex: "ad6928"))
                 }
                 
                 DiscoverDetailReviewView(reviews: dataModel.reviews)
@@ -123,9 +132,13 @@ struct DiscoverDetailView: View {
     }
     
     private var placeholderView: some View {
-        Rectangle()
-            .fill(Color.gray.opacity(0.2))
-            .aspectRatio(1.2, contentMode: .fit)
+        GeometryReader { geo in
+            Image("il_cafe")
+                .resizable()
+                .frame(width: geo.size.width)
+                .aspectRatio(1.2, contentMode: .fit) // adjust height ratio
+        }
+        .frame(height: kImageHeight)
     }
 }
 

@@ -39,10 +39,24 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
     }
 }
 
-enum CoffeeShopFacilities: String, JSONDecodable {
+enum CoffeeShopFacilities: String, JSONDecodable, UnknownCaseRepresentable {
     case wifi = "wifi"
     case powerOutlet = "power_outlet"
     case outdoor = "outdoor"
+    case parking = "parking"
+    case petFriendly = "pet_friendly"
+    case wfcFriendly = "wfc_friendly"
+    case meetingRoom = "meeting_room"
+    case book = "buku"
+    case tv = "tv"
+    case microphone = "mic"
+    case speakerAndTripod = "speaker_&_tripod"
+    case games = "games"
+    case unknown
+    
+    static var unknownCase: CoffeeShopFacilities {
+        .unknown
+    }
 }
 
 let discoverCoffeeShopItemMock = [

@@ -146,5 +146,213 @@
             landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "coffio/Service/AuthenticationService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "fetchUserProfile()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - 88bfa13b430e4818"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92">
+               </Location>
+               <Location
+                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - a886ed19827b2225"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92">
+               </Location>
+               <Location
+                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - 63d97bb8acc9703c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92">
+               </Location>
+               <Location
+                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - 1e8ab743fe9ebeab"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(10) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "coffio/Service/AuthenticationService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "fetchUserProfile()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 232c827d2ee2ae45"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "75"
+                  endingLineNumber = "75">
+               </Location>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - e8870b4c42b981b0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) await resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "75"
+                  endingLineNumber = "75">
+               </Location>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - f64e5cf977add619"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "75"
+                  endingLineNumber = "75">
+               </Location>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 63d97bb8acc9720f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "75"
+                  endingLineNumber = "75">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "coffio/Discover/DiscoverFrontCardListViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "onViewDidLoad()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18 - 465040c4ad055eef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(17) suspend resume partial function for coffio.DiscoverFrontCardListViewModel.onViewDidLoad() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/DiscoverFrontCardListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42">
+               </Location>
+               <Location
+                  uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18 - ee22b3cef2df3dee"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(18) suspend resume partial function for coffio.DiscoverFrontCardListViewModel.onViewDidLoad() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/DiscoverFrontCardListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42">
+               </Location>
+               <Location
+                  uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18 - 95fce2d8c2f19cd1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(19) suspend resume partial function for coffio.DiscoverFrontCardListViewModel.onViewDidLoad() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/DiscoverFrontCardListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

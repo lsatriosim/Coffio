@@ -12,6 +12,7 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     @Published var coffeeShop: [DiscoverCoffeeShopItemDataModel] = []
     @Published var isLoading: Bool = false
     @Published var hasViewModelLoaded: Bool = false
+    @Published var isError: Bool = false
     
     func onViewDidLoad() async {
         do {
@@ -32,14 +33,41 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
                         reviews: reviews
                     )
                 )
-                if !images.isEmpty {
-                    print(shop)
-                }
             }
             await updateCoffeeShop(newDataModel: parsedDataModel)
             await updateIsLoading(isLoading: false)
         }
         catch {
+            await updateIsError(isError: true)
+            await updateIsLoading(isLoading: false)
+        }
+    }
+    
+    func refetchCoffeShop() async {
+        await updateIsError(isError: false)
+        await updateIsLoading(isLoading: true)
+        do {
+            let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
+            
+            var parsedDataModel: [DiscoverCoffeeShopItemDataModel] = []
+            for shop in response {
+                let distanceLabel = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
+                let images: [DiscoverCoffeeShopImage] = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
+                let reviews: [DiscoverCoffeeShopReview] = try await fetcher.fetchCoffeeShopReviews(shopId: shop.id)
+                parsedDataModel.append(
+                    DiscoverCoffeeShopItemDataModel(
+                        coffeeShopItem: shop,
+                        distanceLabel: distanceLabel,
+                        images: images,
+                        reviews: reviews
+                    )
+                )
+            }
+            await updateCoffeeShop(newDataModel: parsedDataModel)
+            await updateIsLoading(isLoading: false)
+        }
+        catch {
+            await updateIsError(isError: true)
             await updateIsLoading(isLoading: false)
         }
     }
@@ -52,6 +80,11 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     @MainActor
     private func updateIsLoading(isLoading: Bool) {
         self.isLoading = isLoading
+    }
+    
+    @MainActor
+    private func updateIsError(isError: Bool) {
+        self.isError = isError
     }
     
     @MainActor

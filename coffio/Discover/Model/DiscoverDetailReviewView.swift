@@ -19,8 +19,13 @@ struct DiscoverDetailReviewView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(Color(hex: "563122"))
             
-            ForEach(reviewsShown, id: \.id) { review in
-                DiscoverDetailReviewCardView(dataModel: review)
+            if reviewsShown.isEmpty {
+                DiscoverDetailReviewEmptyStateView()
+            }
+            else {
+                ForEach(reviewsShown, id: \.id) { review in
+                    DiscoverDetailReviewCardView(dataModel: review)
+                }
             }
         }
     }

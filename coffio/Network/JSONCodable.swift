@@ -36,3 +36,16 @@ extension JSONEncodable {
         return jsonObject
     }
 }
+
+protocol UnknownCaseRepresentable: RawRepresentable, Decodable where RawValue: Decodable {
+    /// Fallback case when backend sends unknown value
+    static var unknownCase: Self { get }
+}
+
+extension UnknownCaseRepresentable {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(RawValue.self)
+        self = Self(rawValue: rawValue) ?? Self.unknownCase
+    }
+}
