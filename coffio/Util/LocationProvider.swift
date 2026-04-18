@@ -41,7 +41,8 @@ class LocationProvider: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func calculateDistance(latitude: Double, longitude: Double) -> String? {
+    //return distance and the formatted distance
+    func calculateDistance(latitude: Double, longitude: Double) -> (Double, String)? {
         guard let currentLocation else { return nil}
         // 1. Create a CLLocation object for the destination
         let destination = CLLocation(latitude: latitude, longitude: longitude)
@@ -60,7 +61,7 @@ class LocationProvider: NSObject, CLLocationManagerDelegate {
         
         let formattedDistance = formatter.string(from: NSNumber(value: distanceInKm)) ?? "0"
         
-        return "\(formattedDistance) km"
+        return (distanceInKm, "\(formattedDistance) km")
     }
 
     // Handle errors (e.g., user denied permission)

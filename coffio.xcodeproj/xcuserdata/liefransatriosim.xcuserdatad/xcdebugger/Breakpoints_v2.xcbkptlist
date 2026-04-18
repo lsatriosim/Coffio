@@ -304,54 +304,10 @@
             filePath = "coffio/Discover/DiscoverFrontCardListViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
             landmarkName = "onViewDidLoad()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18 - 465040c4ad055eef"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(17) suspend resume partial function for coffio.DiscoverFrontCardListViewModel.onViewDidLoad() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/DiscoverFrontCardListViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42">
-               </Location>
-               <Location
-                  uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18 - ee22b3cef2df3dee"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(18) suspend resume partial function for coffio.DiscoverFrontCardListViewModel.onViewDidLoad() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/DiscoverFrontCardListViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42">
-               </Location>
-               <Location
-                  uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18 - 95fce2d8c2f19cd1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(19) suspend resume partial function for coffio.DiscoverFrontCardListViewModel.onViewDidLoad() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/DiscoverFrontCardListViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

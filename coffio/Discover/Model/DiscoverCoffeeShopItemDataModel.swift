@@ -21,6 +21,7 @@ struct DiscoverCoffeeShopItemDataModel {
     let priceMax: Int?
     let facilities: [CoffeeShopFacilities]
     let distanceLabel: String?
+    let distance: Double?
     let images: [DiscoverCoffeeShopImage]
     let reviews: [DiscoverCoffeeShopReview]
     
@@ -30,7 +31,7 @@ struct DiscoverCoffeeShopItemDataModel {
     
     init(
         coffeeShopItem: DiscoverCoffeeShopItem,
-        distanceLabel: String? = nil,
+        locationInfo: (distance: Double, distanceLabel: String)?,
         images: [DiscoverCoffeeShopImage] = [],
         reviews: [DiscoverCoffeeShopReview] = []
     ) {
@@ -46,7 +47,8 @@ struct DiscoverCoffeeShopItemDataModel {
         self.priceMin = coffeeShopItem.priceMin
         self.priceMax = coffeeShopItem.priceMax
         self.facilities = coffeeShopItem.facilities
-        self.distanceLabel = distanceLabel
+        self.distanceLabel = locationInfo?.distanceLabel
+        self.distance = locationInfo?.distance
         self.images = images
         self.reviews = reviews
     }

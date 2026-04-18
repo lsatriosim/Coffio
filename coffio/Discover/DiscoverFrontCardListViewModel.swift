@@ -18,23 +18,10 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         do {
             await updateHasViewModelLoaded(hasViewModelLoaded: true)
             await updateIsLoading(isLoading: true)
-            let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
             
-            var parsedDataModel: [DiscoverCoffeeShopItemDataModel] = []
-            for shop in response {
-                let distanceLabel = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
-                let images: [DiscoverCoffeeShopImage] = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
-                let reviews: [DiscoverCoffeeShopReview] = try await fetcher.fetchCoffeeShopReviews(shopId: shop.id)
-                parsedDataModel.append(
-                    DiscoverCoffeeShopItemDataModel(
-                        coffeeShopItem: shop,
-                        distanceLabel: distanceLabel,
-                        images: images,
-                        reviews: reviews
-                    )
-                )
-            }
-            await updateCoffeeShop(newDataModel: parsedDataModel)
+            let newCoffeeShop = try await fetchCoffeeShop()
+            await updateCoffeeShop(newDataModel: newCoffeeShop)
+            
             await updateIsLoading(isLoading: false)
         }
         catch {
@@ -47,23 +34,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         await updateIsError(isError: false)
         await updateIsLoading(isLoading: true)
         do {
-            let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
-            
-            var parsedDataModel: [DiscoverCoffeeShopItemDataModel] = []
-            for shop in response {
-                let distanceLabel = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
-                let images: [DiscoverCoffeeShopImage] = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
-                let reviews: [DiscoverCoffeeShopReview] = try await fetcher.fetchCoffeeShopReviews(shopId: shop.id)
-                parsedDataModel.append(
-                    DiscoverCoffeeShopItemDataModel(
-                        coffeeShopItem: shop,
-                        distanceLabel: distanceLabel,
-                        images: images,
-                        reviews: reviews
-                    )
-                )
-            }
-            await updateCoffeeShop(newDataModel: parsedDataModel)
+            let newCoffeeShop = try await fetchCoffeeShop()
+            await updateCoffeeShop(newDataModel: newCoffeeShop)
             await updateIsLoading(isLoading: false)
         }
         catch {
@@ -72,6 +44,46 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         }
     }
     
+    private let fetcher = CoffeeShopFetcher()
+}
+
+//MARK: Private Function
+private extension DiscoverFrontCardListViewModel {
+    func fetchCoffeeShop() async throws -> [DiscoverCoffeeShopItemDataModel] {
+        let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
+        
+        var parsedDataModel: [DiscoverCoffeeShopItemDataModel] = []
+        for shop in response {
+            let locationInfo: (distance: Double, distanceLabel: String)? = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
+            let images: [DiscoverCoffeeShopImage] = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
+            let reviews: [DiscoverCoffeeShopReview] = try await fetcher.fetchCoffeeShopReviews(shopId: shop.id)
+            parsedDataModel.append(
+                DiscoverCoffeeShopItemDataModel(
+                    coffeeShopItem: shop,
+                    locationInfo: locationInfo,
+                    images: images,
+                    reviews: reviews
+                )
+            )
+        }
+        parsedDataModel.sort { lhs, rhs in
+            switch (lhs.distance, rhs.distance) {
+            case let (l?, r?):
+                return l < r          // both have distance
+            case (_?, nil):
+                return true          // lhs has value, rhs nil -> lhs first
+            case (nil, _?):
+                return false         // rhs has value -> rhs first
+            case (nil, nil):
+                return false         // same priority
+            }
+        }
+        return parsedDataModel
+    }
+}
+
+//MARK: Main Actor
+private extension DiscoverFrontCardListViewModel {
     @MainActor
     private func updateCoffeeShop(newDataModel: [DiscoverCoffeeShopItemDataModel]) {
         self.coffeeShop = newDataModel
@@ -91,6 +103,4 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     private func updateHasViewModelLoaded(hasViewModelLoaded: Bool) {
         self.hasViewModelLoaded = hasViewModelLoaded
     }
-    
-    private let fetcher = CoffeeShopFetcher()
 }
