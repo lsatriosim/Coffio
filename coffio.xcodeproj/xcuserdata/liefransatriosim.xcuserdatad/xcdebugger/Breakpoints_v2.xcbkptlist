@@ -297,16 +297,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "766544DA-F814-4254-BBE7-0E05A25CBA18"
+            uuid = "FB80388A-20D9-470A-9E57-0477FA608A99"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "coffio/Discover/DiscoverFrontCardListViewModel.swift"
+            filePath = "coffio/Discover/Event/EventFetcher.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
-            landmarkName = "onViewDidLoad()"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "fetchEvent()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

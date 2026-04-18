@@ -31,7 +31,7 @@ struct DiscoverCoffeeShopItemDataModel {
     
     init(
         coffeeShopItem: DiscoverCoffeeShopItem,
-        locationInfo: (distance: Double, distanceLabel: String)?,
+        locationInfo: (distance: Double, distanceLabel: String)? = nil,
         images: [DiscoverCoffeeShopImage] = [],
         reviews: [DiscoverCoffeeShopReview] = []
     ) {

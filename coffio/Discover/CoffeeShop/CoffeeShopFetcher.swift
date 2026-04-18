@@ -64,7 +64,6 @@ final class CoffeeShopFetcher {
                     debugDescription: "Invalid date: \(string)"
                 )
             }
-            print("[Fetch Review]: \(String(data: response.data, encoding: .utf8)!)")
             let parsedResponse = try decoder.decode([DiscoverCoffeeShopReview].self, from: response.data)
             return parsedResponse
         }

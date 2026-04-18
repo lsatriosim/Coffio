@@ -10,6 +10,7 @@ import SwiftUI
 
 final class DiscoverFrontCardListViewModel: ObservableObject {
     @Published var coffeeShop: [DiscoverCoffeeShopItemDataModel] = []
+    @Published var events: [DiscoverEventItem] = []
     @Published var isLoading: Bool = false
     @Published var hasViewModelLoaded: Bool = false
     @Published var isError: Bool = false
@@ -19,8 +20,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             await updateHasViewModelLoaded(hasViewModelLoaded: true)
             await updateIsLoading(isLoading: true)
             
-            let newCoffeeShop = try await fetchCoffeeShop()
-            await updateCoffeeShop(newDataModel: newCoffeeShop)
+            try await fetchCoffeeShop()
+            try await fetchEvents()
             
             await updateIsLoading(isLoading: false)
         }
@@ -34,8 +35,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         await updateIsError(isError: false)
         await updateIsLoading(isLoading: true)
         do {
-            let newCoffeeShop = try await fetchCoffeeShop()
-            await updateCoffeeShop(newDataModel: newCoffeeShop)
+            try await fetchCoffeeShop()
+            try await fetchEvents()
             await updateIsLoading(isLoading: false)
         }
         catch {
@@ -45,11 +46,12 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     }
     
     private let fetcher = CoffeeShopFetcher()
+    private let eventFetcher = EventFetcher()
 }
 
 //MARK: Private Function
 private extension DiscoverFrontCardListViewModel {
-    func fetchCoffeeShop() async throws -> [DiscoverCoffeeShopItemDataModel] {
+    func fetchCoffeeShop() async throws {
         let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop()
         
         var parsedDataModel: [DiscoverCoffeeShopItemDataModel] = []
@@ -78,7 +80,14 @@ private extension DiscoverFrontCardListViewModel {
                 return false         // same priority
             }
         }
-        return parsedDataModel
+        
+        await updateCoffeeShop(newDataModel: parsedDataModel)
+    }
+    
+    func fetchEvents() async throws {
+        let response = try await eventFetcher.fetchEvent()
+        
+        await updateEvents(events: response)
     }
 }
 
@@ -102,5 +111,11 @@ private extension DiscoverFrontCardListViewModel {
     @MainActor
     private func updateHasViewModelLoaded(hasViewModelLoaded: Bool) {
         self.hasViewModelLoaded = hasViewModelLoaded
+    }
+    
+    @MainActor
+    private func updateEvents(events: [DiscoverEventItem]) {
+        self.events = events
+        print(events)
     }
 }
