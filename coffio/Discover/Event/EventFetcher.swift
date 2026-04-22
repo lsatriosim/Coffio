@@ -36,4 +36,11 @@ final class EventFetcher {
         
         return try decoder.decode([DiscoverEventItem].self, from: response.data)
     }
+    
+    func registerEvent(request: EventRegistrationRequest) async throws {
+        try await supabaseClient
+            .from("event_registrations")
+            .insert(request)
+            .execute()
+    }
 }

@@ -38,5 +38,6 @@ struct DiscoverEventListView: View {
         .task {
             viewModel.onViewDidLoad()
         }
+        .environmentObject(viewModel)
     }
 }

@@ -8,15 +8,43 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class DiscoverEventListViewModel: ObservableObject {
     @Published var events: [DiscoverEventItem] = []
     @Published var isLoading: Bool = false
+    let authService: AuthenticationService = AuthenticationService.shared
     
     func onViewDidLoad() {
         Task {
-            await updateIsLoading(isLoading: true)
+            updateIsLoading(isLoading: true)
             try await fetchEvent()
-            await updateIsLoading(isLoading: false)
+            updateIsLoading(isLoading: false)
+        }
+    }
+    
+    func registerEvent(eventId: String, fullname: String, phoneNumber: String, completion: @escaping () -> Void) {
+        guard let user = authService.user
+        else {
+            authService.showLoginPage()
+            return
+        }
+        
+        let eventRegistrationRequest: EventRegistrationRequest = EventRegistrationRequest(
+            id: UUID().uuidString,
+            eventId: eventId,
+            userId: user.id,
+            userPhone: phoneNumber,
+            userName: fullname
+        )
+        
+        Task {
+            do {
+                try await fetcher.registerEvent(request: eventRegistrationRequest)
+            }
+            catch {
+                
+            }
+            completion()
         }
     }
     
@@ -26,7 +54,7 @@ final class DiscoverEventListViewModel: ObservableObject {
 private extension DiscoverEventListViewModel {
     func fetchEvent() async throws {
         let response = try await fetcher.fetchEvent()
-        await updateEvents(events: response)
+        updateEvents(events: response)
     }
 }
 

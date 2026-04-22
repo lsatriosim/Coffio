@@ -10,9 +10,12 @@ import SwiftUI
 struct DiscoverEventFrontCardItemView: View {
     let cardHeight: CGFloat = 320
     let dataModel: DiscoverEventItem
+    @EnvironmentObject var viewModel: DiscoverEventListViewModel
+    
     var body: some View {
         NavigationLink {
             DiscoverDetailEventView(dataModel: dataModel)
+                .environmentObject(viewModel)
         } label: {
             VStack(alignment: .leading, spacing: 8.0) {
                 ZStack(alignment: .topLeading) {
@@ -60,7 +63,7 @@ struct DiscoverEventFrontCardItemView: View {
                     }
                     
                     HStack(alignment: .bottom) {
-                        Text(PriceUtil.formatLong(dataModel.price))
+                        Text(dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price))
                             .font(.title3)
                             .bold()
                             .foregroundStyle(Color(hex: "ad6928"))

@@ -13,6 +13,9 @@ struct DiscoverDetailEventView: View {
     @Environment(\.dismiss) private var dismiss
     let dataModel: DiscoverEventItem
     
+    @State var showRegistrationSheet: Bool = false
+    @EnvironmentObject var viewModel: DiscoverEventListViewModel
+    
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView(.vertical) {
@@ -50,6 +53,12 @@ struct DiscoverDetailEventView: View {
         .background(Color(hex: "f2efed"))
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden()
+        .sheet(isPresented: $showRegistrationSheet) {
+            EventRegistrationSheet(eventId: dataModel.id)
+                .environmentObject(viewModel)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.hidden)
+        }
     }
     
     var content: some View {
@@ -89,7 +98,7 @@ struct DiscoverDetailEventView: View {
                 GeneralInfoCardItemView(
                     imageName: "dollarsign.circle",
                     title: "Price",
-                    value: PriceUtil.formatLong(dataModel.price),
+                    value: dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price),
                     subtitle: nil
                 )
             }
@@ -113,7 +122,7 @@ struct DiscoverDetailEventView: View {
             }
             
             Button(action: {
-                //TODO: Open Modal
+                showRegistrationSheet = true
             }) {
                 HStack {
                     Spacer()
