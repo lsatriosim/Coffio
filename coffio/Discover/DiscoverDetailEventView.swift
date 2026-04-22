@@ -140,17 +140,19 @@ struct DiscoverDetailEventView: View {
                     image
                         .resizable()
                         .scaledToFit()
-                    
+                        .frame(maxWidth: .infinity, maxHeight: kImageHeight)
+                        .clipped()
+
                 case .failure(_), .empty:
                     placeholderView
-                    
+
                 @unknown default:
                     placeholderView
                 }
             }
-            .frame(width: .infinity, height: kImageHeight)
-            .aspectRatio(1.2, contentMode: .fit) // adjust height ratio
-            .clipped()
+            .frame(maxWidth: .infinity, maxHeight: kImageHeight)
+            .background(Color.clear)
+
         } else {
             placeholderView
         }
