@@ -8,7 +8,21 @@
 import Foundation
 import Supabase
 
+private let supabaseHost: String = {
+    guard let host = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_HOST") as? String else {
+        fatalError("SUPABASE_HOST not found in Info.plist")
+    }
+    return host
+}()
+
+private let supabaseKey: String = {
+    guard let host = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String else {
+        fatalError("SUPABASE_HOST not found in Info.plist")
+    }
+    return host
+}()
+
 let supabaseClient = SupabaseClient(
-    supabaseURL: URL(string: "https://zbnrcvrbdlrnguutylex.supabase.co")!,
-    supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpibnJjdnJiZGxybmd1dXR5bGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MzA2NTksImV4cCI6MjA4ODIwNjY1OX0.taAUfNNwck5fF7CiWsdwqFhRz7_x3sOOi021RAdyoeA"
+    supabaseURL: URL(string: supabaseHost)!,
+    supabaseKey: supabaseKey
 )
