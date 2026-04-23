@@ -18,6 +18,8 @@ struct DiscoverEventItem: JSONDecodable {
     let price: Int
     let capacity: Int
     let cafeName: String?
+    let registrationType: RegistrationType
+    let externalRegistrationURL: String?
     let participantRegistered: Int
     let paymentInfo: PaymentInfo?
     
@@ -32,8 +34,15 @@ struct DiscoverEventItem: JSONDecodable {
         case price
         case capacity
         case cafeName
+        case registrationType = "registration_type"
+        case externalRegistrationURL = "external_registration_url"
         case participantRegistered = "participant_registered"
         case paymentInfo = "payment_info"
+    }
+    
+    enum RegistrationType: String, JSONDecodable {
+        case `internal`
+        case external
     }
 }
 
@@ -61,6 +70,28 @@ let discoverEventMock: [DiscoverEventItem] = [
         price: 100000,
         capacity: 30,
         cafeName: "Kopi Kenangan",
+        registrationType: .internal,
+        externalRegistrationURL: nil,
+        participantRegistered: 10,
+        paymentInfo: .init(
+            bankName: "BCA",
+            bankAccount: "8632321",
+            bankHolder: "Liefran Satrio"
+        )
+    ),
+    .init(
+        id: "2",
+        title: "Work from Cafe",
+        description: "Brewing with barista newdsaodjasoid pasjdpajd p",
+        imageUrl: nil,
+        location: "Jl Pamekarsa No 148",
+        eventDate: .now,
+        endDate: nil,
+        price: 100000,
+        capacity: 30,
+        cafeName: "Kopi Kenangan",
+        registrationType: .external,
+        externalRegistrationURL: "https://www.google.com",
         participantRegistered: 10,
         paymentInfo: .init(
             bankName: "BCA",

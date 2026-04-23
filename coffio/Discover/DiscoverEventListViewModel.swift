@@ -22,29 +22,35 @@ final class DiscoverEventListViewModel: ObservableObject {
         }
     }
     
-    func registerEvent(eventId: String, fullname: String, phoneNumber: String, completion: @escaping () -> Void) {
+    func registerEvent(eventId: String, fullname: String, phoneNumber: String, paymentProofImage: Image, completion: @escaping () -> Void) {
         guard let user = authService.user
         else {
             authService.showLoginPage()
             return
         }
         
-        let eventRegistrationRequest: EventRegistrationRequest = EventRegistrationRequest(
-            id: UUID().uuidString,
-            eventId: eventId,
-            userId: user.id,
-            userPhone: phoneNumber,
-            userName: fullname
-        )
-        
         Task {
             do {
+                _ = try await fetcher.uploadPaymentProof(
+                    image: paymentProofImage,
+                    eventId: eventId,
+                    userId: user.id
+                )
+                
+                let eventRegistrationRequest: EventRegistrationRequest = EventRegistrationRequest(
+                    id: UUID().uuidString,
+                    eventId: eventId,
+                    userId: user.id,
+                    userPhone: phoneNumber,
+                    userName: fullname
+                )
+                
                 try await fetcher.registerEvent(request: eventRegistrationRequest)
+                completion()
             }
             catch {
-                
+                completion()
             }
-            completion()
         }
     }
     

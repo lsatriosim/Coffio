@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import Storage
+import SwiftUI
+import UIKit
 
 final class EventFetcher {
     func fetchEvent() async throws -> [DiscoverEventItem] {
@@ -42,5 +45,41 @@ final class EventFetcher {
             .from("event_registrations")
             .insert(request)
             .execute()
+    }
+    
+    func uploadPaymentProof(
+        image: Image,
+        eventId: String,
+        userId: String
+    ) async throws -> String {
+        guard let uiImage = await image.asUIImage(),
+              let imageData = uiImage.jpegData(compressionQuality: 0.8) else {
+            throw NSError(
+                domain: "ImageConversion",
+                code: 0,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "Failed to convert image"
+                ]
+            )
+        }
+        
+        let filePath = "\(eventId)/\(userId).jpg"
+        
+        try await supabaseClient.storage
+            .from("payment-proofs")
+            .upload(
+                filePath,
+                data: imageData,
+                options: FileOptions(
+                    contentType: "image/jpeg",
+                    upsert: true
+                )
+            )
+        
+        let publicURL = try supabaseClient.storage
+            .from("payment-proofs")
+            .getPublicURL(path: filePath)
+        
+        return publicURL.absoluteString
     }
 }

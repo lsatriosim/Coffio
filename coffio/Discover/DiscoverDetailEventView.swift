@@ -16,6 +16,15 @@ struct DiscoverDetailEventView: View {
     @State var showRegistrationSheet: Bool = false
     @EnvironmentObject var viewModel: DiscoverEventListViewModel
     
+    private var capacityLabel: String {
+        switch dataModel.registrationType {
+        case .internal:
+            "\(dataModel.participantRegistered)/\(dataModel.capacity)"
+        case .external:
+            "\(dataModel.capacity)"
+        }
+    }
+    
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView(.vertical) {
@@ -54,9 +63,9 @@ struct DiscoverDetailEventView: View {
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $showRegistrationSheet) {
-            EventRegistrationSheet(eventId: dataModel.id)
+            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo)
                 .environmentObject(viewModel)
-                .presentationDetents([.medium])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
         }
     }
@@ -91,7 +100,7 @@ struct DiscoverDetailEventView: View {
                 GeneralInfoCardItemView(
                     imageName: "person",
                     title: "Quota",
-                    value: "\(dataModel.participantRegistered)/\(dataModel.capacity)",
+                    value: capacityLabel,
                     subtitle: nil
                 )
                 
@@ -109,33 +118,30 @@ struct DiscoverDetailEventView: View {
                     .foregroundStyle(.primary)
             }
             
-            if let paymentInfo = dataModel.paymentInfo,
-               let bankName = paymentInfo.bankName,
-               let bankHolder = paymentInfo.bankHolder,
-               let bankAccount = paymentInfo.bankAccount {
-                GeneralInfoCardItemView(
-                    imageName: "mappin",
-                    title: "Payment Info",
-                    value: "\(bankName) \(bankAccount)",
-                    subtitle: bankHolder
-                )
-            }
-            
-            Button(action: {
-                showRegistrationSheet = true
-            }) {
-                HStack {
-                    Spacer()
-                    Text("Register")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                    Spacer()
+            if dataModel.registrationType == .internal || (dataModel.registrationType == .external && dataModel.externalRegistrationURL != nil) {
+                Button(action: {
+                    switch dataModel.registrationType {
+                    case .internal:
+                        showRegistrationSheet = true
+                    case .external:
+                        if let externalUrl: String = dataModel.externalRegistrationURL, let url: URL = URL(string: externalUrl) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                }) {
+                    HStack {
+                        Spacer()
+                        Text("Register")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                        Spacer()
+                    }
                 }
-            }
-            .padding()
-            .background {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(hex: "ad6928"))
+                .padding()
+                .background {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(hex: "ad6928"))
+                }
             }
         }
     }
