@@ -12,6 +12,8 @@ import SwiftUI
 final class DiscoverEventListViewModel: ObservableObject {
     @Published var events: [DiscoverEventItem] = []
     @Published var isLoading: Bool = false
+    @Published var isError: Bool = false
+    @Published var errorMessage: String = ""
     let authService: AuthenticationService = AuthenticationService.shared
     
     func onViewDidLoad() {
@@ -23,6 +25,7 @@ final class DiscoverEventListViewModel: ObservableObject {
     }
     
     func registerEvent(eventId: String, fullname: String, phoneNumber: String, paymentProofImage: Image, completion: @escaping () -> Void) {
+        isLoading = true
         guard let user = authService.user
         else {
             authService.showLoginPage()
@@ -46,10 +49,13 @@ final class DiscoverEventListViewModel: ObservableObject {
                 )
                 
                 try await fetcher.registerEvent(request: eventRegistrationRequest)
+                isLoading = false
                 completion()
             }
             catch {
-                completion()
+                isLoading = false
+                isError = true
+                errorMessage = "Server Error! Please try again"
             }
         }
     }

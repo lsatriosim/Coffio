@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: AuthViewModel = AuthViewModel()
 
     var body: some View {
@@ -17,6 +18,9 @@ struct LoginView: View {
                 ctaLabel: "Doesn't have an account?",
                 trailingText: "Get Started",
                 trailingAction: { viewModel.updateShowRegister(isPresented: true)
+                },
+                onCloseTray: {
+                    dismiss()
                 }
             )
             HStack(alignment: .center) {
@@ -43,7 +47,35 @@ struct LoginView: View {
             Spacer()
         }
         .fullScreenCover(isPresented: $viewModel.showRegister) {
-            RegisterView(viewModel: viewModel)
+            RegisterView(viewModel: viewModel, onDismissTray: {
+                dismiss()
+            })
+        }
+        .coffioPopup(isPresented: $viewModel.isError) {
+            VStack {
+                Text(viewModel.popUpErrorMessage)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .bold()
+                
+                Button(action: {
+                    viewModel.isError = false
+                }) {
+                    HStack {
+                        Text("Close")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                    }
+                    .padding(.vertical, 12.0)
+                    .padding(.horizontal, 16.0)
+                    .background {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(hex: "ad6928"))
+                            .shadow(color: .black.opacity(0.1), radius: 10)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
     

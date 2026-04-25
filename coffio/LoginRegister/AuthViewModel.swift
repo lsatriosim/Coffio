@@ -16,6 +16,8 @@ final class AuthViewModel: ObservableObject {
 
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var popUpErrorMessage: String = ""
+    @Published var isError: Bool = false
     @Published var showRegister: Bool = false
     
     func updateShowRegister(isPresented: Bool) {
@@ -29,6 +31,7 @@ final class AuthViewModel: ObservableObject {
         password = ""
         confirmPassword = ""
         errorMessage = nil
+        isError = false
     }
 
     func login() async {
@@ -38,7 +41,8 @@ final class AuthViewModel: ObservableObject {
         do {
             try await AuthenticationService.shared.login(email: email, password: password)
         } catch {
-            errorMessage = "username or email is invalid"
+            isError = true
+            popUpErrorMessage = "username or email is invalid"
         }
 
         isLoading = false
@@ -54,7 +58,8 @@ final class AuthViewModel: ObservableObject {
         do {
             try await AuthenticationService.shared.signUp(email: email, password: password)
         } catch {
-            errorMessage = error.localizedDescription
+            isError = true
+            popUpErrorMessage = "Failed to register. Please try again!"
         }
 
         isLoading = false

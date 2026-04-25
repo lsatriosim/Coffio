@@ -11,6 +11,7 @@ import SwiftUI
 struct RegisterView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: AuthViewModel
+    let onDismissTray: () -> Void
 
     var body: some View {
         VStack(spacing: -80.0) {
@@ -20,7 +21,8 @@ struct RegisterView: View {
                 trailingText: "Login",
                 trailingAction: {
                     viewModel.updateShowRegister(isPresented: false)
-                }
+                },
+                onCloseTray: onDismissTray
             )
             HStack(alignment: .center) {
                 Spacer()
@@ -139,5 +141,5 @@ struct RegisterView: View {
 }
 
 #Preview {
-    RegisterView(viewModel: AuthViewModel())
+    RegisterView(viewModel: AuthViewModel(), onDismissTray: {})
 }

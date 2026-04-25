@@ -70,10 +70,17 @@ struct EventRegistrationSheet: View {
                 }) {
                     HStack {
                         Spacer()
-                        Text("Confirm Registration")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .bold()
+                        if viewModel.isLoading {
+                            ProgressView().progressViewStyle(.circular)
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                        }
+                        else {
+                            Text("Confirm Registration")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .bold()
+                        }
                         Spacer()
                     }
                     .padding(.vertical, 16.0)
@@ -91,6 +98,32 @@ struct EventRegistrationSheet: View {
             }
         }
         .background(Color(hex: "f2efed"))
+        .coffioPopup(isPresented: $viewModel.isError) {
+            VStack {
+                Text(viewModel.errorMessage)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .bold()
+                
+                Button(action: {
+                    viewModel.isError = false
+                }) {
+                    HStack {
+                        Text("Close")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                    }
+                    .padding(.vertical, 12.0)
+                    .padding(.horizontal, 16.0)
+                    .background {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(hex: "ad6928"))
+                            .shadow(color: .black.opacity(0.1), radius: 10)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 
     @ViewBuilder

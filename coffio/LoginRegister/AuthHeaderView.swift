@@ -12,6 +12,7 @@ struct AuthHeaderView: View {
     let ctaLabel: String
     let trailingText: String
     let trailingAction: () -> Void
+    let onCloseTray: () -> Void
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -28,6 +29,16 @@ struct AuthHeaderView: View {
 
             VStack(alignment: .center, spacing: 36.0) {
                 HStack {
+                    Button(action: {
+                        onCloseTray()
+                    }) {
+                        Text("Close")
+                            .foregroundStyle(.white)
+                            .font(.footnote)
+                            .bold()
+                    }
+                    .padding(.leading, 8.0)
+                    
                     Spacer()
                     Text(ctaLabel)
                         .foregroundStyle(.white)
@@ -62,6 +73,8 @@ struct AuthHeaderView: View {
         trailingText: "dsds",
         trailingAction: {
             
+        },
+        onCloseTray: {
         }
     )
 }

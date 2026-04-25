@@ -50,36 +50,6 @@
             endingLineNumber = "85"
             landmarkName = "profileHeader"
             landmarkType = "24">
-            <Locations>
-               <Location
-                  uuid = "616C7CCD-9DF2-47A9-B0E6-8764433270E9 - 467e6013f412c7eb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI._ConditionalContent&lt;&lt;&lt;opaque return type of SwiftUI.View.clipShape&lt;&#x3c4;_0_0 where &#x3c4;_1_0: SwiftUI.Shape&gt;(_: &#x3c4;_1_0, style: SwiftUI.FillStyle) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of coffio.ProfileView.placeholderView : some&gt;&gt;.0&gt;, SwiftUI.Text, SwiftUI.Text)&gt; in coffio.ProfileView.profileHeader.getter : some"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Profile/ProfileView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "85"
-                  endingLineNumber = "85">
-               </Location>
-               <Location
-                  uuid = "616C7CCD-9DF2-47A9-B0E6-8764433270E9 - acb1d9ff83b31194"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (SwiftUI.AsyncImagePhase) -&gt; SwiftUI._ConditionalContent&lt;SwiftUI._ConditionalContent&lt;&lt;&lt;opaque return type of SwiftUI.View.scaledToFill() -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of coffio.ProfileView.placeholderView : some&gt;&gt;.0&gt;, &lt;&lt;opaque return type of coffio.ProfileView.placeholderView : some&gt;&gt;.0&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI._ConditionalContent&lt;&lt;&lt;opaque return type of SwiftUI.View.clipShape&lt;&#x3c4;_0_0 where &#x3c4;_1_0: SwiftUI.Shape&gt;(_: &#x3c4;_1_0, style: SwiftUI.FillStyle) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of coffio.ProfileView.placeholderView : some&gt;&gt;.0&gt;, SwiftUI.Text, SwiftUI.Text)&gt; in coffio.ProfileView.profileHeader.getter : some"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Profile/ProfileView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "86"
-                  endingLineNumber = "86">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -128,64 +98,6 @@
             endingLineNumber = "92"
             landmarkName = "fetchUserProfile()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - 88bfa13b430e4818"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(5) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "92"
-                  endingLineNumber = "92">
-               </Location>
-               <Location
-                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - a886ed19827b2225"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(8) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "92"
-                  endingLineNumber = "92">
-               </Location>
-               <Location
-                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - 63d97bb8acc9703c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "92"
-                  endingLineNumber = "92">
-               </Location>
-               <Location
-                  uuid = "2494E212-13E4-474C-8C55-7FF2F9A3603C - 1e8ab743fe9ebeab"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(10) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "92"
-                  endingLineNumber = "92">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -202,64 +114,6 @@
             endingLineNumber = "75"
             landmarkName = "fetchUserProfile()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 232c827d2ee2ae45"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "75"
-                  endingLineNumber = "75">
-               </Location>
-               <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - e8870b4c42b981b0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(6) await resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "75"
-                  endingLineNumber = "75">
-               </Location>
-               <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - f64e5cf977add619"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(7) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "75"
-                  endingLineNumber = "75">
-               </Location>
-               <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 63d97bb8acc9720f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "75"
-                  endingLineNumber = "75">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
