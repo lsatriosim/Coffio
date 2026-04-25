@@ -11,32 +11,31 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @EnvironmentObject var authService: AuthenticationService
     @Namespace private var animation // For the smooth sliding highlight
+    @SceneStorage("selectedTab") private var selectedTabIndex = 0
     
     var body: some View {
         ZStack(alignment: .bottom) {
             // MARK: - Main Content
             TabView(selection: $selectedTab) {
-                NavigationStack {
-                    HomeView()
+                Tab("Discover", systemImage: "cup.and.saucer", value: 0) {
+                    NavigationStack {
+                        HomeView()
+                    }
                 }
-                .tag(0)
-                .toolbar(.hidden, for: .tabBar) // Hide native bar
                 
-                Text("Connect View")
-                    .tag(1)
-                    .toolbar(.hidden, for: .tabBar)
+                Tab("Connect", systemImage: "bubble.left.and.bubble.right", value: 1) {
+                    Text("Connect View")
+                }
                 
-                Text("Spending Menu")
-                    .tag(2)
-                    .toolbar(.hidden, for: .tabBar)
+                Tab("Spending", systemImage: "wallet.bifold", value: 2) {
+                    Text("Spending Menu")
+                }
                 
-                ProfileView()
-                    .tag(3)
-                    .toolbar(.hidden, for: .tabBar)
+                Tab("Profile", systemImage: "person.circle", value: 3) {
+                    ProfileView()
+                }
             }
-            
-            // MARK: - Floating Glass Tab Bar
-            customFloatingTabBar
+            .tint(Color(hex: "ad6928"))
         }
         .fullScreenCover(isPresented: $authService.showAuthPage) {
             LoginView()

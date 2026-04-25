@@ -11,13 +11,15 @@ struct HomeView: View {
     @State var selectedCategory: Int = 0
     
     var body: some View {
-        VStack(spacing: 0.0) {
-            categoriesTab
-            .padding(.horizontal, 24.0)
-            
-            contentView
-            
-            Spacer()
+        ZStack(alignment: .bottom) {
+            VStack(spacing: 0.0) {
+                categoriesTab
+                .padding(.horizontal, 24.0)
+                
+                contentView
+                
+                Spacer()
+            }
         }
     }
     

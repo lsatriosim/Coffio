@@ -40,23 +40,36 @@ struct DiscoverDetailView: View {
                 }
             }
             
-            HStack {
-                DiscoverTopButtonView(iconName: "chevron.left") {
-                    dismiss()
-                }
-                Spacer()
-                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
-                    
-                }
-                DiscoverTopButtonView(iconName: "heart") {
-                    
-                }
-            }
-            .padding(.horizontal, 24.0)
-            .padding(.top, 72.0)
+//            HStack {
+//                DiscoverTopButtonView(iconName: "chevron.left") {
+//                    dismiss()
+//                }
+//                Spacer()
+//                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
+//                    
+//                }
+//                DiscoverTopButtonView(iconName: "heart") {
+//                    
+//                }
+//            }
+//            .padding(.horizontal, 24.0)
+//            .padding(.top, 72.0)
         }
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden()
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(.black)
+                }
+            }
+        }
     }
     
     var content: some View {
@@ -152,27 +165,6 @@ private struct DiscoverDetailItemView: View {
             Text(text)
             Spacer()
         }
-    }
-}
-
-private struct DiscoverTopButtonView: View {
-    let iconName: String
-    let onClick: () -> Void
-    
-    var body: some View {
-        Button(action: onClick) {
-            Image(systemName: iconName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundStyle(.black)
-        }
-        .padding(8.0)
-        .frame(width: 36.0, height: 36.0)
-        .background(
-            Circle()
-                .fill(.white)
-                .shadow(color: .black.opacity(0.3), radius: 12.0)
-        )
     }
 }
 

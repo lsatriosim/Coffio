@@ -14,7 +14,7 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationStack {
-            Group {
+            ZStack(alignment: .bottom) {
                 if viewModel.isLoggedIn {
                     ScrollView {
                         VStack(spacing: 24) {

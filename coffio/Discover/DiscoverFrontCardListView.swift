@@ -32,23 +32,24 @@ struct DiscoverFrontCardListView: View {
             else if !viewModel.isLoading && viewModel.coffeeShop.isEmpty {
                 DiscoverEmptyStateView()
             }
-            
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                    
-                    if viewModel.isLoading {
-                        ForEach(0..<6) { _ in
-                            DiscoverFrontCardSkeletonView()
+            else {
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                        
+                        if viewModel.isLoading {
+                            ForEach(0..<6) { _ in
+                                DiscoverFrontCardSkeletonView()
+                            }
+                        }
+                        else {
+                            ForEach(viewModel.coffeeShop, id: \.id) { coffeeShop in
+                                DiscoverFrontCardView(dataModel: coffeeShop)
+                            }
                         }
                     }
-                    else {
-                        ForEach(viewModel.coffeeShop, id: \.id) { coffeeShop in
-                            DiscoverFrontCardView(dataModel: coffeeShop)
-                        }
-                    }
+                    .padding(.horizontal, 20.0)
+                    .padding(.top, 8)
                 }
-                .padding(.horizontal, 20.0)
-                .padding(.top, 8)
             }
         }
         .task() {
