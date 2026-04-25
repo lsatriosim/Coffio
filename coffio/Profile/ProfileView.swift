@@ -9,60 +9,52 @@
 import SwiftUI
 
 struct ProfileView: View {
+    let authService: AuthenticationService = .shared
     @StateObject var viewModel: ProfileViewModel = ProfileViewModel()
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    
-                    // MARK: - Profile Header
-                    profileHeader
-                    .padding(.top, 40)
-                    
-                    
-                    // MARK: - Settings Section
-                    VStack(spacing: 0) {
-                        
-                        SettingsRow(
-                            icon: "person.circle",
-                            title: "Edit Profile",
-                            onClick: {
-                                viewModel.showEditProfile = true
+            Group {
+                if viewModel.isLoggedIn {
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            
+                            // MARK: - Profile Header
+                            profileHeader
+                            .padding(.top, 40)
+                            
+                            
+                            // MARK: - Settings Section
+                            VStack(spacing: 0) {
+                                
+                                SettingsRow(
+                                    icon: "person.circle",
+                                    title: "Edit Profile",
+                                    onClick: {
+                                        viewModel.showEditProfile = true
+                                    }
+                                )
+                                Divider()
+                                SettingsRow(
+                                    icon: "arrow.right.square",
+                                    title: "Logout",
+                                    color: .red,
+                                    onClick: { viewModel.onLogoutButtonDidTap() }
+                                )
                             }
-                        )
-//                        Divider()
-//                        SettingsRow(
-//                            icon: "lock.circle",
-//                            title: "Change Password",
-//                            onClick: {
-//
-//                            }
-//                        )
-//                        Divider()
-//                        SettingsRow(
-//                            icon: "bell.circle",
-//                            title: "Notifications",
-//                            onClick: {
-//
-//                            }
-//                        )
-                        Divider()
-                        SettingsRow(
-                            icon: "arrow.right.square",
-                            title: "Logout",
-                            color: .red,
-                            onClick: { viewModel.onLogoutButtonDidTap() }
-                        )
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(.systemBackground))
+                                    .shadow(color: .black.opacity(0.05), radius: 5)
+                            )
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                        }
                     }
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemBackground))
-                            .shadow(color: .black.opacity(0.05), radius: 5)
-                    )
-                    .padding(.horizontal)
-                    
-                    Spacer()
+                }
+                else {
+                    notLoggedInView
                 }
             }
             .navigationTitle("Profile")
@@ -122,6 +114,51 @@ struct ProfileView: View {
                     .font(.system(size: 40, weight: .bold))
                     .foregroundColor(.blue)
             )
+    }
+    
+    private var notLoggedInView: some View {
+        VStack(spacing: 32) {
+            Spacer()
+            
+            // Illustration or Icon
+            Image(systemName: "person.crop.circle.badge.questionmark")
+                .font(.system(size: 80))
+                .foregroundStyle(Color(hex: "ad6928").opacity(0.8))
+            
+            VStack(spacing: 12) {
+                Text("Join the Community")
+                    .font(.title2)
+                    .bold()
+                
+                Text("Log in to manage your profile, track your events, and enjoy the full Coffio experience.")
+                    .font(.body)
+                    .foregroundStyle(.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+            }
+        
+            Button(action: {
+                authService.showLoginPage()
+            }) {
+                HStack {
+                    Spacer()
+                    Text("Login or Sign Up")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .bold()
+                    Spacer()
+                }
+                .padding(.vertical, 16.0)
+                .background {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(hex: "ad6928"))
+                        .shadow(color: .black.opacity(0.1), radius: 10)
+                }
+            }
+            .padding(.horizontal, 24)
+            
+            Spacer()
+        }
     }
 }
 

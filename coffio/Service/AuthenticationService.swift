@@ -40,10 +40,6 @@ final class AuthenticationService: ObservableObject {
     init() {
         Task {
             await fetchUserProfile()
-            
-            if self.user == nil {
-                showAuthPage = true
-            }
         }
     }
     
@@ -55,6 +51,7 @@ final class AuthenticationService: ObservableObject {
     
     func logout() async throws {
         try await supabaseClient.auth.signOut()
+        user = nil
         
         showAuthPage = true
     }

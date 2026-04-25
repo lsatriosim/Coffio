@@ -140,10 +140,17 @@ struct LoginView: View {
                 } label: {
                     HStack {
                         Spacer()
-                        Text("Sign in")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .bold()
+                        if viewModel.isLoading {
+                            ProgressView().progressViewStyle(.circular)
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                        }
+                        else {
+                            Text("Sign in")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .bold()
+                        }
                         Spacer()
                     }
                     .padding(.vertical, 16.0)

@@ -52,9 +52,9 @@ struct DiscoverDetailEventView: View {
                     dismiss()
                 }
                 Spacer()
-                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
-                    
-                }
+//                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
+//                    
+//                }
             }
             .padding(.horizontal, 24.0)
             .padding(.top, 72.0)
@@ -120,6 +120,10 @@ struct DiscoverDetailEventView: View {
             
             if dataModel.registrationType == .internal || (dataModel.registrationType == .external && dataModel.externalRegistrationURL != nil) {
                 Button(action: {
+                    guard viewModel.authService.user != nil else {
+                        viewModel.authService.showLoginPage()
+                        return
+                    }
                     switch dataModel.registrationType {
                     case .internal:
                         showRegistrationSheet = true
@@ -256,9 +260,20 @@ private struct DiscoverTopButtonView: View {
         .frame(width: 36.0, height: 36.0)
         .background(
             Circle()
-                .fill(.white)
-                .shadow(color: .black.opacity(0.3), radius: 12.0)
+                .fill(.ultraThinMaterial)
         )
+        .overlay {
+            Circle()
+                .stroke(
+                    LinearGradient(
+                        colors: [.white.opacity(0.6), .clear],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        }
+        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
     }
 }
 

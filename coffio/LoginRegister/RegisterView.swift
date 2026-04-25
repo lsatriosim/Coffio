@@ -120,10 +120,17 @@ struct RegisterView: View {
                 }) {
                     HStack {
                         Spacer()
-                        Text("Sign Up")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .bold()
+                        if viewModel.isLoading {
+                            ProgressView().progressViewStyle(.circular)
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                        }
+                        else {
+                            Text("Sign Up")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .bold()
+                        }
                         Spacer()
                     }
                     .padding(.vertical, 16.0)

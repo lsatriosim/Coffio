@@ -16,6 +16,8 @@ final class ProfileViewModel: ObservableObject {
     @Published var imageUrl: String? = nil
     @Published var email: String = ""
     @Published var fullName: String = ""
+    @Published var isLoggedIn: Bool = false
+    @Published var isLoading: Bool = false
     
     func onViewDidLoad() {
         if let user = authenticationService.user {
@@ -23,9 +25,10 @@ final class ProfileViewModel: ObservableObject {
             initialName = "\(String(user.fullName.prefix(1)).uppercased())"
             fullName = user.fullName
             email = user.email
+            isLoggedIn = true
         }
         else {
-            authenticationService.showLoginPage()
+            isLoggedIn = false
         }
     }
     
@@ -33,6 +36,7 @@ final class ProfileViewModel: ObservableObject {
         Task {
             do {
                 try await authenticationService.logout()
+                isLoggedIn = false
             }
             catch {
                 print(error)
