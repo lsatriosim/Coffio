@@ -53,6 +53,25 @@ struct DiscoverCoffeeShopItemDataModel {
         self.reviews = reviews
     }
     
+    init(dataModel: DiscoverCoffeeShopItemDataModel, reviews: [DiscoverCoffeeShopReview]) {
+        self.id = dataModel.id
+        self.name = dataModel.name
+        self.description = dataModel.description
+        self.address = dataModel.address
+        self.latitude = dataModel.latitude
+        self.longitude = dataModel.longitude
+        self.imageUrl = dataModel.imageUrl
+        self.instagramUrl = dataModel.instagramUrl
+        self.mapUrl = dataModel.mapUrl
+        self.priceMin = dataModel.priceMin
+        self.priceMax = dataModel.priceMax
+        self.facilities = dataModel.facilities
+        self.distanceLabel = dataModel.distanceLabel
+        self.distance = dataModel.distance
+        self.images = dataModel.images
+        self.reviews = reviews
+    }
+    
     func getPriceRangeLabel() -> String? {
         guard let priceMin, let priceMax else {
             return nil

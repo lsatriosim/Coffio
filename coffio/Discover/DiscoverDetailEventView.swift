@@ -46,18 +46,6 @@ struct DiscoverDetailEventView: View {
                     Spacer()
                 }
             }
-            
-            HStack {
-                DiscoverTopButtonView(iconName: "chevron.left") {
-                    dismiss()
-                }
-                Spacer()
-//                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
-//                    
-//                }
-            }
-            .padding(.horizontal, 24.0)
-            .padding(.top, 72.0)
         }
         .background(Color(hex: "f2efed"))
         .ignoresSafeArea(edges: .top)
@@ -67,6 +55,19 @@ struct DiscoverDetailEventView: View {
                 .environmentObject(viewModel)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(.black)
+                }
+            }
         }
     }
     
@@ -242,38 +243,6 @@ private struct DiscoverDetailItemView: View {
             Text(text)
             Spacer()
         }
-    }
-}
-
-private struct DiscoverTopButtonView: View {
-    let iconName: String
-    let onClick: () -> Void
-    
-    var body: some View {
-        Button(action: onClick) {
-            Image(systemName: iconName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundStyle(.black)
-        }
-        .padding(8.0)
-        .frame(width: 36.0, height: 36.0)
-        .background(
-            Circle()
-                .fill(.ultraThinMaterial)
-        )
-        .overlay {
-            Circle()
-                .stroke(
-                    LinearGradient(
-                        colors: [.white.opacity(0.6), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1
-                )
-        }
-        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
     }
 }
 

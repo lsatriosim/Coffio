@@ -18,6 +18,18 @@ final class CoffeeShopFetcher {
         return try decoder.decode([DiscoverCoffeeShopItem].self, from: response.data)
     }
     
+    func fetchCoffeeShopDetail(id: String) async throws -> DiscoverCoffeeShopItem {
+        let response = try await supabaseClient
+            .from("coffee_shops")
+            .select()
+            .eq("id", value: id)
+            .single()
+            .execute()
+        
+        let decoder = JSONDecoder()
+        return try decoder.decode(DiscoverCoffeeShopItem.self, from: response.data)
+    }
+    
     func fetchCoffeeShopImage(shopId: String) async throws -> [DiscoverCoffeeShopImage] {
         do {
             let response = try await supabaseClient
@@ -71,5 +83,12 @@ final class CoffeeShopFetcher {
             print("[Fetch Review]: \(error)")
             return []
         }
+    }
+    
+    func postCoffeeShopReview(request: DiscoverCoffeeShopReviewRequest) async throws {
+        try await supabaseClient
+            .from("cafe_reviews")
+            .insert(request)
+            .execute()
     }
 }

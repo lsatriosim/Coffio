@@ -14,7 +14,9 @@ struct DiscoverFrontCardView: View {
     let dataModel: DiscoverCoffeeShopItemDataModel
     var body: some View {
         NavigationLink {
-            DiscoverDetailView(dataModel: dataModel)
+            let detailViewModel: DiscoverDetailCafeViewModel = .init(coffeeShop: dataModel)
+            
+            DiscoverDetailView(viewModel: detailViewModel)
         } label: {
             VStack(alignment: .leading, spacing: 8.0) {
                 ZStack(alignment: .topLeading) {

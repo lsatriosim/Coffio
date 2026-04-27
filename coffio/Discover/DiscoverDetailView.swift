@@ -11,19 +11,19 @@ private let kImageHeight: CGFloat = 320.0
 
 struct DiscoverDetailView: View {
     @Environment(\.dismiss) private var dismiss
-    let dataModel: DiscoverCoffeeShopItemDataModel
+    let viewModel: DiscoverDetailCafeViewModel
     
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView(.vertical) {
                 VStack(alignment: .leading, spacing: 0.0) {
                     ZStack(alignment: .topLeading) {
-                        if dataModel.imageUrls.isEmpty {
+                        if viewModel.coffeeShop.imageUrls.isEmpty {
                             placeholderView
                         }
                         else {
                             TabView {
-                                ForEach(Array(dataModel.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
+                                ForEach(Array(viewModel.coffeeShop.imageUrls.enumerated()), id: \.offset) { index, imageUrl in
                                     carouselItem(imageUrl: imageUrl)
                                 }
                             }
@@ -39,21 +39,6 @@ struct DiscoverDetailView: View {
                     Spacer()
                 }
             }
-            
-//            HStack {
-//                DiscoverTopButtonView(iconName: "chevron.left") {
-//                    dismiss()
-//                }
-//                Spacer()
-//                DiscoverTopButtonView(iconName: "square.and.arrow.up") {
-//                    
-//                }
-//                DiscoverTopButtonView(iconName: "heart") {
-//                    
-//                }
-//            }
-//            .padding(.horizontal, 24.0)
-//            .padding(.top, 72.0)
         }
         .ignoresSafeArea(edges: .top)
         .navigationBarBackButtonHidden()
@@ -74,24 +59,24 @@ struct DiscoverDetailView: View {
     
     var content: some View {
         VStack(alignment: .leading, spacing: 12.0) {
-            Text(dataModel.name)
+            Text(viewModel.coffeeShop.name)
                 .font(.title)
             VStack(alignment: .leading, spacing: 4.0) {
-                if !dataModel.reviews.isEmpty {
-                    Text("★ \(dataModel.getAverageReviews(), specifier: "%.1f") ‧ \(dataModel.reviews.count) review(s)")
+                if !viewModel.coffeeShop.reviews.isEmpty {
+                    Text("★ \(viewModel.coffeeShop.getAverageReviews(), specifier: "%.1f") ‧ \(viewModel.coffeeShop.reviews.count) review(s)")
                         .foregroundStyle(Color(hex: "563122"))
                 }
-                if let description = dataModel.description {
+                if let description = viewModel.coffeeShop.description {
                     Text(description)
                 }
             }
     
             VStack(alignment: .leading, spacing: 20.0) {
-                DiscoverDetailFacilitiesSectionView(facilities: dataModel.facilities.filter { $0 != .unknown })
+                DiscoverDetailFacilitiesSectionView(facilities: viewModel.coffeeShop.facilities.filter { $0 != .unknown })
                 
-                DiscoverDetailGeneralInfoSectionView(address: dataModel.address)
+                DiscoverDetailGeneralInfoSectionView(address: viewModel.coffeeShop.address)
                 
-                if let mapUrl = dataModel.mapUrl {
+                if let mapUrl = viewModel.coffeeShop.mapUrl {
                     Button(action: {
                         if let url: URL = URL(string: mapUrl) {
                             UIApplication.shared.open(url)
@@ -114,7 +99,8 @@ struct DiscoverDetailView: View {
                     }
                 }
                 
-                DiscoverDetailReviewView(reviews: dataModel.reviews)
+                DiscoverDetailReviewView()
+                .environmentObject(viewModel)
             }
         }
     }
@@ -169,5 +155,5 @@ private struct DiscoverDetailItemView: View {
 }
 
 #Preview {
-    DiscoverDetailView(dataModel: .init(coffeeShopItem: discoverCoffeeShopItemMock[0]))
+    DiscoverDetailView(viewModel: .init(coffeeShop: .init(coffeeShopItem: discoverCoffeeShopItemMock[0])))
 }

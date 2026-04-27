@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct DiscoverDetailReviewView: View {
-    let reviews: [DiscoverCoffeeShopReview]
     private var reviewsShown: [DiscoverCoffeeShopReview] {
-        reviews.filter { $0.comment != nil }
+        detailViewModel.coffeeShop.reviews.filter { $0.comment != nil }
     }
+    let authService: AuthenticationService = .shared
+    @State private var showReviewSheet: Bool = false
+    @EnvironmentObject private var detailViewModel: DiscoverDetailCafeViewModel
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8.0) {
             Text("Reviews")
@@ -27,6 +30,31 @@ struct DiscoverDetailReviewView: View {
                     DiscoverDetailReviewCardView(dataModel: review)
                 }
             }
+            Button(action: {
+                guard authService.user != nil else {
+                    authService.showLoginPage()
+                    return
+                }
+                showReviewSheet = true
+            }) {
+                HStack {
+                    Spacer()
+                    Text("Add Review")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                    Image(systemName: "star.bubble")
+                        .foregroundStyle(.white)
+                    Spacer()
+                }
+            }
+            .padding()
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(hex: "ad6928"))
+            }
+        }
+        .sheet(isPresented: $showReviewSheet) {
+            DiscoverReviewSheet(detailViewModel: detailViewModel)
         }
     }
 }
@@ -64,7 +92,7 @@ private struct DiscoverDetailReviewCardView: View {
                     .foregroundStyle(Color(hex: "642e13"))
                     .font(.callout)
                 Spacer()
-                Text("\(dataModel.rating, specifier: "★ %.0f")")
+                Text("\(dataModel.rating)★")
                     .foregroundStyle(Color(hex: "642e13"))
                     .font(.callout)
             }
@@ -95,23 +123,4 @@ private struct DiscoverDetailReviewCardView: View {
                     .foregroundStyle(Color(hex: "b17e54"))
             )
     }
-}
-
-#Preview {
-    DiscoverDetailReviewView(
-        reviews: [.init(
-            id: "123",
-            coffeeShopId: "123",
-            user: .init(
-                id: "123",
-                username: "Liefran",
-                avatarUrl: nil,
-                fullName: "Liefran Satrio Sim",
-                email: "Liefran123@gmail.com"
-            ),
-            rating: 5,
-            comment: "Such a nice place",
-            createdAt: .now
-        )]
-    )
 }
