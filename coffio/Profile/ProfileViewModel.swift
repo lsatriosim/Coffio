@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 final class ProfileViewModel: ObservableObject {
     let authenticationService: AuthenticationService = .shared
+    private var cancellables = Set<AnyCancellable>()
     @Published var showEditProfile: Bool = false
     
     @Published var initialName: String = ""
@@ -18,6 +20,12 @@ final class ProfileViewModel: ObservableObject {
     @Published var fullName: String = ""
     @Published var isLoggedIn: Bool = false
     @Published var isLoading: Bool = false
+    
+    @Published var isLogoutLoading: Bool = false
+    
+    init() {
+        setupUserObserver()
+    }
     
     func onViewDidLoad() {
         if let user = authenticationService.user {
@@ -32,15 +40,45 @@ final class ProfileViewModel: ObservableObject {
         }
     }
     
-    func onLogoutButtonDidTap() {
+    func onLogoutButtonDidTap(completion: @escaping () -> Void) {
+        isLogoutLoading = true
         Task {
             do {
                 try await authenticationService.logout()
-                isLoggedIn = false
+                isLogoutLoading = false
+                completion()
             }
             catch {
+                isLogoutLoading = false
                 print(error)
             }
+        }
+    }
+}
+
+private extension ProfileViewModel {
+    private func setupUserObserver() {
+        authenticationService.$user
+            .receive(on: RunLoop.main)
+            .sink { [weak self] user in
+                self?.updateUI(with: user)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateUI(with user: ProfileUser?) {
+        if let user = user {
+            self.imageUrl = user.avatarUrl
+            self.initialName = String(user.fullName.prefix(1)).uppercased()
+            self.fullName = user.fullName
+            self.email = user.email
+            self.isLoggedIn = true
+        } else {
+            self.isLoggedIn = false
+            self.initialName = ""
+            self.fullName = ""
+            self.email = ""
+            self.imageUrl = nil
         }
     }
 }
