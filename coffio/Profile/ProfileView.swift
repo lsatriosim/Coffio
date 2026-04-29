@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import _PhotosUI_SwiftUI
 
 struct ProfileView: View {
     let authService: AuthenticationService = .shared
@@ -135,30 +136,37 @@ struct ProfileView: View {
     
     var profileHeader: some View {
         HStack(spacing: 20) {
-            ZStack(alignment: .bottomTrailing) {
-                if let imageUrl = viewModel.imageUrl, let url = URL(string: imageUrl) {
-                    AsyncImage(url: url) { phase in
-                        if let image = phase.image {
-                            image.resizable().scaledToFill()
-                        } else {
-                            placeholderCircle
+            PhotosPicker(selection: $viewModel.selectedItem, matching: .images) {
+                ZStack(alignment: .bottomTrailing) {
+                    if viewModel.isLoadingImage {
+                        ProgressView()
+                            .frame(width: 80, height: 80)
+                            .background(Circle().fill(Color.gray.opacity(0.1)))
+                    } else if let imageUrl = viewModel.imageUrl, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { phase in
+                            if let image = phase.image {
+                                image.resizable().scaledToFill()
+                            } else {
+                                placeholderCircle
+                            }
                         }
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                    } else {
+                        placeholderCircle
                     }
-                    .frame(width: 80, height: 80)
-                    .clipShape(Circle())
-                } else {
-                    placeholderCircle
+                    
+                    // Camera Icon overlay
+                    Image(systemName: "camera.fill")
+                        .font(.caption2)
+                        .padding(5)
+                        .background(Color(hex: "ad6928"))
+                        .foregroundColor(.white)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
                 }
-                
-                // Camera Icon overlay
-                Image(systemName: "camera.fill")
-                    .font(.caption2)
-                    .padding(5)
-                    .background(Color(hex: "ad6928"))
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
             }
+            .buttonStyle(.plain)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(viewModel.fullName)

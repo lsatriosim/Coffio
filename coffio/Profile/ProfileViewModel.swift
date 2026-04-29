@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import _PhotosUI_SwiftUI
 
 @MainActor
 final class ProfileViewModel: ObservableObject {
@@ -20,8 +21,16 @@ final class ProfileViewModel: ObservableObject {
     @Published var fullName: String = ""
     @Published var isLoggedIn: Bool = false
     @Published var isLoading: Bool = false
+    @Published var isLoadingImage: Bool = false
     
     @Published var isLogoutLoading: Bool = false
+    @Published var selectedItem: PhotosPickerItem? = nil {
+        didSet {
+            if let selectedItem {
+                onProfileImageSelected(item: selectedItem)
+            }
+        }
+    }
     
     init() {
         setupUserObserver()
@@ -79,6 +88,25 @@ private extension ProfileViewModel {
             self.fullName = ""
             self.email = ""
             self.imageUrl = nil
+        }
+    }
+    
+    private func onProfileImageSelected(item: PhotosPickerItem) {
+        Task {
+            isLoadingImage = true
+            defer { isLoadingImage = false }
+            
+            do {
+                // Convert picker item to Data
+                if let data = try await item.loadTransferable(type: Data.self) {
+                    try await authenticationService.uploadAvatar(data: data)
+                }
+            } catch {
+                print("Failed to upload avatar: \(error)")
+            }
+            
+            // Reset the picker selection
+            self.selectedItem = nil
         }
     }
 }

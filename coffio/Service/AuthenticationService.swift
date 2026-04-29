@@ -104,4 +104,37 @@ final class AuthenticationService: ObservableObject {
         // Refresh local user state so all observing ViewModels update
         await fetchUserProfile()
     }
+    
+    func uploadAvatar(data: Data) async throws {
+        let session = try await supabaseClient.auth.session
+        let userId = session.user.id.uuidString
+        
+        // 1. Define file path (e.g., profiles/USER_ID/avatar.jpg)
+        // Using a timestamp or "avatar" with upsert ensures we manage storage efficiently
+        let filePath = "\(userId)/avatar.jpg"
+        
+        // 2. Upload to Supabase Storage bucket "profile_images"
+        _ = try await supabaseClient.storage
+            .from("profile_images")
+            .upload(
+                filePath,
+                data: data,
+                options: FileOptions(contentType: "image/jpeg", upsert: true)
+            )
+        
+        // 3. Get the Public URL
+        let publicURL = try supabaseClient.storage
+            .from("profile_images")
+            .getPublicURL(path: filePath)
+        
+        // 4. Update the avatar_url in the profiles table
+        try await supabaseClient
+            .from("profiles")
+            .update(["avatar_url": publicURL.absoluteString])
+            .eq("id", value: userId)
+            .execute()
+        
+        // 5. Refresh user profile to sync the UI
+        await fetchUserProfile()
+    }
 }
