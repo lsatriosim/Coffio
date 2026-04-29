@@ -89,4 +89,19 @@ final class AuthenticationService: ObservableObject {
             self.user = nil
         }
     }
+    
+    func updateProfile(fullName: String) async throws {
+        let session = try await supabaseClient.auth.session
+        let userId = session.user.id.uuidString
+        
+        // Update Supabase
+        try await supabaseClient
+            .from("profiles")
+            .update(["full_name": fullName])
+            .eq("id", value: userId)
+            .execute()
+        
+        // Refresh local user state so all observing ViewModels update
+        await fetchUserProfile()
+    }
 }

@@ -126,6 +126,9 @@ struct ProfileView: View {
                 }
             }
         }
+        .sheet(isPresented: $viewModel.showEditProfile) {
+            EditProfileView()
+        }
     }
     
     // MARK: - Subviews
