@@ -52,6 +52,38 @@ struct ProfileView: View {
                             }
                             .padding(.horizontal)
                             
+                            // MARK: - Feature Section
+                            VStack(alignment: .leading, spacing: 12) {
+                                sectionHeader("Feature")
+                                
+                                VStack(spacing: 0) {
+                                    NavigationLink(destination: UserRegistrationListView()) {
+                                        HStack(spacing: 16) {
+                                            Image(systemName: "person.3")
+                                                .font(.system(size: 18))
+                                                .foregroundColor(Color(hex: "ad6928"))
+                                                .frame(width: 24)
+                                            
+                                            Text("My Event")
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                            
+                                            Spacer()
+                                            
+                                            Image(systemName: "chevron.right")
+                                                .font(.caption)
+                                                .foregroundColor(.gray)
+                                        }
+                                        .padding(.vertical, 16)
+                                        .padding(.horizontal, 16)
+                                        .background(Color.white.opacity(0.001))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .background(RoundedCardBackground())
+                            }
+                            .padding(.horizontal)
+                            
                             // MARK: - Support Section
                             VStack(alignment: .leading, spacing: 12) {
                                 sectionHeader("Support")

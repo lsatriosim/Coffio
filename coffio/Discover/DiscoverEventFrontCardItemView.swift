@@ -14,8 +14,7 @@ struct DiscoverEventFrontCardItemView: View {
     
     var body: some View {
         NavigationLink {
-            DiscoverDetailEventView(dataModel: dataModel)
-                .environmentObject(viewModel)
+            DiscoverDetailEventView(eventId: dataModel.id)
         } label: {
             VStack(alignment: .leading, spacing: 8.0) {
                 ZStack(alignment: .topLeading) {

@@ -11,83 +11,87 @@ private let kImageHeight: CGFloat = 320.0
 
 struct DiscoverDetailEventView: View {
     @Environment(\.dismiss) private var dismiss
-    let dataModel: DiscoverEventItem
     
     @State var showRegistrationSheet: Bool = false
-    @EnvironmentObject var viewModel: DiscoverEventListViewModel
     
-    private var capacityLabel: String {
-        switch dataModel.registrationType {
-        case .internal:
-            "\(dataModel.participantRegistered)/\(dataModel.capacity)"
-        case .external:
-            "\(dataModel.capacity)"
-        }
+    @StateObject private var viewModel: DiscoverDetailEventViewModel
+
+    init(eventId: String, event: DiscoverEventItem? = nil) {
+        _viewModel = StateObject(wrappedValue: DiscoverDetailEventViewModel(eventId: eventId, initialEvent: event))
     }
     
     var body: some View {
         ZStack(alignment: .top) {
-            ScrollView(.vertical) {
-                VStack(alignment: .leading, spacing: 0.0) {
-                    ZStack(alignment: .topLeading) {
-                        if let imageUrl = dataModel.imageUrl {
-                            carouselItem(imageUrl: imageUrl)
-                            .frame(height: kImageHeight)
-                        }
-                        else {
-                            placeholderView
-                        }
-                    }
-                    .frame(height: kImageHeight)
-                    
-                    content
-                        .padding(.horizontal, 24.0)
-                        .padding(.top, 24.0)
-                    Spacer()
-                }
+            Color(hex: "f2efed").ignoresSafeArea()
+            
+            if let dataModel = viewModel.event {
+                renderContent(dataModel)
+            } else if viewModel.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if viewModel.isError {
+                Text("Failed to load event details.")
+                    .foregroundStyle(.secondary)
             }
         }
-        .background(Color(hex: "f2efed"))
-        .ignoresSafeArea(edges: .top)
-        .navigationBarBackButtonHidden()
-        .sheet(isPresented: $showRegistrationSheet) {
-            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo)
-                .environmentObject(viewModel)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.hidden)
+        .task {
+            await viewModel.fetchEventDetails()
         }
+        .navigationBarBackButtonHidden()
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
                         .foregroundStyle(.black)
                 }
             }
         }
     }
     
-    var content: some View {
+    @ViewBuilder
+    private func renderContent(_ dataModel: DiscoverEventItem) -> some View {
+        ScrollView(.vertical) {
+            VStack(alignment: .leading, spacing: 0.0) {
+                ZStack(alignment: .topLeading) {
+                    if let imageUrl = dataModel.imageUrl {
+                        carouselItem(imageUrl: imageUrl)
+                    } else {
+                        placeholderView
+                    }
+                }
+                .frame(height: kImageHeight)
+
+                content(dataModel)
+                    .padding(.horizontal, 24.0)
+                    .padding(.top, 24.0)
+                
+                Spacer()
+            }
+        }
+        .ignoresSafeArea(edges: .top)
+        .sheet(isPresented: $showRegistrationSheet) {
+            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo)
+                .environmentObject(viewModel)
+                .presentationDetents([.large])
+        }
+    }
+
+    // Pass dataModel into the existing content view logic
+    private func content(_ dataModel: DiscoverEventItem) -> some View {
         VStack(alignment: .leading, spacing: 12.0) {
             Text(dataModel.title)
                 .font(.title)
                 .foregroundStyle(Color(hex: "642e13"))
                 .bold()
-            
+
             GeneralInfoCardItemView(
                 imageName: "calendar",
                 title: "Date",
-                value: DateFormatterUtil.formatDateRange(
-                    start: dataModel.eventDate,
-                    end: dataModel.endDate
-                ),
+                value: DateFormatterUtil.formatDateRange(start: dataModel.eventDate, end: dataModel.endDate),
                 subtitle: nil
             )
-            
+
             if let cafeName = dataModel.cafeName, let location = dataModel.location {
                 GeneralInfoCardItemView(
                     imageName: "mappin",
@@ -96,15 +100,16 @@ struct DiscoverDetailEventView: View {
                     subtitle: location
                 )
             }
-            
+
             HStack(alignment: .center, spacing: 8.0) {
                 GeneralInfoCardItemView(
                     imageName: "person",
                     title: "Quota",
-                    value: capacityLabel,
+                    value: dataModel.registrationType == .internal ?
+                        "\(dataModel.participantRegistered)/\(dataModel.capacity)" : "\(dataModel.capacity)",
                     subtitle: nil
                 )
-                
+
                 GeneralInfoCardItemView(
                     imageName: "dollarsign.circle",
                     title: "Price",
@@ -112,40 +117,31 @@ struct DiscoverDetailEventView: View {
                     subtitle: nil
                 )
             }
-            
+
             if let description = dataModel.description {
                 Text(description)
                     .font(.body)
                     .foregroundStyle(.primary)
             }
-            
-            if dataModel.registrationType == .internal || (dataModel.registrationType == .external && dataModel.externalRegistrationURL != nil) {
+
+            if (dataModel.registrationType == .internal && !viewModel.isAlreadyRegistered) || (dataModel.registrationType == .external && dataModel.externalRegistrationURL != nil) {
                 Button(action: {
                     guard viewModel.authService.user != nil else {
                         viewModel.authService.showLoginPage()
                         return
                     }
-                    switch dataModel.registrationType {
-                    case .internal:
+                    if dataModel.registrationType == .internal {
                         showRegistrationSheet = true
-                    case .external:
-                        if let externalUrl: String = dataModel.externalRegistrationURL, let url: URL = URL(string: externalUrl) {
-                            UIApplication.shared.open(url)
-                        }
+                    } else if let urlStr = dataModel.externalRegistrationURL, let url = URL(string: urlStr) {
+                        UIApplication.shared.open(url)
                     }
                 }) {
-                    HStack {
-                        Spacer()
-                        Text("Register")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                        Spacer()
-                    }
-                }
-                .padding()
-                .background {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(hex: "ad6928"))
+                    Text("Register")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "ad6928")))
                 }
             }
         }
@@ -244,8 +240,4 @@ private struct DiscoverDetailItemView: View {
             Spacer()
         }
     }
-}
-
-#Preview {
-    DiscoverDetailEventView(dataModel: discoverEventMock[0])
 }

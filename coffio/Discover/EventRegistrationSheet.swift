@@ -20,7 +20,7 @@ struct EventRegistrationSheet: View {
     
     @State private var showPhotoPicker = false
     
-    @EnvironmentObject var viewModel: DiscoverEventListViewModel
+    @EnvironmentObject private var viewModel: DiscoverDetailEventViewModel
     
     var body: some View {
         ScrollView {
