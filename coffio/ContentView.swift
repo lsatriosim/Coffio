@@ -24,7 +24,9 @@ struct ContentView: View {
                 }
                 
                 Tab("Connect", systemImage: "bubble.left.and.bubble.right", value: 1) {
-                    Text("Connect View")
+                    NavigationStack {
+                        DiscussionListView()
+                    }
                 }
                 
                 Tab("Spending", systemImage: "wallet.bifold", value: 2) {

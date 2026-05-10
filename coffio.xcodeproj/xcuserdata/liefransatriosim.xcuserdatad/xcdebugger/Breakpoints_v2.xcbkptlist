@@ -193,32 +193,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "BA6AD4A9-33ED-4FC8-8B25-7BC0C38E1EBC"
+            uuid = "E982D646-3AB7-4066-8AF5-11764C911ED2"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "coffio/Discover/DiscoverDetailViewModel.swift"
+            filePath = "coffio/Discussion/DiscussionListViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
-            landmarkName = "checkRegistrationStatus()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "77065AA2-08C0-4DED-9CD2-0C4DA0CFAB44"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "coffio/Discover/DiscoverDetailViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
-            landmarkName = "checkRegistrationStatus()"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "fetchThreads()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
