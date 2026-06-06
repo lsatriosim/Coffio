@@ -90,6 +90,9 @@ struct SpendingTrackerView: View {
             }
             .background(Color(hex: "f2efed"))
             .navigationTitle("Coffio Spending")
+            .task {
+                viewModel.loadInitialData()
+            }
             .sheet(isPresented: $showAddSheet) {
                 AddSpendingSheet(viewModel: viewModel)
             }
@@ -158,9 +161,13 @@ private struct SpendingHistoryRow: View {
                 .clipShape(Circle())
             
             VStack(alignment: .leading, spacing: 4.0) {
-                Text(item.coffeeShopName ?? "")
+                Text(item.itemName)
                     .font(.body)
                     .bold()
+                    .foregroundStyle(.primary)
+                
+                Text(item.coffeeShopName)
+                    .font(.caption)
                     .foregroundStyle(.primary)
                 
                 Text(item.purchaseDate.ISO8601Format())

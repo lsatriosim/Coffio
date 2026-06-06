@@ -94,6 +94,7 @@ final class SpendingViewModel: ObservableObject {
                 self.isLoading = false
                 onSuccess()
             } catch {
+                print("❌ [save spending]: \(error)")
                 self.isLoading = false
                 self.errorMessage = error.localizedDescription
                 self.isError = true

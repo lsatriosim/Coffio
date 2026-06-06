@@ -14,10 +14,10 @@ final class SpendingFetcher {
     
     func fetchUserSpendings(userId: String) async throws -> [SpendingItemDataModel] {
         let response = try await supabaseClient
-            .from("cafe_spendings")
+            .from("discover_spendings_view")
             .select()
-            .eq("user_id", value: userId)
-            .order("purchase_date", ascending: false)
+            .eq("userId", value: userId)
+            .order("purchaseDate", ascending: false)
             .execute()
             
         let decoder = JSONDecoder()

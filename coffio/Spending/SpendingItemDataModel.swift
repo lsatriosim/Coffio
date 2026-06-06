@@ -18,21 +18,20 @@ struct SpendingItemDataModel: Identifiable, JSONCodable {
     let notes: String?
     let receiptUrl: String?
     let createdAt: Date
-    
-    // Optional context injection matching DiscoverCoffeeShopItemDataModel relationships
-    var coffeeShopName: String?
+    let coffeeShopName: String
 
     enum CodingKeys: String, CodingKey {
         case id
-        case userId = "user_id"
-        case coffeeShopId = "coffee_shop_id"
-        case itemName = "item_name"
+        case userId
+        case coffeeShopId
+        case itemName
         case amount
         case quantity
-        case purchaseDate = "purchase_date"
+        case purchaseDate
         case notes
-        case receiptUrl = "receipt_url"
-        case createdAt = "created_at"
+        case receiptUrl
+        case createdAt
+        case coffeeShopName
     }
     
     var monthYearString: String {
