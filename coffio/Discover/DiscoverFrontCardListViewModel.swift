@@ -26,6 +26,7 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             await updateIsLoading(isLoading: false)
         }
         catch {
+            print("Failed to fetch coffee shop: \(error)")
             await updateIsError(isError: true)
             await updateIsLoading(isLoading: false)
         }

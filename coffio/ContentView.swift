@@ -30,7 +30,9 @@ struct ContentView: View {
                 }
                 
                 Tab("Spending", systemImage: "wallet.bifold", value: 2) {
-                    Text("Spending Menu")
+                    NavigationStack {
+                        SpendingTrackerView()
+                    }
                 }
                 
                 Tab("Profile", systemImage: "person.circle", value: 3) {

@@ -18,6 +18,16 @@ final class CoffeeShopFetcher {
         return try decoder.decode([DiscoverCoffeeShopItem].self, from: response.data)
     }
     
+    func fetchCoffeeShopLookup() async throws -> [CoffeeShopLookupItem] {
+        let response = try await supabaseClient
+            .from("coffee_shops")
+            .select("id, name")
+            .execute()
+        
+        let decoder = JSONDecoder()
+        return try decoder.decode([CoffeeShopLookupItem].self, from: response.data)
+    }
+    
     func fetchCoffeeShopDetail(id: String) async throws -> DiscoverCoffeeShopItem {
         let response = try await supabaseClient
             .from("coffee_shops")

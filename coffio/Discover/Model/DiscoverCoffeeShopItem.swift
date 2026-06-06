@@ -39,6 +39,11 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
     }
 }
 
+struct CoffeeShopLookupItem: Identifiable, JSONDecodable {
+    let id: String
+    let name: String
+}
+
 enum CoffeeShopFacilities: String, JSONDecodable, UnknownCaseRepresentable {
     case wifi = "wifi"
     case powerOutlet = "power_outlet"
