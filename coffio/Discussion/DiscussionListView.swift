@@ -25,7 +25,7 @@ struct DiscussionListView: View {
                 else if !viewModel.isLoading && viewModel.threads.isEmpty {
                     VStack(spacing: 20) {
                         // Your existing empty state illustration/text
-                        DiscoverEmptyStateView()
+                        EmptyStateView(title: "No Discussion Found", description: "We couldn't find discussion yet. Be the first to open the discussion!")
                         
                         // The Refetch Button based on your reference
                         Button(action: {
@@ -53,11 +53,7 @@ struct DiscussionListView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 else {
-                    if viewModel.isLoading {
-                        ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        renderThreadList
-                    }
+                    renderThreadList
                 }
             }
             
@@ -72,7 +68,7 @@ struct DiscussionListView: View {
             }
             .padding(24)
         }
-        .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
+        .background(Color(hex: "f2efed"))
         .task {
             await viewModel.onViewDidLoad()
         }
@@ -87,14 +83,21 @@ struct DiscussionListView: View {
     private var renderThreadList: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.threads) { thread in
-                    NavigationLink(destination: DiscussionDetailView(threadId: thread.id, thread: thread)) {
-                        DiscussionThreadCardView(thread: thread)
-                    }
-                    .buttonStyle(PlainButtonStyle())
+                if viewModel.isLoading {
+                    DiscussionThreadCardSkeletonView()
+                    DiscussionThreadCardSkeletonView()
+                    DiscussionThreadCardSkeletonView()
                 }
-                .padding(.horizontal, 20)
+                else {
+                    ForEach(viewModel.threads) { thread in
+                        NavigationLink(destination: DiscussionDetailView(threadId: thread.id, thread: thread)) {
+                            DiscussionThreadCardView(thread: thread)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
             }
+            .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 80) // Padding so FAB doesn't hide the last thread
         }

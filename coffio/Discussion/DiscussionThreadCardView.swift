@@ -90,3 +90,86 @@ struct DiscussionThreadCardView: View {
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
 }
+
+struct DiscussionThreadCardSkeletonView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                
+                // 1. Avatar Placeholder
+                Circle()
+                    .fill(Color.gray.opacity(0.25))
+                    .frame(width: 44, height: 44)
+                    .shimmering()
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    
+                    // 2. Header Information Line Placeholder
+                    HStack(alignment: .center, spacing: 6) {
+                        // Full name token
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(width: 90, height: 12)
+                            .shimmering()
+                        
+                        // Username token
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.15))
+                            .frame(width: 55, height: 10)
+                            .shimmering()
+                        
+                        Spacer()
+                        
+                        // Right-aligned Tag Pill Capsule
+                        Capsule()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 50, height: 18)
+                            .shimmering()
+                    }
+                    
+                    // 3. Thread Title Placeholder
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.25))
+                        .frame(width: 180, height: 14)
+                        .padding(.top, 4)
+                        .shimmering()
+                    
+                    // 4. Multi-Line Body Content Mock
+                    VStack(alignment: .leading, spacing: 6) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.18))
+                            .frame(maxWidth: .infinity, maxHeight: 11)
+                            .shimmering()
+                        
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.18))
+                            .frame(maxWidth: .infinity, maxHeight: 11)
+                            .shimmering()
+                        
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.18))
+                            .frame(width: 130, height: 11)
+                            .shimmering()
+                    }
+                    .padding(.top, 4)
+                    
+                    // 5. Interaction Footer Bar
+                    HStack {
+                        // Comment metric grouping placeholder
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 40, height: 12)
+                            .shimmering()
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 12)
+                }
+            }
+        }
+        .padding(16)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
+    }
+}

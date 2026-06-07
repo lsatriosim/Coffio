@@ -30,7 +30,7 @@ struct DiscoverFrontCardListView: View {
                 }
             }
             else if !viewModel.isLoading && viewModel.coffeeShop.isEmpty {
-                DiscoverEmptyStateView()
+                EmptyStateView(title: "No Cafes Found", description: "We couldn't find any cafes nearby. Try adjusting your location or check back later.")
             }
             else {
                 ScrollView(.vertical, showsIndicators: false) {
