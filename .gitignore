@@ -1,1 +1,18 @@
 coffio/Config/*.xcconfig
+
+## Xcode User Settings
+## ====================
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+## Xcode Build Artifacts & Caches
+## =============================
+build/
+DerivedData/
+.DerivedData/
+
+## Swift Package Manager (Keep Package.resolved if you want to lock versions)
+## =========================================================================
+.build/
+.swiftpm/
