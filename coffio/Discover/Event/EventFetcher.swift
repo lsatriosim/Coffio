@@ -10,7 +10,7 @@ import Storage
 import SwiftUI
 import UIKit
 
-final class EventFetcher {
+final class EventFetcher: SupabaseParsable {
     func fetchEvent() async throws -> [DiscoverEventItem] {
         let response = try await supabaseClient
             .from("discover_events_view")
@@ -37,6 +37,17 @@ final class EventFetcher {
             )
         }
         
+        return try decoder.decode([DiscoverEventItem].self, from: response.data)
+    }
+    
+    func fetchEvent(from: Int, to: Int) async throws -> [DiscoverEventItem] {
+        let response = try await supabaseClient
+            .from("discover_events_view")
+            .select()
+            .range(from: from, to: to) // 💡 Tells PostgreSQL view to only slice out this batch window
+            .execute()
+        
+        let decoder = makeSupabaseJSONDecoder()
         return try decoder.decode([DiscoverEventItem].self, from: response.data)
     }
     

@@ -20,14 +20,22 @@ struct DiscoverEventListView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .center, spacing: 16) {
                     
-                    if viewModel.isLoading {
-                        ForEach(0..<2) { _ in
+                    if viewModel.isLoading && viewModel.events.isEmpty {
+                        ForEach(0..<3) { _ in
                             DiscoverEventFrontCardSkeletonView()
                         }
-                    }
-                    else {
+                    } else {
                         ForEach(viewModel.events, id: \.id) { event in
                             DiscoverEventFrontCardItemView(dataModel: event)
+                                .onAppear {
+                                    viewModel.loadMoreContentIfNeeded(currentItem: event)
+                                }
+                        }
+                        
+                        if viewModel.isPageLoading {
+                            ProgressView()
+                                .padding(.vertical, 12)
+                                .tint(Color(hex: "5c4033"))
                         }
                     }
                 }

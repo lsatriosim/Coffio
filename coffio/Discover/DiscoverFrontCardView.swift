@@ -44,14 +44,14 @@ struct DiscoverFrontCardView: View {
                         placeholderView
                     }
                     
-                    HStack(alignment: .center) {
-                        Spacer()
-                        Image(systemName: "heart")
-                            .foregroundStyle(.white)
-                            .shadow(color: .black, radius: 4.0)
-                    }
-                    .padding(.horizontal, 12.0)
-                    .padding(.vertical, 16.0)
+//                    HStack(alignment: .center) {
+//                        Spacer()
+//                        Image(systemName: "heart")
+//                            .foregroundStyle(.white)
+//                            .shadow(color: .black, radius: 4.0)
+//                    }
+//                    .padding(.horizontal, 12.0)
+//                    .padding(.vertical, 16.0)
                 }
                 .frame(width: cardWidth, height: cardHeight)
                 .clipShape(RoundedRectangle(cornerRadius: 20))

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CoffeeShopFetcher {
+final class CoffeeShopFetcher: SupabaseParsable {
     func fetchCoffeeShop() async throws -> [DiscoverCoffeeShopItem] {
         let response = try await supabaseClient
             .from("coffee_shops")
@@ -15,6 +15,17 @@ final class CoffeeShopFetcher {
             .execute()
         
         let decoder = JSONDecoder()
+        return try decoder.decode([DiscoverCoffeeShopItem].self, from: response.data)
+    }
+    
+    func fetchCoffeeShop(from: Int, to: Int) async throws -> [DiscoverCoffeeShopItem] {
+        let response = try await supabaseClient
+            .from("coffee_shops")
+            .select()
+            .range(from: from, to: to) // Slices the exact indices requested by the view model
+            .execute()
+        
+        let decoder = makeSupabaseJSONDecoder()
         return try decoder.decode([DiscoverCoffeeShopItem].self, from: response.data)
     }
     

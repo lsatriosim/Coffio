@@ -36,10 +36,7 @@ final class SpendingViewModel: ObservableObject {
     
     /// Loads both user historical transaction lists and available shops for selection dropdowns
     func loadInitialData() {
-        guard currentUserId != "" else {
-            authService.showLoginPage()
-            return
-        }
+        guard currentUserId != "" else { return }
         isLoading = true
         Task {
             do {
