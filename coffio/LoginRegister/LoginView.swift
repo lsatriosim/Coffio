@@ -37,6 +37,9 @@ struct LoginView: View {
                             .font(.body)
                             .foregroundStyle(.black)
                     }
+                    
+                    // 💡 Apple-Style Legal Hyperlink Footnote Entry Point
+                    legalFooterLinks
                 }
                 
                 Spacer()
@@ -164,6 +167,26 @@ struct LoginView: View {
             }
             .padding(.horizontal, 16.0)
         }
+    }
+    
+    private var legalFooterLinks: some View {
+        HStack(spacing: 4) {
+            Text("By logging in, you agree to our")
+                .foregroundStyle(.secondary)
+            
+            Link("Terms", destination: URL(string: "https://www.coffio.id/terms")!)
+                .bold()
+                .foregroundStyle(Color(hex: "b17e54"))
+            
+            Text("&")
+                .foregroundStyle(.secondary)
+            
+            Link("Privacy", destination: URL(string: "https://www.coffio.id/privacy")!)
+                .bold()
+                .foregroundStyle(Color(hex: "b17e54"))
+        }
+        .font(.caption2)
+        .padding(.top, 8)
     }
     
     private var separatorLine: some View {

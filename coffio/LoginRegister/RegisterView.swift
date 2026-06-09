@@ -141,9 +141,33 @@ struct RegisterView: View {
                     }
                 }
                 
+                legalFooterLinks
+                
             }
             .padding(.horizontal, 16.0)
         }
+    }
+    
+    private var legalFooterLinks: some View {
+        HStack(spacing: 4) {
+            Spacer()
+            Text("By Signing up, you agree to our")
+                .foregroundStyle(.secondary)
+            
+            Link("Terms", destination: URL(string: "https://www.coffio.id/terms")!)
+                .bold()
+                .foregroundStyle(Color(hex: "b17e54"))
+            
+            Text("&")
+                .foregroundStyle(.secondary)
+            
+            Link("Privacy", destination: URL(string: "https://www.coffio.id/privacy")!)
+                .bold()
+                .foregroundStyle(Color(hex: "b17e54"))
+            Spacer()
+        }
+        .font(.caption2)
+        .padding(.top, 8)
     }
 }
 
