@@ -22,19 +22,39 @@ final class SpendingViewModel: ObservableObject {
     let authService: AuthenticationService = .shared
     private var currentUserId: String { authService.user?.id ?? "" }
     
-    var monthlyAggregates: [(month: String, total: Int)] {
-        let grouped = Dictionary(grouping: historyItems) { $0.monthYearString }
-        return grouped.map { (month: $0.key, total: $0.value.reduce(0) { $0 + ($1.amount * $1.quantity) }) }
-            .sorted { (pair1, pair2) -> Bool in
-                let formatter = DateFormatter()
-                formatter.dateFormat = "MMMM yyyy"
-                guard let date1 = formatter.date(from: pair1.month),
-                      let date2 = formatter.date(from: pair2.month) else { return false }
-                return date1 > date2
-            }
+    // MARK: - Web-Aligned Aggregated Metrics
+    
+    /// Returns total cost accumulated ONLY within the current calendar month
+    var currentMonthSpending: Int {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        let filteredItems = historyItems.filter { item in
+            calendar.isDate(item.purchaseDate, equalTo: now, toGranularity: .month) &&
+            calendar.isDate(item.purchaseDate, equalTo: now, toGranularity: .year)
+        }
+        
+        return filteredItems.reduce(0) { $0 + (Int($1.amount) * $1.quantity) }
     }
     
-    /// Loads both user historical transaction lists and available shops for selection dropdowns
+    /// Computes total global spending over the user's entire account lifecycle
+    var totalSpending: Int {
+        historyItems.reduce(0) { $0 + (Int($1.amount) * $1.quantity) }
+    }
+    
+    /// Computes average price per individual log transaction visit entry
+    var averagePerVisit: Int {
+        guard !historyItems.isEmpty else { return 0 }
+        return totalSpending / historyItems.count
+    }
+    
+    /// Helper identifier for current month display string matching web layout format (e.g., "THIS MONTH")
+    var currentMonthLabel: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        return formatter.string(from: Date()).uppercased()
+    }
+    
     func loadInitialData() {
         guard currentUserId != "" else { return }
         isLoading = true
@@ -62,8 +82,6 @@ final class SpendingViewModel: ObservableObject {
         Task {
             do {
                 var finalReceiptUrl: String? = nil
-                
-                // 1. Process receipt image asset uploading logic step if present
                 if let imageToUpload = receiptImage {
                     finalReceiptUrl = try await spendingFetcher.uploadReceipt(
                         uiImage: imageToUpload,
@@ -72,7 +90,6 @@ final class SpendingViewModel: ObservableObject {
                     )
                 }
                 
-                // 2. Generate and post data payload record maps
                 let request = SpendingLogRequest(
                     userId: currentUserId,
                     coffeeShopId: coffeeShopId,
@@ -85,8 +102,6 @@ final class SpendingViewModel: ObservableObject {
                 )
                 
                 try await spendingFetcher.insertSpending(request: request)
-                
-                // 3. Hot reload presentation items state layer arrays
                 self.historyItems = try await spendingFetcher.fetchUserSpendings(userId: currentUserId)
                 self.isLoading = false
                 onSuccess()

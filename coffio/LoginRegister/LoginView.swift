@@ -30,13 +30,13 @@ struct LoginView: View {
                     form
                     .padding(.top, 36.0)
                     
-                    Button(action: {
-                        //TODO: add forgot password
-                    }) {
-                        Text("Forgot your password?")
-                            .font(.body)
-                            .foregroundStyle(.black)
-                    }
+//                    Button(action: {
+//                        //TODO: add forgot password
+//                    }) {
+//                        Text("Forgot your password?")
+//                            .font(.body)
+//                            .foregroundStyle(.black)
+//                    }
                     
                     // 💡 Apple-Style Legal Hyperlink Footnote Entry Point
                     legalFooterLinks
