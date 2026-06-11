@@ -26,17 +26,42 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             await updateHasViewModelLoaded(hasViewModelLoaded: true)
             await updateIsLoading(isLoading: true)
             
-            // Initial payload batch runs concurrently
+            // Initial payload batch runs concurrently (Page 0)
             async let initialShops: () = fetchNextCoffeeShopPage()
             async let initialEvents: () = fetchEvents()
             
             _ = try await [initialShops, initialEvents]
             await updateIsLoading(isLoading: false)
+            
+            // 💡 NEW: Instantly start background streaming for remaining pages
+            // without waiting for any scrolling interactions!
+            await streamAllPagesSequentially()
         }
         catch {
             print("Failed to fetch dashboard content data: \(error)")
             await updateIsError(isError: true)
             await updateIsLoading(isLoading: false)
+        }
+    }
+    
+    private func streamAllPagesSequentially() async {
+        // Keep looping as long as the API tells us there are more items to grab
+        while canLoadMorePages {
+            // Guard to prevent double execution cycles or if an error paused the flow
+            guard !isPageLoading else { return }
+            
+            await updateIsPageLoading(isLoading: true)
+            
+            do {
+                try await fetchNextCoffeeShopPage()
+            } catch {
+                print("Background stream failed to fetch page \(currentPage): \(error)")
+                await updateIsPageLoading(isLoading: false)
+                break // Break loop on structural failure to prevent infinite network spam
+            }
+            
+            await updateIsPageLoading(isLoading: false)
+//            try? await Task.sleep(nanoseconds: 100_000_000)
         }
     }
     
@@ -58,20 +83,14 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         }
     }
     
-    /// Triggers incremental fetching when the user approaches the grid bottom
-    func loadMoreContentIfNeeded(currentItem item: DiscoverCoffeeShopItemDataModel) async {
-        guard let itemIndex = coffeeShop.firstIndex(where: { $0.id == item.id }),
-              itemIndex == coffeeShop.count - 1 else { return }
+    func filteredCoffeeShops(matching query: String) -> [DiscoverCoffeeShopItemDataModel] {
+        guard !query.isEmpty else { return coffeeShop }
         
-        guard !isPageLoading && canLoadMorePages else { return }
-        
-        await updateIsPageLoading(isLoading: true)
-        do {
-            try await fetchNextCoffeeShopPage()
-        } catch {
-            print("Failed to load more pages smoothly: \(error)")
+        return coffeeShop.filter { shop in
+            let matchShop = shop.name.localizedCaseInsensitiveContains(query)
+            
+            return matchShop
         }
-        await updateIsPageLoading(isLoading: false)
     }
     
     private let fetcher = CoffeeShopFetcher()
@@ -85,7 +104,6 @@ private extension DiscoverFrontCardListViewModel {
         let offsetFrom = currentPage * pageSize
         let offsetTo = offsetFrom + pageSize - 1
         
-        // 💡 Requests a clean 10 item batch payload window
         let response: [DiscoverCoffeeShopItem] = try await fetcher.fetchCoffeeShop(from: offsetFrom, to: offsetTo)
         
         if response.isEmpty || response.count < pageSize {
@@ -94,7 +112,6 @@ private extension DiscoverFrontCardListViewModel {
         
         var parsedPageBatch: [DiscoverCoffeeShopItemDataModel] = []
         
-        // Dynamically resolve internal lookups concurrently across this page slice
         for shop in response {
             let locationInfo = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
             let images = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
@@ -110,17 +127,7 @@ private extension DiscoverFrontCardListViewModel {
             )
         }
         
-        // Sort individual incoming page arrays relative to proximity values
-        parsedPageBatch.sort { lhs, rhs in
-            switch (lhs.distance, rhs.distance) {
-            case let (l?, r?): return l < r
-            case (_?, nil):    return true
-            case (nil, _?):    return false
-            case (nil, nil):   return false
-            }
-        }
-        
-        await appendCoffeeShopsOnMainActor(newShops: parsedPageBatch)
+        await appendAndSortCoffeeShopsOnMainActor(newShops: parsedPageBatch)
         currentPage += 1
     }
     
@@ -134,8 +141,19 @@ private extension DiscoverFrontCardListViewModel {
 //MARK: - Main Actor Thread Dispatching Safeguards
 private extension DiscoverFrontCardListViewModel {
     @MainActor
-    private func appendCoffeeShopsOnMainActor(newShops: [DiscoverCoffeeShopItemDataModel]) {
+    private func appendAndSortCoffeeShopsOnMainActor(newShops: [DiscoverCoffeeShopItemDataModel]) {
         self.coffeeShop.append(contentsOf: newShops)
+        
+        // 💡 Re-enabled Global Sorting: This is perfectly safe now because
+        // scrolling location doesn't disrupt any pagination triggers anymore!
+        self.coffeeShop.sort { lhs, rhs in
+            switch (lhs.distance, rhs.distance) {
+            case let (l?, r?): return l < r
+            case (_?, nil):    return true
+            case (nil, _?):    return false
+            case (nil, nil):   return false
+            }
+        }
     }
     
     @MainActor
