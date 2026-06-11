@@ -123,16 +123,34 @@ struct DiscoverDetailEventView: View {
                     .font(.body)
                     .foregroundStyle(.primary)
             }
-
-            if (dataModel.registrationType == .internal && !viewModel.isAlreadyRegistered) || (dataModel.registrationType == .external && dataModel.externalRegistrationURL != nil) {
+            
+            switch dataModel.registrationType {
+            case .internal:
                 Button(action: {
                     guard viewModel.authService.user != nil else {
                         viewModel.authService.showLoginPage()
                         return
                     }
-                    if dataModel.registrationType == .internal {
+                    if dataModel.registrationType == .internal && !viewModel.isAlreadyRegistered {
                         showRegistrationSheet = true
-                    } else if let urlStr = dataModel.externalRegistrationURL, let url = URL(string: urlStr) {
+                    }
+                }) {
+                    Text(viewModel.isAlreadyRegistered ? "You've already registered" : "Register")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "ad6928")))
+                }
+                .disabled(viewModel.isAlreadyRegistered)
+                .opacity(viewModel.isAlreadyRegistered ? 0.6 : 1.0)
+            case .external:
+                Button(action: {
+                    guard viewModel.authService.user != nil else {
+                        viewModel.authService.showLoginPage()
+                        return
+                    }
+                    if let urlStr = dataModel.externalRegistrationURL, let url = URL(string: urlStr) {
                         UIApplication.shared.open(url)
                     }
                 }) {

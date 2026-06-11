@@ -65,6 +65,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
                 )
                 
                 try await fetcher.registerEvent(request: eventRegistrationRequest)
+                isAlreadyRegistered = true
                 isLoading = false
                 completion()
             }

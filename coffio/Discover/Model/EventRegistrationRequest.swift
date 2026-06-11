@@ -13,6 +13,7 @@ struct EventRegistrationRequest: JSONEncodable {
     let userId: String
     let userPhone: String
     let userName: String
+    let status: String = "payment_submitted"
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -20,5 +21,6 @@ struct EventRegistrationRequest: JSONEncodable {
         case userId = "user_id"
         case userPhone = "user_phone"
         case userName = "user_name"
+        case status
     }
 }
