@@ -13,7 +13,7 @@ struct SpendingTrackerView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            Group {
                 if viewModel.authService.user == nil {
                     notLoggedInView
                 }

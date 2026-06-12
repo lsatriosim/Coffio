@@ -40,13 +40,13 @@ final class AuthViewModel: ObservableObject {
 
         do {
             try await AuthenticationService.shared.login(email: email, password: password)
+            resetState()
         } catch {
             isError = true
             popUpErrorMessage = "username or email is invalid"
         }
 
         isLoading = false
-        resetState()
     }
 
     func register() async {
@@ -57,6 +57,7 @@ final class AuthViewModel: ObservableObject {
 
         do {
             try await AuthenticationService.shared.signUp(email: email, password: password)
+            resetState()
         } catch {
             isError = true
             popUpErrorMessage = "Failed to register. Please try again!"

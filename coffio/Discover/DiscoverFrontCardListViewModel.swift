@@ -21,6 +21,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     private let pageSize: Int = 10
     private var canLoadMorePages: Bool = true
     
+    private var streamingTask: Task<Void, Never>?
+    
     func onViewDidLoad() async {
         do {
             await updateHasViewModelLoaded(hasViewModelLoaded: true)
@@ -35,7 +37,7 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             
             // 💡 NEW: Instantly start background streaming for remaining pages
             // without waiting for any scrolling interactions!
-            await streamAllPagesSequentially()
+            startBackgroundStreaming()
         }
         catch {
             print("Failed to fetch dashboard content data: \(error)")
@@ -44,17 +46,33 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         }
     }
     
+    private func startBackgroundStreaming() {
+        // Cancel the previous streaming loop if it's still running
+        streamingTask?.cancel()
+        
+        // Assign and run the new task context
+        streamingTask = Task {
+            await streamAllPagesSequentially()
+        }
+    }
+    
     private func streamAllPagesSequentially() async {
         // Keep looping as long as the API tells us there are more items to grab
         while canLoadMorePages {
-            // Guard to prevent double execution cycles or if an error paused the flow
+            if Task.isCancelled {
+                print("Background polling loop successfully halted via Task cancellation.")
+                return
+            }
+            
             guard !isPageLoading else { return }
             
             await updateIsPageLoading(isLoading: true)
             
             do {
                 try await fetchNextCoffeeShopPage()
-            } catch {
+            }
+            catch {
+                if error is CancellationError { return }
                 print("Background stream failed to fetch page \(currentPage): \(error)")
                 await updateIsPageLoading(isLoading: false)
                 break // Break loop on structural failure to prevent infinite network spam
@@ -66,6 +84,9 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     }
     
     func refetchCoffeShop() async {
+        streamingTask?.cancel()
+        streamingTask = nil
+        
         currentPage = 0
         canLoadMorePages = true
         await updateCoffeeShop(newDataModel: [])
@@ -76,6 +97,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             try await fetchNextCoffeeShopPage()
             try await fetchEvents()
             await updateIsLoading(isLoading: false)
+            
+            startBackgroundStreaming()
         }
         catch {
             await updateIsError(isError: true)
@@ -101,6 +124,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
 private extension DiscoverFrontCardListViewModel {
     
     func fetchNextCoffeeShopPage() async throws {
+        try Task.checkCancellation()
+        
         let offsetFrom = currentPage * pageSize
         let offsetTo = offsetFrom + pageSize - 1
         
@@ -142,6 +167,8 @@ private extension DiscoverFrontCardListViewModel {
 private extension DiscoverFrontCardListViewModel {
     @MainActor
     private func appendAndSortCoffeeShopsOnMainActor(newShops: [DiscoverCoffeeShopItemDataModel]) {
+        guard !Task.isCancelled else { return }
+        
         self.coffeeShop.append(contentsOf: newShops)
         
         // 💡 Re-enabled Global Sorting: This is perfectly safe now because
