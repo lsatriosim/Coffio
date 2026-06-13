@@ -15,6 +15,7 @@ final class DiscoverEventListViewModel: ObservableObject {
     @Published var isPageLoading: Bool = false
     @Published var isError: Bool = false
     @Published var errorMessage: String = ""
+    @Published var isCreateEventSheetPresented: Bool = false
     
     // Pagination Controls
     private var currentPage: Int = 0

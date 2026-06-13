@@ -32,7 +32,7 @@ final class CoffeeShopFetcher: SupabaseParsable {
     func fetchCoffeeShopLookup() async throws -> [CoffeeShopLookupItem] {
         let response = try await supabaseClient
             .from("coffee_shops")
-            .select("id, name")
+            .select("id, name, address")
             .execute()
         
         let decoder = JSONDecoder()

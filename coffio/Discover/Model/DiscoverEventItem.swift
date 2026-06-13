@@ -39,11 +39,11 @@ struct DiscoverEventItem: JSONDecodable {
         case participantRegistered = "participant_registered"
         case paymentInfo = "payment_info"
     }
-    
-    enum RegistrationType: String, JSONDecodable {
-        case `internal`
-        case external
-    }
+}
+
+enum RegistrationType: String, JSONDecodable {
+    case `internal`
+    case external
 }
 
 struct PaymentInfo: JSONDecodable {

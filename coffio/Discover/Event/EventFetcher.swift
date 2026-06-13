@@ -165,4 +165,34 @@ final class EventFetcher: SupabaseParsable {
         
         return !data.isEmpty && data != "[]".data(using: .utf8)
     }
+    
+    func uploadEventAsset(image: Image, fileName: String) async throws -> String {
+        guard let uiImage = await image.asUIImage(),
+              let imageData = uiImage.jpegData(compressionQuality: 0.8) else {
+            throw NSError(domain: "AssetConversionError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse system media canvas assets."])
+        }
+        
+        let filePath = "assets/\(UUID().uuidString)_\(fileName).jpg"
+        
+        try await supabaseClient.storage
+            .from("event-images")
+            .upload(
+                filePath,
+                data: imageData,
+                options: FileOptions(contentType: "image/jpeg", upsert: true)
+            )
+        
+        let publicURL = try supabaseClient.storage
+            .from("event-images")
+            .getPublicURL(path: filePath)
+            
+        return publicURL.absoluteString
+    }
+
+    func createEvent(request: CreateEventRequest) async throws {
+        try await supabaseClient
+            .from("events")
+            .insert(request)
+            .execute()
+    }
 }
