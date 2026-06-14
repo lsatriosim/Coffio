@@ -42,6 +42,7 @@ struct DiscoverCoffeeShopItem: JSONDecodable {
 struct CoffeeShopLookupItem: Identifiable, JSONDecodable {
     let id: String
     let name: String
+    let address: String
 }
 
 enum CoffeeShopFacilities: String, JSONDecodable, UnknownCaseRepresentable {

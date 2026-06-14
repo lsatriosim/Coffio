@@ -18,11 +18,6 @@ struct DiscoverFrontCardListView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6.0) {
-            Text("Coffio Popular's")
-                .font(.title2)
-                .bold()
-                .padding(.horizontal, 20.0)
-            
             if viewModel.isError {
                 DiscoverErrorView {
                     Task {
@@ -40,6 +35,13 @@ struct DiscoverFrontCardListView: View {
             }
             else {
                 ScrollView(.vertical, showsIndicators: false) {
+                    HStack {
+                        Text("Coffio Popular's")
+                            .font(.title2)
+                            .bold()
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20.0)
                     VStack(spacing: 0) {
                         LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                             

@@ -50,4 +50,84 @@ final class DateFormatterUtil {
             return "\(fullFormatter.string(from: start)) - \(fullFormatter.string(from: end))"
         }
     }
+    
+    static func formatEventDuration(
+        start startDate: Date,
+        end endDate: Date?,
+        showTime: Bool = false,
+        useShortMonth: Bool = false
+    ) -> String {
+        let calendar = Calendar.current
+        
+        // Setup base formatting elements
+        let monthFormat = useShortMonth ? "MMM" : "MMMM"
+        
+        let dayFormatter = DateFormatter()
+        dayFormatter.dateFormat = "d"
+        
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = monthFormat
+        
+        let yearFormatter = DateFormatter()
+        yearFormatter.dateFormat = "yyyy"
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
+        
+        let startDay = dayFormatter.string(from: startDate)
+        let startMonth = monthFormatter.string(from: startDate)
+        let startYear = yearFormatter.string(from: startDate)
+        let dateString = "\(startDay) \(startMonth) \(startYear)"
+        
+        // 💡 Handle Nil End Date Case early
+        guard let endDate = endDate else {
+            if showTime {
+                let startTime = timeFormatter.string(from: startDate)
+                return "\(startTime), \(dateString)"
+            } else {
+                return dateString
+            }
+        }
+        
+        // Extract component flags to compare ranges safely now that endDate is unwrapped
+        let startComponents = calendar.dateComponents([.day, .month, .year], from: startDate)
+        let endComponents = calendar.dateComponents([.day, .month, .year], from: endDate)
+        
+        let isSameDay = startComponents.day == endComponents.day &&
+                        startComponents.month == endComponents.month &&
+                        startComponents.year == endComponents.year
+        
+        let isSameMonth = startComponents.month == endComponents.month &&
+                          startComponents.year == endComponents.year
+        
+        let isSameYear = startComponents.year == endComponents.year
+        
+        let endDay = dayFormatter.string(from: endDate)
+        let endMonth = monthFormatter.string(from: endDate)
+        let endYear = yearFormatter.string(from: endDate)
+        
+        // 1. Same Day Handling
+        if isSameDay {
+            if showTime {
+                let startTime = timeFormatter.string(from: startDate)
+                let endTime = timeFormatter.string(from: endDate)
+                return "\(startTime) - \(endTime), \(dateString)"
+            } else {
+                return dateString
+            }
+        }
+        
+        // 2. Different Day, Same Month Handling -> "12 - 14 April 2002"
+        if isSameMonth {
+            return "\(startDay) - \(endDay) \(startMonth) \(startYear)"
+        }
+        
+        // 3. Different Month, Same Year Handling -> "12 April - 16 April 2002"
+        if isSameYear {
+            return "\(startDay) \(startMonth) - \(endDay) \(endMonth) \(startYear)"
+        }
+        
+        // 4. Different Year Handling -> "31 December 2021 - 2 January 2022"
+        return "\(startDay) \(startMonth) \(startYear) - \(endDay) \(endMonth) \(endYear)"
+    }
 }

@@ -14,6 +14,8 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var errorMessage: String = ""
     @Published var isAlreadyRegistered: Bool = false
+    @Published var isAuthor: Bool = false
+    @Published var isEditEventSheetPresented: Bool = false
     
     private let fetcher = EventFetcher()
     let authService: AuthenticationService = .shared
@@ -31,6 +33,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         do {
             let fetchedEvent = try await fetcher.fetchEventById(id: eventId)
             self.event = fetchedEvent
+            await checkAuthor()
             await checkRegistrationStatus()
             self.isLoading = false
         } catch {
@@ -90,5 +93,11 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         } catch {
             print("Error checking registration: \(error)")
         }
+    }
+    
+    @MainActor
+    func checkAuthor() async {
+        guard let userId = authService.user?.id else { return }
+        self.isAuthor = event?.createdBy == userId
     }
 }

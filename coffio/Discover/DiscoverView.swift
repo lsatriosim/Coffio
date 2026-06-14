@@ -40,21 +40,18 @@ struct HomeView: View {
             }
             Spacer()
         }
-        .padding(.vertical, 16.0)
+        .padding(.vertical, 8.0)
         .background(.white)
     }
     
     var contentView: some View {
-        ScrollView(.vertical) {
-            VStack(alignment: .leading, spacing: 24.0) {
-                if selectedCategory == 0 {
-                    DiscoverFrontCardListView()
-                }
-                else {
-                    DiscoverEventListView()
-                }
+        VStack(alignment: .leading, spacing: 24.0) {
+            if selectedCategory == 0 {
+                DiscoverFrontCardListView()
             }
-            .padding(.vertical, 20.0)
+            else {
+                DiscoverEventListView()
+            }
         }
         .background(Color(hex: "FAFAFA"))
     }

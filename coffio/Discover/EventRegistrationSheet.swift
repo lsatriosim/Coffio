@@ -15,10 +15,7 @@ struct EventRegistrationSheet: View {
     @State private var fullName: String = ""
     @State private var contactNumber: String = ""
     @State private var selectedPhotoItem: PhotosPickerItem?
-    
     @State private var selectedImage: Image?
-    
-    @State private var showPhotoPicker = false
     
     @EnvironmentObject private var viewModel: DiscoverDetailEventViewModel
     
@@ -152,56 +149,13 @@ struct EventRegistrationSheet: View {
     
     @ViewBuilder
     private func photoPickerField() -> some View {
-        VStack(alignment: .leading, spacing: 4.0) {
-            Text("Payment Proof")
-                .font(.caption)
-                .foregroundStyle(.gray)
-                .padding(.leading, 4)
-
-            Button {
-                showPhotoPicker = true
-            } label: {
-                HStack {
-                    Image(systemName: "photo")
-                        .foregroundStyle(Color(hex: "ad6928"))
-
-                    Text(selectedImage == nil ? "Choose payment proof" : "Change payment proof")
-                        .foregroundStyle(selectedImage == nil ? .gray : .primary)
-
-                    Spacer()
-
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
-                }
-                .padding(12)
-                .background(fieldBackground)
-            }
-            .buttonStyle(.plain)
-            .photosPicker(
-                isPresented: $showPhotoPicker,
-                selection: $selectedPhotoItem,
-                matching: .images
-            )
-            .onChange(of: selectedPhotoItem) {
-                Task {
-                    if let loaded = try? await selectedPhotoItem?.loadTransferable(type: Image.self) {
-                        selectedImage = loaded
-                    } else {
-                        print("Failed")
-                    }
-                }
-            }
-
-            if let selectedImage {
-                selectedImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 140)
-                    .frame(maxWidth: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-        }
+        CoffioPhotoPickerField(
+            label: "Payment Proof",
+            placeholder: selectedImage == nil ? "Choose payment proof" : "Change payment proof",
+            selectedItem: $selectedPhotoItem,
+            selectedImage: $selectedImage,
+            remoteUrlString: nil
+        )
     }
     
     private var fieldBackground: some View {
