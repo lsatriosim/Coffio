@@ -68,7 +68,7 @@ struct DiscoverEventListView: View {
             viewModel.onViewDidLoad()
         }
         .sheet(isPresented: $viewModel.isCreateEventSheetPresented) {
-            CreateEventSheet()
+            EventFormSheet()
                 .presentationDetents([.large])
         }
         .environmentObject(viewModel)

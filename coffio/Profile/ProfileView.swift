@@ -57,14 +57,37 @@ struct ProfileView: View {
                                 sectionHeader("Feature")
                                 
                                 VStack(spacing: 0) {
-                                    NavigationLink(destination: UserRegistrationListView()) {
+                                    NavigationLink(destination: UserRegistrationListView())     {
                                         HStack(spacing: 16) {
                                             Image(systemName: "person.3")
                                                 .font(.system(size: 18))
                                                 .foregroundColor(Color(hex: "ad6928"))
                                                 .frame(width: 24)
                                             
-                                            Text("My Event")
+                                            Text("My Tickets")
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                            
+                                            Spacer()
+                                            
+                                            Image(systemName: "chevron.right")
+                                                .font(.caption)
+                                                .foregroundColor(.gray)
+                                        }
+                                        .padding(.vertical, 16)
+                                        .padding(.horizontal, 16)
+                                        .background(Color.white.opacity(0.001))
+                                    }
+                                    .buttonStyle(.plain)
+                                    
+                                    NavigationLink(destination: MyEventListView()) {
+                                        HStack(spacing: 16) {
+                                            Image(systemName: "person.3")
+                                                .font(.system(size: 18))
+                                                .foregroundColor(Color(hex: "ad6928"))
+                                                .frame(width: 24)
+                                            
+                                            Text("My Events")
                                                 .font(.body)
                                                 .foregroundColor(.primary)
                                             

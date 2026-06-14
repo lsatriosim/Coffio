@@ -1,5 +1,5 @@
 //
-//  CreateEventSheet.swift
+//  EventFormSheet.swift
 //  coffio
 //
 //  Created by Liefran Satrio Sim on 12/06/26.
@@ -15,9 +15,9 @@ enum TicketType: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
 }
 
-struct CreateEventSheet: View {
+struct EventFormSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = CreateEventViewModel()
+    @StateObject private var viewModel: EventFormViewModel
     
     // Photo Picker States
     @State private var posterItem: PhotosPickerItem?
@@ -27,6 +27,12 @@ struct CreateEventSheet: View {
     @State private var menuItem: PhotosPickerItem?
     @State private var menuImage: Image?
     @State private var showMenuPicker = false
+    
+    // MARK: - Dedicated Mode Dependency Initializer
+    init(editingEvent event: DiscoverEventItem? = nil) {
+        // Wire state object explicitly to feed dependencies forward safely
+        _viewModel = StateObject(wrappedValue: EventFormViewModel(editingEvent: event))
+    }
     
     private var selectedShopName: String {
         if let id = viewModel.selectedCoffeeShopId,
@@ -38,19 +44,21 @@ struct CreateEventSheet: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 Capsule()
                     .fill(Color.gray.opacity(0.3))
                     .frame(width: 40, height: 6)
                     .padding(.top, 12)
+                
                 ScrollView {
                     VStack(spacing: 24.0) {
+                        // Dynamic Headers Based on Mode state
                         VStack(spacing: 8.0) {
-                            Text("Create New Event")
+                            Text(isEditingMode ? "Update Event Profile" : "Create New Event")
                                 .font(.title2)
                                 .bold()
                             
-                            Text("Host and share a new board game experience")
+                            Text(isEditingMode ? "Modify details regarding this board game configuration" : "Host and share a new board game experience")
                                 .font(.subheadline)
                                 .foregroundStyle(.gray)
                         }
@@ -64,11 +72,12 @@ struct CreateEventSheet: View {
                             
                             inputTextArea(label: "Description", placeholder: "Describe what makes this session special...", text: $viewModel.description)
                             
-                            // 2. Photo Pickers Block
+                            // 2. Photo Pickers Block (Handles asynchronous loading placeholder context)
                             photoPickerField(
                                 label: "Event Poster",
                                 placeholder: "Choose event poster",
                                 selectedImage: posterImage,
+                                remoteUrlString: viewModel.existingPosterUrl, // 💡 Pass string for editing previews
                                 isPresented: $showPosterPicker,
                                 selection: $posterItem
                             )
@@ -77,6 +86,7 @@ struct CreateEventSheet: View {
                                 label: "Menu Image",
                                 placeholder: "Choose menu selection image",
                                 selectedImage: menuImage,
+                                remoteUrlString: viewModel.existingMenuUrl, // 💡 Pass string for editing previews
                                 isPresented: $showMenuPicker,
                                 selection: $menuItem
                             )
@@ -124,18 +134,18 @@ struct CreateEventSheet: View {
                                             .font(.footnote)
                                             .foregroundStyle(.gray)
                                     }
-                                    .padding(14.0) // Matches your exact text input field paddings
+                                    .padding(14.0)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .background(.white)
                                     .cornerRadius(12)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color(hex: "ad6928").opacity(0.4), lineWidth: 1.5) // Your signature brown border
+                                            .stroke(Color(hex: "ad6928").opacity(0.4), lineWidth: 1.5)
                                     )
                                 }
                                 .buttonStyle(.plain)
-                                .onChange(of: viewModel.selectedCoffeeShopId) {
-                                    if let selectedId = viewModel.selectedCoffeeShopId,
+                                .onChange(of: viewModel.selectedCoffeeShopId) { oldValue, selectedId in
+                                    if let selectedId = selectedId,
                                        let chosenShop = viewModel.coffeeShops.first(where: { "\($0.id)".description.lowercased() == selectedId.lowercased() }) {
                                         viewModel.cafeName = chosenShop.name
                                         viewModel.fullAddress = chosenShop.address
@@ -185,84 +195,77 @@ struct CreateEventSheet: View {
                         }
                         .padding(.horizontal, 24)
                         
-                        // Primary Action Button Execution Layer
-                        Button(action: handleCreationSubmit) {
-                            HStack {
-                                Spacer()
-                                if viewModel.isLoading {
-                                    ProgressView().progressViewStyle(.circular)
-                                        .font(.headline)
-                                        .foregroundStyle(.white)
+                        // MARK: - Streamlined Component Implementation Block
+                        Group {
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .padding(.vertical, 12)
+                            } else {
+                                CoffioButton(
+                                    title: isEditingMode ? "Update Changes" : "Publish Event",
+                                    icon: isEditingMode ? "checkmark.circle.fill" : "paperplane.fill",
+                                    style: .primary,
+                                    isDisabled: isFormInvalid
+                                ) {
+                                    handleSubmitAction()
                                 }
-                                else {
-                                    Text("Publish Event")
-                                        .font(.headline)
-                                        .foregroundStyle(.white)
-                                        .bold()
-                                }
-                                Spacer()
-                            }
-                            .padding(.vertical, 16.0)
-                            .disabled(viewModel.isLoading)
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(hex: "ad6928"))
-                                    .shadow(color: .black.opacity(0.1), radius: 10)
                             }
                         }
                         .padding(.horizontal, 24)
-                        .disabled(isFormInvalid)
-                        .opacity(isFormInvalid ? 0.6 : 1.0)
-                        .padding(.bottom, 24)
+                        .padding(.bottom, 32)
                     }
                 }
             }
-        }
-        .background(Color(hex: "f2efed"))
-        .animation(.easeInOut(duration: 0.25), value: viewModel.ticketType)
-        .task {
-            await viewModel.loadCoffeeShopLookupData()
-        }
-        .coffioPopup(isPresented: $viewModel.isError) {
-            VStack(spacing: 16) {
-                Text(viewModel.errorMessage)
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 12)
-                
-                Button(action: {
-                    viewModel.isError = false
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Close")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                        Spacer()
-                    }
-                    .padding(.vertical, 12.0)
-                    .background {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(hex: "ad6928"))
+            .background(Color(hex: "f2efed"))
+            .navigationBarTitleDisplayMode(.inline)
+            .animation(.easeInOut(duration: 0.25), value: viewModel.ticketType)
+            .task {
+                await viewModel.loadCoffeeShopLookupData()
+            }
+            .coffioPopup(isPresented: $viewModel.isError) {
+                VStack(spacing: 16) {
+                    Text(viewModel.errorMessage)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 12)
+                    
+                    CoffioButton(title: "Close", style: .secondary) {
+                        viewModel.isError = false
                     }
                 }
-                .buttonStyle(.plain)
+                .padding(16)
             }
-            .padding(16)
         }
     }
 }
 
 // MARK: - Secondary View Subcomponents Extension
-private extension CreateEventSheet {
+private extension EventFormSheet {
     
-    var isFormInvalid: Bool {
-        viewModel.title.isEmpty || viewModel.description.isEmpty || viewModel.cafeName.isEmpty || viewModel.fullAddress.isEmpty || viewModel.capacity.isEmpty || posterImage == nil
+    // Core structural checker toggles
+    var isEditingMode: Bool {
+        switch viewModel.mode {
+        case .create: return false
+        case .edit: return true
+        }
     }
     
-    func handleCreationSubmit() {
+    var isFormInvalid: Bool {
+        // 💡 Adjusted verification condition: a valid form needs EITHER a new local image input OR an existing storage URL reference from Supabase
+        let missingPoster = (posterImage == nil && viewModel.existingPosterUrl == nil)
+        
+        return viewModel.title.isEmpty ||
+               viewModel.description.isEmpty ||
+               viewModel.cafeName.isEmpty ||
+               viewModel.fullAddress.isEmpty ||
+               viewModel.capacity.isEmpty ||
+               missingPoster
+    }
+    
+    func handleSubmitAction() {
         viewModel.publishEvent(posterImage: posterImage, menuImage: menuImage) {
             dismiss()
         }
@@ -310,8 +313,8 @@ private extension CreateEventSheet {
     
     @ViewBuilder
     func segmentedControlField<SelectionValue: Hashable, Content: View>(
-        label: String, 
-        selection: Binding<SelectionValue>, 
+        label: String,
+        selection: Binding<SelectionValue>,
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 6.0) {
@@ -327,10 +330,11 @@ private extension CreateEventSheet {
     
     @ViewBuilder
     func photoPickerField(
-        label: String, 
-        placeholder: String, 
-        selectedImage: Image?, 
-        isPresented: Binding<Bool>, 
+        label: String,
+        placeholder: String,
+        selectedImage: Image?,
+        remoteUrlString: String? = nil, // 💡 Holds existing asset URL context paths
+        isPresented: Binding<Bool>,
         selection: Binding<PhotosPickerItem?>
     ) -> some View {
         VStack(alignment: .leading, spacing: 4.0) {
@@ -346,8 +350,9 @@ private extension CreateEventSheet {
                     Image(systemName: "photo")
                         .foregroundStyle(Color(hex: "ad6928"))
 
-                    Text(selectedImage == nil ? placeholder : "Change image selection")
-                        .foregroundStyle(selectedImage == nil ? .gray : .primary)
+                    let hasAsset = (selectedImage != nil || remoteUrlString != nil)
+                    Text(hasAsset ? "Change image selection" : placeholder)
+                        .foregroundStyle(hasAsset ? .primary : Color.gray)
 
                     Spacer()
 
@@ -365,6 +370,7 @@ private extension CreateEventSheet {
                 matching: .images
             )
             
+            // Render Hierarchy prioritized structural blocks
             if let selectedImage {
                 selectedImage
                     .resizable()
@@ -373,9 +379,27 @@ private extension CreateEventSheet {
                     .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .padding(.top, 4)
+            } else if let remoteUrlString, let url = URL(string: remoteUrlString) {
+                // Async fallback loader context for editing state profiles
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure, .empty:
+                        Color.gray.opacity(0.1)
+                            .overlay(Image(systemName: "photo").foregroundStyle(.gray))
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+                .frame(height: 120)
+                .frame(maxWidth: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.top, 4)
             }
         }
-        // Extraction assignment engine listener
         .onChange(of: selection.wrappedValue) { oldValue, newValue in
             Task {
                 if let loaded = try? await newValue?.loadTransferable(type: Image.self) {
@@ -402,5 +426,10 @@ private extension CreateEventSheet {
 
 // MARK: - Preview Engine Wrapper
 #Preview {
-    CreateEventSheet()
+    EventFormSheet()
+}
+
+// MARK: - Preview Engine Wrapper
+#Preview {
+    EventFormSheet()
 }

@@ -1,13 +1,5 @@
 //
-//  CreateEventViewModel.swift
-//  coffio
-//
-//  Created by Liefran Satrio Sim on 13/06/26.
-//
-
-
-//
-//  CreateEventViewModel.swift
+//  EventFormViewModel.swift
 //  coffio
 //
 //  Created by Liefran Satrio Sim on 13/06/26.
@@ -16,7 +8,21 @@
 import SwiftUI
 
 @MainActor
-final class CreateEventViewModel: ObservableObject {
+final class EventFormViewModel: ObservableObject {
+    enum FormMode {
+        case create
+        case edit(eventId: String)
+        
+        var navigationTitle: String {
+            switch self {
+            case .create: return "Create Event"
+            case .edit: return "Edit Event"
+            }
+        }
+    }
+        
+    let mode: FormMode
+    
     // Form Binding Targets
     @Published var title: String = ""
     @Published var description: String = ""
@@ -40,10 +46,21 @@ final class CreateEventViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isError: Bool = false
     @Published var errorMessage: String = ""
+    @Published var existingPosterUrl: String? = nil
+    @Published var existingMenuUrl: String? = nil
     
     private let fetcher = EventFetcher()
     private let shopFetcher = CoffeeShopFetcher()
     private let authService: AuthenticationService = .shared
+    
+    init(editingEvent event: DiscoverEventItem? = nil) {
+        if let event = event {
+            self.mode = .edit(eventId: event.id)
+            self.prefillFormFields(with: event)
+        } else {
+            self.mode = .create
+        }
+    }
     
     // Validation Engine
     var isFormValid: Bool {
@@ -109,8 +126,13 @@ final class CreateEventViewModel: ObservableObject {
                     createdBy: user.id
                 )
                 
-                // 5. Fire insertion transactional block pipelines
-                try await fetcher.createEvent(request: requestPayload)
+                switch mode {
+                case .create:
+                    try await fetcher.createEvent(request: requestPayload)
+                case .edit(let eventId):
+                    let updatePayload = UpdateEventRequest(from: requestPayload)
+                    try await fetcher.updateEvent(id: eventId, request: updatePayload)
+                }
                 
                 isLoading = false
                 completion()
@@ -131,5 +153,33 @@ final class CreateEventViewModel: ObservableObject {
             
             print("Failed to pull coffee shop options: \(error)")
         }
+    }
+}
+
+private extension EventFormViewModel {
+    func prefillFormFields(with event: DiscoverEventItem) {
+        self.title = event.title
+        self.description = event.description ?? ""
+        self.capacity = String(event.capacity)
+        self.cafeName = event.cafeName ?? ""
+        self.fullAddress = event.location ?? ""
+        self.startTime = event.eventDate
+        self.endTime = event.endDate ?? event.eventDate.addingTimeInterval(7200)
+        self.registrationMethod = RegistrationType(rawValue: event.registrationType.rawValue) ?? .internal
+        
+        // Handle Ticket & Financial Prefills
+        if event.price > 0 {
+            self.ticketType = .paid
+            self.ticketPrice = String(event.price)
+            self.bankName = event.paymentInfo?.bankName ?? ""
+            self.accountNumber = event.paymentInfo?.bankAccount ?? ""
+            self.accountHolderName = event.paymentInfo?.bankHolder ?? ""
+        } else {
+            self.ticketType = .free
+        }
+        
+        // Retain current URLs in case the images are left unchanged during an edit
+        self.existingPosterUrl = event.imageUrl
+        self.existingMenuUrl = event.menuImageUrl
     }
 }

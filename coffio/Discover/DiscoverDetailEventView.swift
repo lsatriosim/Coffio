@@ -47,6 +47,17 @@ struct DiscoverDetailEventView: View {
                 }
             }
         }
+        .sheet(isPresented: $viewModel.isEditEventSheetPresented) {
+            EventFormSheet(editingEvent: viewModel.event)
+                .presentationDetents([.large])
+        }
+        .onChange(of: viewModel.isEditEventSheetPresented) { oldValue, newValue in
+            if newValue == false {
+                Task {
+                    await viewModel.fetchEventDetails()
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -126,24 +137,38 @@ struct DiscoverDetailEventView: View {
             
             switch dataModel.registrationType {
             case .internal:
-                Button(action: {
-                    guard viewModel.authService.user != nil else {
-                        viewModel.authService.showLoginPage()
-                        return
+                if viewModel.isAuthor {
+                    VStack(spacing: 12.0) {
+                        CoffioButton(title: "Edit Event", style: .secondary) {
+                            viewModel.isEditEventSheetPresented = true
+                        }
+                        
+                        CoffioButton(title: "See Participant") {
+                            
+                        }
                     }
-                    if dataModel.registrationType == .internal && !viewModel.isAlreadyRegistered {
+                }
+                else if viewModel.isAlreadyRegistered {
+                    Button(action: {}) {
+                        Text("You've already registered")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "ad6928")))
+                    }
+                    .disabled(true)
+                    .opacity(0.6)
+                }
+                else {
+                    CoffioButton(title: "Register") {
+                        guard viewModel.authService.user != nil else {
+                            viewModel.authService.showLoginPage()
+                            return
+                        }
                         showRegistrationSheet = true
                     }
-                }) {
-                    Text(viewModel.isAlreadyRegistered ? "You've already registered" : "Register")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "ad6928")))
                 }
-                .disabled(viewModel.isAlreadyRegistered)
-                .opacity(viewModel.isAlreadyRegistered ? 0.6 : 1.0)
             case .external:
                 Button(action: {
                     guard viewModel.authService.user != nil else {

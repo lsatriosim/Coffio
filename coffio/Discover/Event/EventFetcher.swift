@@ -40,6 +40,36 @@ final class EventFetcher: SupabaseParsable {
         return try decoder.decode([DiscoverEventItem].self, from: response.data)
     }
     
+    func fetchEvent(authorId: String) async throws -> [DiscoverEventItem] {
+        let response = try await supabaseClient
+            .from("discover_events_view")
+            .select()
+            .eq("created_by", value: authorId) // Filter by the current user
+            .execute()
+        
+        let decoder = JSONDecoder()
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime
+        ]
+
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let string = try container.decode(String.self)
+            
+            if let date = formatter.date(from: string) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid date: \(string)"
+            )
+        }
+        
+        return try decoder.decode([DiscoverEventItem].self, from: response.data)
+    }
+    
     func fetchEvent(from: Int, to: Int) async throws -> [DiscoverEventItem] {
         let response = try await supabaseClient
             .from("discover_events_view")
@@ -193,6 +223,14 @@ final class EventFetcher: SupabaseParsable {
         try await supabaseClient
             .from("events")
             .insert(request)
+            .execute()
+    }
+    
+    func updateEvent(id: String, request: UpdateEventRequest) async throws {
+        try await supabaseClient
+            .from("events")        // 💡 Targeting the mutable source table
+            .update(request)
+            .eq("id", value: id)   // Isolates transaction to this single event row
             .execute()
     }
 }
