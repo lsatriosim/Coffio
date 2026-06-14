@@ -22,11 +22,9 @@ struct EventFormSheet: View {
     // Photo Picker States
     @State private var posterItem: PhotosPickerItem?
     @State private var posterImage: Image?
-    @State private var showPosterPicker = false
     
     @State private var menuItem: PhotosPickerItem?
     @State private var menuImage: Image?
-    @State private var showMenuPicker = false
     
     // MARK: - Dedicated Mode Dependency Initializer
     init(editingEvent event: DiscoverEventItem? = nil) {
@@ -72,23 +70,20 @@ struct EventFormSheet: View {
                             
                             inputTextArea(label: "Description", placeholder: "Describe what makes this session special...", text: $viewModel.description)
                             
-                            // 2. Photo Pickers Block (Handles asynchronous loading placeholder context)
-                            photoPickerField(
+                            CoffioPhotoPickerField(
                                 label: "Event Poster",
                                 placeholder: "Choose event poster",
-                                selectedImage: posterImage,
-                                remoteUrlString: viewModel.existingPosterUrl, // 💡 Pass string for editing previews
-                                isPresented: $showPosterPicker,
-                                selection: $posterItem
+                                selectedItem: $posterItem,
+                                selectedImage: $posterImage,
+                                remoteUrlString: viewModel.existingPosterUrl
                             )
                             
-                            photoPickerField(
+                            CoffioPhotoPickerField(
                                 label: "Menu Image",
                                 placeholder: "Choose menu selection image",
-                                selectedImage: menuImage,
-                                remoteUrlString: viewModel.existingMenuUrl, // 💡 Pass string for editing previews
-                                isPresented: $showMenuPicker,
-                                selection: $menuItem
+                                selectedItem: $menuItem,
+                                selectedImage: $menuImage,
+                                remoteUrlString: viewModel.existingMenuUrl
                             )
                             
                             // 3. Date & Time Block Wrapped inside an Apple-Style Inset Card
