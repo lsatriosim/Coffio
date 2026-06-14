@@ -194,12 +194,22 @@ struct EventRegistrationSheet: View {
             }
 
             if let selectedImage {
-                selectedImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 140)
-                    .frame(maxWidth: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                ZStack {
+                    Color.white
+                    selectedImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 180)
+                        .padding(8)
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                )
+                .padding(.top, 4)
             }
         }
     }

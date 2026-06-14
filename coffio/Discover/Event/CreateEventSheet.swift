@@ -370,33 +370,45 @@ private extension EventFormSheet {
                 matching: .images
             )
             
-            // Render Hierarchy prioritized structural blocks
             if let selectedImage {
-                selectedImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 120)
-                    .frame(maxWidth: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding(.top, 4)
+                ZStack {
+                    Color.white
+                    selectedImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 180)
+                        .padding(8)
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.15), lineWidth: 1))
+                .padding(.top, 4)
+                
             } else if let remoteUrlString, let url = URL(string: remoteUrlString) {
-                // Async fallback loader context for editing state profiles
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    case .failure, .empty:
-                        Color.gray.opacity(0.1)
-                            .overlay(Image(systemName: "photo").foregroundStyle(.gray))
-                    @unknown default:
-                        EmptyView()
+                ZStack {
+                    Color.white
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxHeight: 180)
+                                .padding(8)
+                        case .failure, .empty:
+                            Color.gray.opacity(0.1)
+                                .frame(height: 120)
+                                .overlay(Image(systemName: "photo").foregroundStyle(.gray))
+                        @unknown default:
+                            EmptyView()
+                        }
                     }
                 }
-                .frame(height: 120)
                 .frame(maxWidth: .infinity)
+                .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.15), lineWidth: 1))
                 .padding(.top, 4)
             }
         }
