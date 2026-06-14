@@ -70,34 +70,3 @@ struct EventRegistrationCardView: View {
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
 }
-
-#Preview {
-    NavigationStack {
-        EventRegistrationListView(registrations: [
-            EventRegistrationItem(
-                id: "1",
-                eventDetail: .init(id: "e1", title: "Latte Art Workshop", location: "Coffio Central", eventDate: Date(), endDate: Date()),
-                registeredAt: Date(),
-                status: .approved,
-                cancelReason: nil,
-                menuNotes: nil
-            ),
-            EventRegistrationItem(
-                id: "2",
-                eventDetail: .init(id: "e2", title: "Coffee Cupping Session", location: "Beanery Lab", eventDate: Date().addingTimeInterval(86400), endDate: Date()),
-                registeredAt: Date(),
-                status: .pending,
-                cancelReason: nil,
-                menuNotes: nil
-            ),
-            EventRegistrationItem(
-                id: "3",
-                eventDetail: .init(id: "e3", title: "Barista Championship", location: "Grand Hall", eventDate: Date(), endDate: Date()),
-                registeredAt: Date(),
-                status: .paymentSubmitted,
-                cancelReason: "Waiting for verification",
-                menuNotes: nil
-            )
-        ])
-    }
-}

@@ -124,41 +124,6 @@ final class EventFetcher: SupabaseParsable {
         return publicURL.absoluteString
     }
     
-    func fetchUserRegistrations(userId: String) async throws -> [EventRegistrationItem] {
-        // Querying the view you specified
-        let response = try await supabaseClient
-            .from("view_event_registration_items")
-            .select()
-            .eq("user_id", value: userId) // Filter by the current user
-            .execute()
-        
-        let decoder = JSONDecoder()
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-
-        decoder.dateDecodingStrategy = .custom { decoder in
-            let container = try decoder.singleValueContainer()
-            let dateString = try container.decode(String.self)
-            
-            // 1. Try format with fractional seconds (standard Supabase format)
-            let fractionalFormatter = DateFormatter()
-            fractionalFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ"
-            if let date = fractionalFormatter.date(from: dateString) {
-                return date
-            }
-            
-            // 2. Fallback to standard ISO8601
-            let isoFormatter = ISO8601DateFormatter()
-            if let date = isoFormatter.date(from: dateString) {
-                return date
-            }
-            
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
-        }
-        
-        return try decoder.decode([EventRegistrationItem].self, from: response.data)
-    }
-    
     func fetchEventById(id: String) async throws -> DiscoverEventItem {
         let response = try await supabaseClient
             .from("discover_events_view")
@@ -180,20 +145,6 @@ final class EventFetcher: SupabaseParsable {
         }
         
         return try decoder.decode(DiscoverEventItem.self, from: response.data)
-    }
-    
-    func isUserRegistered(eventId: String, userId: String) async throws -> Bool {
-        let response = try await supabaseClient
-            .from("event_registrations")
-            .select("id") // We only need to see if a record exists
-            .eq("event_id", value: eventId)
-            .eq("user_id", value: userId)
-            .limit(1)
-            .execute()
-
-        let data = response.data
-        
-        return !data.isEmpty && data != "[]".data(using: .utf8)
     }
     
     func uploadEventAsset(image: Image, fileName: String) async throws -> String {
@@ -231,6 +182,128 @@ final class EventFetcher: SupabaseParsable {
             .from("events")        // 💡 Targeting the mutable source table
             .update(request)
             .eq("id", value: id)   // Isolates transaction to this single event row
+            .execute()
+    }
+}
+
+//MARK: Registration
+extension EventFetcher {
+    func isUserRegistered(eventId: String, userId: String) async throws -> Bool {
+        let response = try await supabaseClient
+            .from("event_registrations")
+            .select("id") // We only need to see if a record exists
+            .eq("event_id", value: eventId)
+            .eq("user_id", value: userId)
+            .limit(1)
+            .execute()
+
+        let data = response.data
+        
+        return !data.isEmpty && data != "[]".data(using: .utf8)
+    }
+    
+    func fetchRegistrationsForEvent(eventId: String) async throws -> [EventRegistrationItem] {
+        // Query the updated view with the joined user profiles
+        let response = try await supabaseClient
+            .from("view_event_registration_items")
+            .select()
+            .execute()
+        
+        let decoder = JSONDecoder()
+        
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            // 1. Try format with fractional seconds (standard Supabase timestamp)
+            let fractionalFormatter = DateFormatter()
+            fractionalFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ"
+            if let date = fractionalFormatter.date(from: dateString) {
+                return date
+            }
+            
+            // 2. Fallback to standard ISO8601
+            let isoFormatter = ISO8601DateFormatter()
+            if let date = isoFormatter.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid date format: \(dateString)"
+            )
+        }
+        
+        // Decode all items from the response payload
+        let allRegistrations = try decoder.decode([EventRegistrationItem].self, from: response.data)
+        
+        // Filter out items matching this specific event instance
+        return allRegistrations.filter { $0.eventDetail.id == eventId }
+    }
+    
+    func fetchUserRegistrations(userId: String) async throws -> [EventRegistrationItem] {
+        // Querying the view you specified
+        let response = try await supabaseClient
+            .from("view_event_registration_items")
+            .select()
+            .eq("user_id", value: userId) // Filter by the current user
+            .execute()
+        
+        let decoder = JSONDecoder()
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            // 1. Try format with fractional seconds (standard Supabase format)
+            let fractionalFormatter = DateFormatter()
+            fractionalFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ"
+            if let date = fractionalFormatter.date(from: dateString) {
+                return date
+            }
+            
+            // 2. Fallback to standard ISO8601
+            let isoFormatter = ISO8601DateFormatter()
+            if let date = isoFormatter.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
+        }
+        
+        return try decoder.decode([EventRegistrationItem].self, from: response.data)
+    }
+    
+    func approveRegistration(id: String) async throws {
+        // Formulate request updating status string and timestamp log context
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let currentTimestamp = formatter.string(from: Date())
+        
+        let request = UpdateRegistrationStatusRequest(
+            status: "approved",
+            approvedAt: currentTimestamp
+        )
+        
+        try await supabaseClient
+            .from("event_registrations")
+            .update(request)
+            .eq("id", value: id)
+            .execute()
+    }
+    
+    func rejectRegistration(id: String) async throws {
+        let request = UpdateRegistrationStatusRequest(
+            status: "rejected",
+            approvedAt: nil
+        )
+        
+        try await supabaseClient
+            .from("event_registrations")
+            .update(request)
+            .eq("id", value: id)
             .execute()
     }
 }

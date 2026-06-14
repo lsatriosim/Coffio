@@ -13,6 +13,7 @@ struct DiscoverDetailEventView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State var showRegistrationSheet: Bool = false
+    @State private var navigateToRegistrations = false
     
     @StateObject private var viewModel: DiscoverDetailEventViewModel
 
@@ -57,6 +58,9 @@ struct DiscoverDetailEventView: View {
                     await viewModel.fetchEventDetails()
                 }
             }
+        }
+        .navigationDestination(isPresented: $navigateToRegistrations) {
+            MyEventRegistrationListView(eventId: viewModel.eventId)
         }
     }
     
@@ -144,7 +148,7 @@ struct DiscoverDetailEventView: View {
                         }
                         
                         CoffioButton(title: "See Participant") {
-                            
+                            navigateToRegistrations = true
                         }
                     }
                 }
