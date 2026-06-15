@@ -75,6 +75,7 @@ struct EventFormSheet: View {
                                 placeholder: "Choose event poster",
                                 selectedItem: $posterItem,
                                 selectedImage: $posterImage,
+                                selectedData: $viewModel.posterData,
                                 remoteUrlString: viewModel.existingPosterUrl
                             )
                             
@@ -83,6 +84,7 @@ struct EventFormSheet: View {
                                 placeholder: "Choose menu selection image",
                                 selectedItem: $menuItem,
                                 selectedImage: $menuImage,
+                                selectedData: $viewModel.menuData,
                                 remoteUrlString: viewModel.existingMenuUrl
                             )
                             
@@ -261,7 +263,7 @@ private extension EventFormSheet {
     }
     
     func handleSubmitAction() {
-        viewModel.publishEvent(posterImage: posterImage, menuImage: menuImage) {
+        viewModel.publishEvent(posterData: viewModel.posterData, menuData: viewModel.menuData) {
             dismiss()
         }
     }

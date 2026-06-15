@@ -154,6 +154,7 @@ struct EventRegistrationSheet: View {
             placeholder: selectedImage == nil ? "Choose payment proof" : "Change payment proof",
             selectedItem: $selectedPhotoItem,
             selectedImage: $selectedImage,
+            selectedData: $viewModel.selectedImageData,
             remoteUrlString: nil
         )
     }

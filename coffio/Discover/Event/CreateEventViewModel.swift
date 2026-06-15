@@ -48,6 +48,8 @@ final class EventFormViewModel: ObservableObject {
     @Published var errorMessage: String = ""
     @Published var existingPosterUrl: String? = nil
     @Published var existingMenuUrl: String? = nil
+    @Published var posterData: Data? = nil
+    @Published var menuData: Data? = nil
     
     private let fetcher = EventFetcher()
     private let shopFetcher = CoffeeShopFetcher()
@@ -71,7 +73,7 @@ final class EventFormViewModel: ObservableObject {
         return true
     }
     
-    func publishEvent(posterImage: Image?, menuImage: Image?, completion: @escaping () -> Void) {
+    func publishEvent(posterData: Data?, menuData: Data?, completion: @escaping () -> Void) {
         guard isFormValid else {
             self.errorMessage = "Please complete all mandatory field configurations."
             self.isError = true
@@ -90,24 +92,26 @@ final class EventFormViewModel: ObservableObject {
                 var calculatedPosterUrl: String? = nil
                 var calculatedMenuUrl: String? = nil
                 
-                // 1. Process concurrent multi-file storage transactions cleanly
-                if let posterImage {
-                    calculatedPosterUrl = try await fetcher.uploadEventAsset(image: posterImage, fileName: "poster")
-                }
-                if let menuImage {
-                    calculatedMenuUrl = try await fetcher.uploadEventAsset(image: menuImage, fileName: "menu")
+                // 3. Pass the clean, unrendered data directly to your fetcher
+                if let posterData {
+                    calculatedPosterUrl = try await fetcher.uploadEventAsset(imageData: posterData, fileName: "poster")
+                } else {
+                    calculatedPosterUrl = existingPosterUrl
                 }
                 
-                // 2. Format ISO8601 Timestamps
+                if let menuData {
+                    calculatedMenuUrl = try await fetcher.uploadEventAsset(imageData: menuData, fileName: "menu")
+                } else {
+                    calculatedMenuUrl = existingMenuUrl
+                }
+                
                 let isoFormatter = ISO8601DateFormatter()
                 let eventDateString = isoFormatter.string(from: startTime)
                 let endDateString = isoFormatter.string(from: endTime)
                 
-                // 3. Cast values safely to numeric configurations
                 let parsedCapacity = Int(capacity) ?? 0
                 let parsedPrice = ticketType == .paid ? (Int(ticketPrice) ?? 0) : nil
                 
-                // 4. Construct structural payload
                 let requestPayload = CreateEventRequest(
                     title: title,
                     description: description,

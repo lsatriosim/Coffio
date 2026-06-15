@@ -89,28 +89,17 @@ final class EventFetcher: SupabaseParsable {
     }
     
     func uploadPaymentProof(
-        image: Image,
+        image: Data,
         eventId: String,
         userId: String
     ) async throws -> String {
-        guard let uiImage = await image.asUIImage(),
-              let imageData = uiImage.jpegData(compressionQuality: 0.8) else {
-            throw NSError(
-                domain: "ImageConversion",
-                code: 0,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Failed to convert image"
-                ]
-            )
-        }
-        
         let filePath = "\(eventId)/\(userId).jpg"
         
         try await supabaseClient.storage
             .from("payment-proofs")
             .upload(
                 filePath,
-                data: imageData,
+                data: image,
                 options: FileOptions(
                     contentType: "image/jpeg",
                     upsert: true
@@ -147,12 +136,8 @@ final class EventFetcher: SupabaseParsable {
         return try decoder.decode(DiscoverEventItem.self, from: response.data)
     }
     
-    func uploadEventAsset(image: Image, fileName: String) async throws -> String {
-        guard let uiImage = await image.asUIImage(),
-              let imageData = uiImage.jpegData(compressionQuality: 0.8) else {
-            throw NSError(domain: "AssetConversionError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse system media canvas assets."])
-        }
-        
+    func uploadEventAsset(imageData: Data, fileName: String) async throws -> String {
+        let uniqueId = UUID().uuidString
         let filePath = "assets/\(UUID().uuidString)_\(fileName).jpg"
         
         try await supabaseClient.storage
@@ -160,7 +145,10 @@ final class EventFetcher: SupabaseParsable {
             .upload(
                 filePath,
                 data: imageData,
-                options: FileOptions(contentType: "image/jpeg", upsert: true)
+                options: FileOptions(
+                    contentType: "image/jpeg",
+                    upsert: true
+                )
             )
         
         let publicURL = try supabaseClient.storage

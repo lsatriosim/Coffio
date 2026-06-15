@@ -16,6 +16,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     @Published var isAlreadyRegistered: Bool = false
     @Published var isAuthor: Bool = false
     @Published var isEditEventSheetPresented: Bool = false
+    @Published var selectedImageData: Data? = nil
     
     private let fetcher = EventFetcher()
     let authService: AuthenticationService = .shared
@@ -53,8 +54,9 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         
         Task {
             do {
+                guard let selectedImageData else { return}
                 _ = try await fetcher.uploadPaymentProof(
-                    image: paymentProofImage,
+                    image: selectedImageData,
                     eventId: eventId,
                     userId: user.id
                 )

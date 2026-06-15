@@ -12,12 +12,11 @@ struct CoffioPhotoPickerField: View {
     let label: String
     let placeholder: String
     
-    // Core structural inputs
     @Binding var selectedItem: PhotosPickerItem?
     @Binding var selectedImage: Image?
+    @Binding var selectedData: Data? // 💡 Add this binding to extract raw data cleanly
     var remoteUrlString: String? = nil
     
-    // Internal view state control context
     @State private var isPickerPresented = false
     
     var body: some View {
@@ -27,7 +26,6 @@ struct CoffioPhotoPickerField: View {
                 .foregroundStyle(.gray)
                 .padding(.leading, 4)
 
-            // Interactive Selector Bar Trigger
             Button {
                 isPickerPresented = true
             } label: {
@@ -49,41 +47,35 @@ struct CoffioPhotoPickerField: View {
                 .background(fieldBackground)
             }
             .buttonStyle(.plain)
-            .photosPicker(
-                isPresented: $isPickerPresented,
-                selection: $selectedItem,
-                matching: .images
-            )
+            .photosPicker(isPresented: $isPickerPresented, selection: $selectedItem, matching: .images)
             .onChange(of: selectedItem) { oldValue, newValue in
                 Task {
-                    if let loaded = try? await newValue?.loadTransferable(type: Image.self) {
-                        await MainActor.run {
-                            self.selectedImage = loaded
+                    if let rawData = try? await newValue?.loadTransferable(type: Data.self) {
+                        
+                        if let decodedUIImage = UIImage(data: rawData),
+                           let pristineJPEGData = decodedUIImage.jpegData(compressionQuality: 0.5) {
+                            
+                            await MainActor.run {
+                                self.selectedData = pristineJPEGData
+                                self.selectedImage = Image(uiImage: decodedUIImage)
+                            }
                         }
                     }
                 }
             }
             
-            // Standardized Aspect-Fit Uncropped Rendering Engine Layout Box
+            // Preview rendering logic remains here...
             if let selectedImage {
                 renderImageContainer {
-                    selectedImage
-                        .resizable()
-                        .scaledToFit()
+                    selectedImage.resizable().scaledToFit()
                 }
             } else if let remoteUrlString, let url = URL(string: remoteUrlString) {
                 renderImageContainer {
                     AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFit()
-                        case .failure, .empty:
-                            Color.gray.opacity(0.1)
-                                .overlay(Image(systemName: "photo").foregroundStyle(.gray))
-                        @unknown default:
-                            EmptyView()
+                        if let image = phase.image {
+                            image.resizable().scaledToFit()
+                        } else {
+                            Color.gray.opacity(0.1).overlay(Image(systemName: "photo").foregroundStyle(.gray))
                         }
                     }
                 }
@@ -91,32 +83,18 @@ struct CoffioPhotoPickerField: View {
         }
     }
     
-    // Encapsulated structural layout frame view decorator to ensure unified presentation styling
     @ViewBuilder
     private func renderImageContainer<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        ZStack {
-            Color.white
-            content()
-                .frame(maxHeight: 180)
-                .padding(8)
-        }
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
-        .padding(.top, 4)
+        content()
+            .frame(maxHeight: 180)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            .padding(.top, 4)
     }
-    
+
     private var fieldBackground: some View {
         RoundedRectangle(cornerRadius: 12)
             .fill(.white)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(0.02), radius: 4)
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
     }
 }
