@@ -14,6 +14,7 @@ struct MyEventCardDataModel: Identifiable {
     let endDate: Date?
     let location: String
     let address: String
+    let participantNeedConfirmation: Int
 }
 
 struct MyEventCardView: View {
@@ -49,6 +50,33 @@ struct MyEventCardView: View {
                         .font(.caption)
                 }
             }
+            
+            if dataModel.participantNeedConfirmation > 0 {
+                Divider()
+                    .padding(.top, 2)
+                
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(Color(hex: "ad6928"))
+                    
+                    Text("\(dataModel.participantNeedConfirmation) registration\(dataModel.participantNeedConfirmation > 1 ? "s" : "") need confirmation")
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color(hex: "ad6928"))
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color(hex: "ad6928").opacity(0.7))
+                }
+                .padding(.vertical, 6)
+                .padding(.horizontal, 10)
+                .background(Color(hex: "ad6928").opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
         }
         .padding(16)
         .background(Color.white)
@@ -70,7 +98,8 @@ struct MyEventCardView: View {
                 startDate: baseDate,
                 endDate: differentDayEnd,
                 location: "Yellow Fox - Pluit",
-                address: "Jl Pluit No 145, Jakarta utara"
+                address: "Jl Pluit No 145, Jakarta utara",
+                participantNeedConfirmation: 4
             )
         )
     }

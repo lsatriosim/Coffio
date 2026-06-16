@@ -190,6 +190,38 @@ extension EventFetcher {
         return !data.isEmpty && data != "[]".data(using: .utf8)
     }
     
+    func fetchAllRegistrationsAcrossView() async throws -> [EventRegistrationItem] {
+        let response = try await supabaseClient
+            .from("view_event_registration_items")
+            .select()
+            .execute()
+        
+        let decoder = JSONDecoder()
+        
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            let fractionalFormatter = DateFormatter()
+            fractionalFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ"
+            if let date = fractionalFormatter.date(from: dateString) {
+                return date
+            }
+            
+            let isoFormatter = ISO8601DateFormatter()
+            if let date = isoFormatter.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid date format: \(dateString)"
+            )
+        }
+        
+        return try decoder.decode([EventRegistrationItem].self, from: response.data)
+    }
+    
     func fetchRegistrationsForEvent(eventId: String) async throws -> [EventRegistrationItem] {
         // Query the updated view with the joined user profiles
         let response = try await supabaseClient

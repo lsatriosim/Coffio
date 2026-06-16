@@ -19,6 +19,7 @@ struct EventRegistrationItem: JSONDecodable, Identifiable {
     let paymentProofUrl: String?
     let paymentDeadlineAt: Date?
     let paymentSubmittedAt: Date?
+    let referralCode: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -31,6 +32,7 @@ struct EventRegistrationItem: JSONDecodable, Identifiable {
         case paymentProofUrl = "payment_proof_url"
         case paymentDeadlineAt = "payment_deadline_at"
         case paymentSubmittedAt = "payment_submitted_at"
+        case referralCode = "referral_code"
     }
     
     enum RegistrationStatus: String, JSONDecodable {

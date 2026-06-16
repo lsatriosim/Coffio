@@ -24,7 +24,12 @@ final class MyEventListViewModel: ObservableObject {
     @Published var isError = false
     @Published var errorMessage = ""
     
-    /// Entrypoint trigger lifecycle method
+    private let fetcher: EventFetcher
+    
+    init(fetcher: EventFetcher = EventFetcher()) {
+        self.fetcher = fetcher
+    }
+    
     func onViewDidLoad() {
         guard events.isEmpty else { return }
         Task {
@@ -40,57 +45,40 @@ final class MyEventListViewModel: ObservableObject {
         do {
             // Retrieve current authenticated session profile user ID
             guard let currentUserId = supabaseClient.auth.currentUser?.id.uuidString else {
-                throw NSError(domain: "AuthError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User session not found. Please log in again."])
+                throw NSError(
+                    domain: "AuthError",
+                    code: 401,
+                    userInfo: [NSLocalizedDescriptionKey: "User session not found. Please log in again."]
+                )
             }
             
-            // Execute view network data fetch
-            let rawItems = try await fetchEvent(authorId: currentUserId)
+            async let eventsTask = fetcher.fetchEvent(authorId: currentUserId)
+            async let registrationsTask = fetcher.fetchAllRegistrationsAcrossView()
             
-            // Map models cleanly into the dedicated UI Presentation structure format
+            let (rawItems, allRegistrations) = try await (eventsTask, registrationsTask)
+            
             self.events = rawItems.map { item in
-                MyEventCardDataModel(
+                let pendingCount = allRegistrations.filter { registration in
+                    registration.eventDetail.id == item.id &&
+                    registration.status == .paymentSubmitted
+                }.count
+                
+                return MyEventCardDataModel(
                     id: item.id,
                     title: item.title,
                     startDate: item.eventDate,
                     endDate: item.endDate,
                     location: item.cafeName ?? "Venue Partner",
-                    address: item.location ?? "No structural address provided"
+                    address: item.location ?? "No structural address provided",
+                    participantNeedConfirmation: pendingCount
                 )
             }
         } catch {
             self.errorMessage = error.localizedDescription
             self.isError = true
+            print("Execution layer mapping error context: \(error)")
         }
         
         self.isLoading = false
-    }
-    
-    // MARK: - Supabase Query Request Layer
-    private func fetchEvent(authorId: String) async throws -> [DiscoverEventItem] {
-        let response = try await supabaseClient
-            .from("discover_events_view")
-            .select()
-            .eq("created_by", value: authorId)
-            .execute()
-        
-        let decoder = JSONDecoder()
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        
-        decoder.dateDecodingStrategy = .custom { decoder in
-            let container = try decoder.singleValueContainer()
-            let string = try container.decode(String.self)
-            
-            if let date = formatter.date(from: string) {
-                return date
-            }
-            
-            throw DecodingError.dataCorruptedError(
-                in: container,
-                debugDescription: "Invalid date representation: \(string)"
-            )
-        }
-        
-        return try decoder.decode([DiscoverEventItem].self, from: response.data)
     }
 }

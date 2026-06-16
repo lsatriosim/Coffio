@@ -57,11 +57,20 @@ struct EventRegistrationCardView: View {
                 }
             }
             
-            if let reason = registration.cancelReason {
-                Text("Note: \(reason)")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-                    .padding(.top, 4)
+            VStack {
+                if let reason = registration.cancelReason {
+                    Text("Note: \(reason)")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .padding(.top, 4)
+                }
+                
+                if let referralCode = registration.referralCode {
+                    Text("referralCode: \(referralCode)")
+                        .font(.caption)
+                        .foregroundStyle(.black)
+                        .padding(.top, 4)
+                }
             }
         }
         .padding(16)
