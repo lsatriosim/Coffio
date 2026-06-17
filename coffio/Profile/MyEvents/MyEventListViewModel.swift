@@ -70,7 +70,8 @@ final class MyEventListViewModel: ObservableObject {
                     endDate: item.endDate,
                     location: item.cafeName ?? "Venue Partner",
                     address: item.location ?? "No structural address provided",
-                    participantNeedConfirmation: pendingCount
+                    participantNeedConfirmation: pendingCount,
+                    status: item.eventStatus
                 )
             }
         } catch {

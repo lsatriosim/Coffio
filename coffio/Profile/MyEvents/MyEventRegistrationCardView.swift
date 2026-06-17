@@ -43,6 +43,15 @@ struct MyEventRegistrationCardView: View {
                 }
             }
             
+            if let referralCode = registration.referralCode {
+                Divider()
+                VStack(alignment: .leading, spacing: 4) {
+                    Label("Referral Code", systemImage: "person.3")
+                        .font(.caption2).bold().foregroundStyle(Color(hex: "ad6928"))
+                    Text(referralCode).font(.footnote).foregroundStyle(.primary)
+                }
+            }
+            
             // ACTION BLOCK: Appears when status is paymentSubmitted
             if registration.status == .paymentSubmitted || registration.status == .approved {
                 Divider()

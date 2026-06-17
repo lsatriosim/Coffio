@@ -15,6 +15,7 @@ struct MyEventCardDataModel: Identifiable {
     let location: String
     let address: String
     let participantNeedConfirmation: Int
+    let status: EventStatus
 }
 
 struct MyEventCardView: View {
@@ -29,17 +30,31 @@ struct MyEventCardView: View {
                         .bold()
                         .lineLimit(2)
                     Spacer()
-                    Text(
-                        DateFormatterUtil.formatEventDuration(
-                            start: dataModel.startDate,
-                            end: dataModel.endDate
+                    HStack(spacing: 6) {
+                        // 💡 Dynamic Status Tag Layout
+                        if dataModel.status == .pending {
+                            Text("Waiting Approval")
+                                .font(.system(size: 10, weight: .bold))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .foregroundStyle(.orange)
+                                .background(.orange.opacity(0.12))
+                                .clipShape(Capsule())
+                        }
+                        
+                        Text(
+                            DateFormatterUtil.formatEventDuration(
+                                start: dataModel.startDate,
+                                end: dataModel.endDate
+                            )
                         )
-                    )
                         .font(.system(size: 10, weight: .bold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(.gray.opacity(0.25))
+                        .foregroundStyle(.secondary)
+                        .background(.gray.opacity(0.12))
                         .clipShape(Capsule())
+                    }
                 }
                 
                 VStack(alignment: .leading, spacing: 4.0) {
@@ -99,7 +114,8 @@ struct MyEventCardView: View {
                 endDate: differentDayEnd,
                 location: "Yellow Fox - Pluit",
                 address: "Jl Pluit No 145, Jakarta utara",
-                participantNeedConfirmation: 4
+                participantNeedConfirmation: 4,
+                status: .approved
             )
         )
     }

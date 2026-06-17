@@ -147,8 +147,19 @@ struct DiscoverDetailEventView: View {
                             viewModel.isEditEventSheetPresented = true
                         }
                         
-                        CoffioButton(title: "See Participant") {
-                            navigateToRegistrations = true
+                        if dataModel.eventStatus == .rejected {
+                            CoffioInfoBox(
+                                type: .failed,
+                                title: "Submission Rejected",
+                                description: "Please edit and review your event verification details, location description, or ticket pricing format before submitting for verification again."
+                            )
+                            .padding(.top, 2)
+                        }
+                        
+                        if viewModel.event?.eventStatus != .rejected {
+                            CoffioButton(title: viewModel.event?.eventStatus == .approved ? "See Participant" : "Waiting for Approval", isDisabled: viewModel.event?.eventStatus == .pending) {
+                                navigateToRegistrations = true
+                            }
                         }
                     }
                 }

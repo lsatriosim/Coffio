@@ -24,6 +24,7 @@ struct DiscoverEventItem: JSONDecodable {
     let externalRegistrationURL: String?
     let participantRegistered: Int
     let paymentInfo: PaymentInfo?
+    let eventStatus: EventStatus
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -42,12 +43,19 @@ struct DiscoverEventItem: JSONDecodable {
         case externalRegistrationURL = "external_registration_url"
         case participantRegistered = "participant_registered"
         case paymentInfo = "payment_info"
+        case eventStatus = "status"
     }
 }
 
 enum RegistrationType: String, JSONDecodable {
     case `internal`
     case external
+}
+
+enum EventStatus: String, JSONDecodable {
+    case approved
+    case pending
+    case rejected
 }
 
 struct PaymentInfo: JSONDecodable {
@@ -83,7 +91,8 @@ let discoverEventMock: [DiscoverEventItem] = [
             bankName: "BCA",
             bankAccount: "8632321",
             bankHolder: "Liefran Satrio"
-        )
+        ),
+        eventStatus: .approved
     ),
     .init(
         id: "2",
@@ -105,6 +114,7 @@ let discoverEventMock: [DiscoverEventItem] = [
             bankName: "BCA",
             bankAccount: "8632321",
             bankHolder: "Liefran Satrio"
-        )
+        ),
+        eventStatus: .approved
     )
 ]
