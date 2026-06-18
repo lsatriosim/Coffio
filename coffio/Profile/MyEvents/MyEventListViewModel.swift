@@ -75,6 +75,7 @@ final class MyEventListViewModel: ObservableObject {
                 )
             }
         } catch {
+            guard !(error is CancellationError) else { return }
             self.errorMessage = error.localizedDescription
             self.isError = true
             print("Execution layer mapping error context: \(error)")
