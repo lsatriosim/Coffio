@@ -12,14 +12,7 @@ struct DiscoverEventListView: View {
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            
             VStack(alignment: .leading, spacing: 6.0) {
-                Text("Incoming Event")
-                    .font(.title2)
-                    .bold()
-                    .padding(.horizontal, 20.0)
-                    .padding(.top, 16)
-                
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVStack(alignment: .center, spacing: 16) {
                         if viewModel.isLoading && viewModel.events.isEmpty {
@@ -62,8 +55,8 @@ struct DiscoverEventListView: View {
             .padding(.trailing, 24)
             .padding(.bottom, 24)
         }
-        // 💡 FIX: Ensures the ZStack expanded framework fills the entire screen layout window
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationTitle("All Events")
         .task {
             viewModel.onViewDidLoad()
         }
@@ -72,5 +65,6 @@ struct DiscoverEventListView: View {
                 .presentationDetents([.large])
         }
         .environmentObject(viewModel)
+        .toolbar(.hidden, for: .tabBar)
     }
 }
