@@ -10,7 +10,6 @@ import SwiftUI
 
 final class DiscoverFrontCardListViewModel: ObservableObject {
     @Published var coffeeShop: [DiscoverCoffeeShopItemDataModel] = []
-    @Published var events: [DiscoverEventItem] = []
     @Published var isLoading: Bool = false
     @Published var isPageLoading: Bool = false // 💡 Inline footer pagination tracker
     @Published var hasViewModelLoaded: Bool = false
@@ -27,16 +26,8 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         do {
             await updateHasViewModelLoaded(hasViewModelLoaded: true)
             await updateIsLoading(isLoading: true)
-            
-            // Initial payload batch runs concurrently (Page 0)
-            async let initialShops: () = fetchNextCoffeeShopPage()
-            async let initialEvents: () = fetchEvents()
-            
-            _ = try await [initialShops, initialEvents]
+            try await fetchNextCoffeeShopPage()
             await updateIsLoading(isLoading: false)
-            
-            // 💡 NEW: Instantly start background streaming for remaining pages
-            // without waiting for any scrolling interactions!
             startBackgroundStreaming()
         }
         catch {
@@ -47,17 +38,13 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     }
     
     private func startBackgroundStreaming() {
-        // Cancel the previous streaming loop if it's still running
         streamingTask?.cancel()
-        
-        // Assign and run the new task context
         streamingTask = Task {
             await streamAllPagesSequentially()
         }
     }
     
     private func streamAllPagesSequentially() async {
-        // Keep looping as long as the API tells us there are more items to grab
         while canLoadMorePages {
             if Task.isCancelled {
                 print("Background polling loop successfully halted via Task cancellation.")
@@ -79,7 +66,6 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
             }
             
             await updateIsPageLoading(isLoading: false)
-//            try? await Task.sleep(nanoseconds: 100_000_000)
         }
     }
     
@@ -95,7 +81,6 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
         
         do {
             try await fetchNextCoffeeShopPage()
-            try await fetchEvents()
             await updateIsLoading(isLoading: false)
             
             startBackgroundStreaming()
@@ -117,7 +102,6 @@ final class DiscoverFrontCardListViewModel: ObservableObject {
     }
     
     private let fetcher = CoffeeShopFetcher()
-    private let eventFetcher = EventFetcher()
 }
 
 //MARK: - Private Fetch Engine Operations
@@ -154,12 +138,6 @@ private extension DiscoverFrontCardListViewModel {
         
         await appendAndSortCoffeeShopsOnMainActor(newShops: parsedPageBatch)
         currentPage += 1
-    }
-    
-    func fetchEvents() async throws {
-        // Initial dashboard event view request window boundary (0 to 4 items)
-        let response = try await eventFetcher.fetchEvent(from: 0, to: 4)
-        await updateEvents(events: response)
     }
 }
 
@@ -206,10 +184,5 @@ private extension DiscoverFrontCardListViewModel {
     @MainActor
     private func updateHasViewModelLoaded(hasViewModelLoaded: Bool) {
         self.hasViewModelLoaded = hasViewModelLoaded
-    }
-    
-    @MainActor
-    private func updateEvents(events: [DiscoverEventItem]) {
-        self.events = events
     }
 }

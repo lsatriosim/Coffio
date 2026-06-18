@@ -19,7 +19,7 @@ struct ContentView: View {
             TabView(selection: $selectedTab) {
                 Tab("Discover", systemImage: "cup.and.saucer", value: 0) {
                     NavigationStack {
-                        HomeView()
+                        DiscoverLandingView()
                     }
                 }
                 

@@ -18,6 +18,17 @@ final class CoffeeShopFetcher: SupabaseParsable {
         return try decoder.decode([DiscoverCoffeeShopItem].self, from: response.data)
     }
     
+    func fetchTopCoffeeShops(limit: Int) async throws -> [DiscoverCoffeeShopItem] {
+        let response = try await supabaseClient
+            .from("coffee_shops")
+            .select()
+            .limit(limit)
+            .execute()
+        
+        let decoder = JSONDecoder()
+        return try decoder.decode([DiscoverCoffeeShopItem].self, from: response.data)
+    }
+    
     func fetchCoffeeShop(from: Int, to: Int) async throws -> [DiscoverCoffeeShopItem] {
         let response = try await supabaseClient
             .from("coffee_shops")
