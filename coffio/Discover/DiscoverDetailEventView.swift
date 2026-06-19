@@ -16,6 +16,7 @@ struct DiscoverDetailEventView: View {
     @State private var navigateToRegistrations = false
     
     @StateObject private var viewModel: DiscoverDetailEventViewModel
+    @State private var isShowingPreview: Bool = false
 
     init(eventId: String, event: DiscoverEventItem? = nil) {
         _viewModel = StateObject(wrappedValue: DiscoverDetailEventViewModel(eventId: eventId, initialEvent: event))
@@ -61,6 +62,14 @@ struct DiscoverDetailEventView: View {
         }
         .navigationDestination(isPresented: $navigateToRegistrations) {
             MyEventRegistrationListView(eventId: viewModel.eventId)
+        }
+        .overlay {
+            if isShowingPreview {
+                InteractiveImagePreview(
+                    imageUrl: viewModel.event?.imageUrl,
+                    isPresented: $isShowingPreview
+                )
+            }
         }
     }
     
@@ -229,7 +238,11 @@ struct DiscoverDetailEventView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: kImageHeight)
             .background(Color.clear)
-
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    isShowingPreview = true
+                }
+            }
         } else {
             placeholderView
         }
