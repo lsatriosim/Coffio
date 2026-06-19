@@ -67,9 +67,16 @@ struct DiscoverEventFrontCardItemView: View {
                             .bold()
                             .foregroundStyle(Color(hex: "ad6928"))
                         Spacer()
-                        Text("\(dataModel.capacity - dataModel.participantRegistered) slot(s) left")
-                            .font(.caption)
-                            .foregroundStyle(.primary)
+                        if dataModel.slotLeft <= 0 {
+                            Text("Sold Out")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
+                        else {
+                            Text("\(dataModel.slotLeft) slot(s) left")
+                                .font(.caption)
+                                .foregroundStyle(.primary)
+                        }
                     }
                 }
             }

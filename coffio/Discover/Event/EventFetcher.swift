@@ -44,6 +44,8 @@ final class EventFetcher: SupabaseParsable {
         let response = try await supabaseClient
             .from("discover_events_view")
             .select()
+            .gt("slot_left", value: 0)
+            .order("event_date", ascending: true)
             .limit(limit)
             .execute()
         

@@ -68,7 +68,8 @@ private extension DiscoverEventListViewModel {
 private extension DiscoverEventListViewModel {
     @MainActor
     func appendEvents(newEvents: [DiscoverEventItem]) {
-        self.events.append(contentsOf: newEvents) // Gracefully stacks new rows to the view
+        let filteredEvent: [DiscoverEventItem] = newEvents.filter { $0.eventStatus == .approved }
+        self.events.append(contentsOf: filteredEvent)
     }
     
     @MainActor

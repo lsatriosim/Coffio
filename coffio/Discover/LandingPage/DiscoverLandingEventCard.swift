@@ -76,13 +76,24 @@ struct DiscoverLandingEventCard: View {
                         
                         Spacer()
                         
-                        Text("\(dataModel.capacity - dataModel.participantRegistered) left")
-                            .font(.system(size: 9, weight: .bold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.white.opacity(0.2))
-                            .clipShape(Capsule())
-                            .foregroundStyle(.white)
+                        if dataModel.capacity - dataModel.participantRegistered == 0 {
+                            Text("Sold Out")
+                                .font(.system(size: 9, weight: .bold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(.white.opacity(0.2))
+                                .clipShape(Capsule())
+                                .foregroundStyle(.white)
+                        }
+                        else {
+                            Text("\(dataModel.capacity - dataModel.participantRegistered) left")
+                                .font(.system(size: 9, weight: .bold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(.white.opacity(0.2))
+                                .clipShape(Capsule())
+                                .foregroundStyle(.white)
+                        }
                     }
                     .padding(.top, 2)
                 }

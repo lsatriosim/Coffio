@@ -25,6 +25,7 @@ struct DiscoverEventItem: JSONDecodable {
     let participantRegistered: Int
     let paymentInfo: PaymentInfo?
     let eventStatus: EventStatus
+    let slotLeft: Int
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -44,6 +45,7 @@ struct DiscoverEventItem: JSONDecodable {
         case participantRegistered = "participant_registered"
         case paymentInfo = "payment_info"
         case eventStatus = "status"
+        case slotLeft = "slot_left"
     }
 }
 
@@ -92,7 +94,8 @@ let discoverEventMock: [DiscoverEventItem] = [
             bankAccount: "8632321",
             bankHolder: "Liefran Satrio"
         ),
-        eventStatus: .approved
+        eventStatus: .approved,
+        slotLeft: 0
     ),
     .init(
         id: "2",
@@ -115,6 +118,7 @@ let discoverEventMock: [DiscoverEventItem] = [
             bankAccount: "8632321",
             bankHolder: "Liefran Satrio"
         ),
-        eventStatus: .approved
+        eventStatus: .approved,
+        slotLeft: 0
     )
 ]

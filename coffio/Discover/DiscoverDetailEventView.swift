@@ -175,6 +175,9 @@ struct DiscoverDetailEventView: View {
                     .disabled(true)
                     .opacity(0.6)
                 }
+                else if dataModel.slotLeft <= 0 {
+                    CoffioButton(title: "Sold Out", isDisabled: true) {}
+                }
                 else {
                     CoffioButton(title: "Register") {
                         guard viewModel.authService.user != nil else {
