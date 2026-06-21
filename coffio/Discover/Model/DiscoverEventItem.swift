@@ -26,6 +26,7 @@ struct DiscoverEventItem: JSONDecodable {
     let paymentInfo: PaymentInfo?
     let eventStatus: EventStatus
     let slotLeft: Int
+    let communityInfo: CommunityInfo?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -46,6 +47,27 @@ struct DiscoverEventItem: JSONDecodable {
         case paymentInfo = "payment_info"
         case eventStatus = "status"
         case slotLeft = "slot_left"
+        case communityInfo = "community_info"
+    }
+}
+
+struct CommunityInfo: JSONDecodable {
+    let id: String
+    let name: String
+    let description: String?
+    let imageUrl: String?
+    let whatsappUrl: String?
+    let discordUrl: String?
+    let instagramUrl: String?
+    let facebookUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, description
+        case imageUrl = "image_url"
+        case whatsappUrl = "whatsapp_url"
+        case discordUrl = "discord_url"
+        case instagramUrl = "instagram_url"
+        case facebookUrl = "facebook_url"
     }
 }
 
@@ -71,54 +93,3 @@ struct PaymentInfo: JSONDecodable {
         case bankHolder = "bank_holder"
     }
 }
-
-let discoverEventMock: [DiscoverEventItem] = [
-    .init(
-        id: "1",
-        title: "Brew with Barista",
-        description: "Brewing with barista newdsaodjasoid pasjdpajd p",
-        imageUrl: nil,
-        menuImageUrl: nil,
-        location: "Jl Pamekarsa No 148",
-        eventDate: .now,
-        endDate: nil,
-        price: 100000,
-        capacity: 30,
-        cafeName: "Kopi Kenangan",
-        createdBy: UUID().uuidString,
-        registrationType: .internal,
-        externalRegistrationURL: nil,
-        participantRegistered: 10,
-        paymentInfo: .init(
-            bankName: "BCA",
-            bankAccount: "8632321",
-            bankHolder: "Liefran Satrio"
-        ),
-        eventStatus: .approved,
-        slotLeft: 0
-    ),
-    .init(
-        id: "2",
-        title: "Work from Cafe",
-        description: "Brewing with barista newdsaodjasoid pasjdpajd p",
-        imageUrl: nil,
-        menuImageUrl: nil,
-        location: "Jl Pamekarsa No 148",
-        eventDate: .now,
-        endDate: nil,
-        price: 100000,
-        capacity: 30,
-        cafeName: "Kopi Kenangan",
-        createdBy: UUID().uuidString,
-        registrationType: .external,
-        externalRegistrationURL: "https://www.google.com",
-        participantRegistered: 10,
-        paymentInfo: .init(
-            bankName: "BCA",
-            bankAccount: "8632321",
-            bankHolder: "Liefran Satrio"
-        ),
-        eventStatus: .approved,
-        slotLeft: 0
-    )
-]

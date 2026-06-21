@@ -108,6 +108,68 @@ struct DiscoverDetailEventView: View {
                 .font(.title)
                 .foregroundStyle(Color(hex: "642e13"))
                 .bold()
+            
+            if let community = dataModel.communityInfo {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Hosted By")
+                        .font(.caption)
+                        .bold()
+                        .textCase(.uppercase)
+                        .foregroundStyle(.gray)
+                    
+                    NavigationLink(destination: CommunityDetailView(communityId: dataModel.communityInfo?.id ?? "")) {
+                        HStack(spacing: 12) {
+                            // Community Avatar Circle
+                            if let imgUrlStr = community.imageUrl, let url = URL(string: imgUrlStr) {
+                                AsyncImage(url: url) { image in
+                                    image.resizable().scaledToFill()
+                                } placeholder: {
+                                    Color(hex: "fcede1")
+                                }
+                                .frame(width: 44, height: 44)
+                                .clipShape(Circle())
+                            } else {
+                                // Default fallback letter mark icon
+                                ZStack {
+                                    Circle().fill(Color(hex: "fcede1"))
+                                    Text(String(community.name.prefix(1)).uppercased())
+                                        .font(.headline)
+                                        .bold()
+                                        .foregroundStyle(Color(hex: "642e13"))
+                                }
+                                .frame(width: 44, height: 44)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(community.name)
+                                    .font(.body)
+                                    .bold()
+                                    .foregroundStyle(.primary)
+                                
+                                if let desc = community.description {
+                                    Text(desc)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.gray)
+                        }
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(.white)
+                                .shadow(color: .black.opacity(0.02), radius: 4, x: 0, y: 2)
+                        )
+                    }
+                }
+                .padding(.vertical, 4)
+            }
 
             GeneralInfoCardItemView(
                 imageName: "calendar",

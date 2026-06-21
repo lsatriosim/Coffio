@@ -93,7 +93,3 @@ struct DiscoverEventFrontCardItemView: View {
             .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }
-
-#Preview {
-    DiscoverEventFrontCardItemView(dataModel: discoverEventMock[0])
-}
