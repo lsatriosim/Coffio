@@ -33,6 +33,27 @@ struct MyEventRegistrationCardView: View {
                     .clipShape(Capsule())
             }
             
+            if let phone = registration.userProfile.phone, !phone.isEmpty {
+                Button {
+                    openWhatsAppToParticipant(
+                        phone: phone,
+                        participantName: registration.userProfile.safeName,
+                        eventTitle: registration.eventDetail.title
+                    )
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "bubble.left.and.bubble.right.fill")
+                            .font(.system(size: 11))
+                        Text(phone)
+                            .font(.subheadline)
+                            .underline()
+                    }
+                    .foregroundStyle(Color(hex: "ad6928"))
+                    .padding(.top, 2)
+                }
+                .buttonStyle(.plain)
+            }
+            
             // Context Notes Block
             if let notes = registration.menuNotes, !notes.isEmpty {
                 Divider()
@@ -85,6 +106,22 @@ struct MyEventRegistrationCardView: View {
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.03), radius: 8, x: 0, y: 4)
+    }
+    
+    private func openWhatsAppToParticipant(phone: String, participantName: String, eventTitle: String) {
+        // Build your precise message template structure
+        let rawMessage = "Hi \(participantName), I'm the host for \(eventTitle). I would like to "
+        
+        // Escape spaces and special string blocks for safe URL streaming
+        guard let encodedMessage = rawMessage.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+        
+        // Clean non-digit characters out of the target string format
+        let cleanPhone = phone.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        let urlString = "https://wa.me/\(cleanPhone)?text=\(encodedMessage)"
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
+        }
     }
 }
 

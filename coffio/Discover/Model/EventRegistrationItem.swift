@@ -64,14 +64,17 @@ struct EventRegistrationItem: JSONDecodable, Identifiable {
     struct UserProfileDetail: JSONDecodable {
         let fullName: String?
         let email: String?
+        let phone: String?
         
         enum CodingKeys: String, CodingKey {
             case fullName = "full_name"
             case email
+            case phone
         }
         
         var safeName: String { fullName ?? "Unknown User" }
         var safeEmail: String { email ?? "No Email Provided" }
+        var safePhone: String { phone ?? "No Phone Provided" }
     }
 }
 
