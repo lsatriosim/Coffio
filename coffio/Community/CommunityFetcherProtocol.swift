@@ -13,6 +13,8 @@ protocol CommunityFetcherProtocol {
     func fetchPosts(for communityId: String) async throws -> [CommunityPostItem]
     func fetchCommunityDetail(by communityId: String) async throws -> CommunityDetailItem
     func fetchCommunityEvents(communityId: String) async throws -> [DiscoverEventItem]
+    func fetchTopCommunities(limit: Int) async throws -> [CommunityItem]
+    func fetchAllCommunities() async throws -> [CommunityItem]
 }
 
 final class CommunityFetcher: CommunityFetcherProtocol {
@@ -48,6 +50,15 @@ final class CommunityFetcher: CommunityFetcherProtocol {
         }
         
         return try decoder.decode(CommunityItem.self, from: response.data)
+    }
+    
+    func fetchAllCommunities() async throws -> [CommunityItem] {
+        return try await supabaseClient
+            .from("communities")
+            .select()
+            .order("name", ascending: true)
+            .execute()
+            .value
     }
     
     func fetchPosts(for communityId: String) async throws -> [CommunityPostItem] {
@@ -92,5 +103,14 @@ final class CommunityFetcher: CommunityFetcherProtocol {
         }
         
         return try decoder.decode([DiscoverEventItem].self, from: response.data)
+    }
+    
+    func fetchTopCommunities(limit: Int) async throws -> [CommunityItem] {
+        return try await supabaseClient
+            .from("communities")
+            .select("*")
+            .limit(limit)
+            .execute()
+            .value
     }
 }

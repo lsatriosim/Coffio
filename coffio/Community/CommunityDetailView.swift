@@ -36,6 +36,7 @@ struct CommunityDetailView: View {
         .navigationTitle("Community")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button { dismiss() } label: {

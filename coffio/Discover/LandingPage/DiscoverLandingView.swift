@@ -13,6 +13,7 @@ struct DiscoverLandingView: View {
     // State indicators for deep navigation mapping
     @State private var navigateToAllCafes = false
     @State private var navigateToAllEvents = false
+    @State private var navigateToAllCommunities = false
     
     private let cardWidth: CGFloat = 200
     private let cardHeight: CGFloat = 250
@@ -51,6 +52,8 @@ struct DiscoverLandingView: View {
                             .padding(.horizontal, 20)
                         }
                     }
+                    
+                    communitySection
                     
                     // MARK: - Section 2: Top 10 Coffee Shops
                     VStack(alignment: .leading, spacing: 12) {
@@ -96,6 +99,84 @@ struct DiscoverLandingView: View {
             }
             .navigationDestination(isPresented: $navigateToAllEvents) {
                 DiscoverEventListView()
+            }
+            .navigationDestination(isPresented: $navigateToAllCommunities) {
+                DiscoverCommunityListView() // 💡 Your dedicated list screen
+            }
+        }
+    }
+    
+    @ViewBuilder
+    var communitySection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            sectionHeader(title: "Coffee Communities", actionTitle: "See All") {
+                navigateToAllCommunities = true
+            }
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 20) {
+                    if viewModel.isLoading {
+                        ForEach(0..<4) { _ in
+                            VStack(spacing: 8) {
+                                Circle().fill(.gray.opacity(0.12)).frame(width: 68, height: 68)
+                                RoundedRectangle(cornerRadius: 4).fill(.gray.opacity(0.12)).frame(width: 60, height: 12)
+                            }
+                        }
+                    } else {
+                        ForEach(viewModel.topCommunities, id: \.id) { community in
+                            NavigationLink(destination: CommunityDetailView(communityId: community.id)) {
+                                VStack(spacing: 8) {
+                                    // Community Avatar Circle Card
+                                    if let imageUrl = community.imageUrl, let url = URL(string: imageUrl) {
+                                        AsyncImage(url: url) { image in
+                                            image.resizable().scaledToFill()
+                                        } placeholder: {
+                                            Color(hex: "fcede1")
+                                        }
+                                        .frame(width: 68, height: 68)
+                                        .clipShape(Circle())
+                                        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
+                                    } else {
+                                        ZStack {
+                                            Circle().fill(Color(hex: "fcede1"))
+                                            Text(String(community.name.prefix(1)).uppercased())
+                                                .font(.headline).bold().foregroundStyle(Color(hex: "642e13"))
+                                        }
+                                        .frame(width: 68, height: 68)
+                                    }
+                                    
+                                    // Title Text
+                                    Text(community.name)
+                                        .font(.caption).bold()
+                                        .foregroundStyle(Color(hex: "642e13"))
+                                        .lineLimit(1)
+                                        .frame(width: 76)
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        // Custom Tiny Circular "See More" implementation for avatars
+                        Button { navigateToAllCommunities = true } label: {
+                            VStack(spacing: 8) {
+                                ZStack {
+                                    Circle().fill(.white)
+                                    Image(systemName: "arrow.forward")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundStyle(Color(hex: "ad6928"))
+                                }
+                                .frame(width: 68, height: 68)
+                                .overlay(Circle().stroke(Color(hex: "ad6928").opacity(0.15), lineWidth: 1))
+                                
+                                Text("See More")
+                                    .font(.caption)
+                                    .foregroundStyle(Color(hex: "ad6928"))
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 2)
             }
         }
     }

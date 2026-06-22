@@ -11,11 +11,13 @@ import SwiftUI
 class DiscoverLandingViewModel: ObservableObject {
     @Published var topCoffeeShops: [DiscoverCoffeeShopItemDataModel] = []
     @Published var topEvents: [DiscoverEventItem] = []
+    @Published var topCommunities: [CommunityItem] = []
     @Published var isLoading = false
     @Published var isError = false
     
     private let coffeeShopFetcher = CoffeeShopFetcher()
     private let eventFetcher = EventFetcher()
+    private let communityFetcher = CommunityFetcher()
 
     func loadDashboardContent() async {
         isLoading = true
@@ -25,8 +27,9 @@ class DiscoverLandingViewModel: ObservableObject {
             // 1. Fetch raw top limits concurrently from the database wrappers
             async let coffeeShopsTask = coffeeShopFetcher.fetchTopCoffeeShops(limit: 10)
             async let eventsTask = eventFetcher.fetchTopEvents(limit: 5)
+            async let communitiesTask = communityFetcher.fetchTopCommunities(limit: 6)
             
-            let (rawShops, fetchedEvents) = try await (coffeeShopsTask, eventsTask)
+            let (rawShops, fetchedEvents, fetchedCommunities) = try await (coffeeShopsTask, eventsTask, communitiesTask)
             
             // 2. Parse raw coffee shops into your populated data models with distance calculations
             var parsedShopsBatch: [DiscoverCoffeeShopItemDataModel] = []
@@ -68,6 +71,7 @@ class DiscoverLandingViewModel: ObservableObject {
             guard !Task.isCancelled else { return }
             self.topCoffeeShops = parsedShopsBatch
             self.topEvents = fetchedEvents
+            self.topCommunities = fetchedCommunities
             
         } catch {
             guard !(error is CancellationError) else { return }
