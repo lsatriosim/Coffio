@@ -27,6 +27,8 @@ struct DiscoverEventItem: JSONDecodable {
     let eventStatus: EventStatus
     let slotLeft: Int
     let communityInfo: CommunityInfo?
+    let ownerPhone: String?
+    let ownerEmail: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -48,6 +50,8 @@ struct DiscoverEventItem: JSONDecodable {
         case eventStatus = "status"
         case slotLeft = "slot_left"
         case communityInfo = "community_info"
+        case ownerPhone = "owner_phone"
+        case ownerEmail = "owner_email"
     }
 }
 

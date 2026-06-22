@@ -203,6 +203,83 @@ struct DiscoverDetailEventView: View {
                     subtitle: nil
                 )
             }
+            
+            // MARK: - Contact Person Card Layout Block (💡 NEW FIELDS)
+            if (dataModel.ownerEmail != nil && !dataModel.ownerEmail!.isEmpty) ||
+               (dataModel.ownerPhone != nil && !dataModel.ownerPhone!.isEmpty) {
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Contact Host")
+                        .font(.caption)
+                        .bold()
+                        .textCase(.uppercase)
+                        .foregroundStyle(.gray)
+                        .padding(.top, 4)
+                    
+                    VStack(spacing: 0) {
+                        if let phone = dataModel.ownerPhone, !phone.isEmpty {
+                            Button {
+                                openWhatsApp(phone: phone, eventTitle: dataModel.title)
+                            } label: {
+                                HStack(spacing: 12) {
+                                    ZStack {
+                                        Circle().fill(Color(hex: "e8f5e9"))
+                                        Image(systemName: "phone.fill")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(Color(hex: "2e7d32"))
+                                    }
+                                    .frame(width: 28, height: 28)
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("WhatsApp")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        Text(phone)
+                                            .font(.subheadline)
+                                            .bold()
+                                            .foregroundStyle(Color(hex: "642e13"))
+                                    }
+                                    Spacer()
+                                    Image(systemName: "arrow.up.forward.app.fill")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(Color(hex: "ad6928"))
+                                }
+                                .padding(12)
+                            }
+                            
+                            if let email = dataModel.ownerEmail, !email.isEmpty {
+                                Divider().padding(.horizontal, 12)
+                            }
+                        }
+                        
+                        if let email = dataModel.ownerEmail, !email.isEmpty {
+                            HStack(spacing: 12) {
+                                ZStack {
+                                    Circle().fill(Color(hex: "e3f2fd"))
+                                    Image(systemName: "envelope.fill")
+                                        .font(.system(size: 11))
+                                        .foregroundStyle(Color(hex: "1565c0"))
+                                }
+                                .frame(width: 28, height: 28)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Email Address")
+                                        .font(.caption)
+                                        .foregroundStyle(.gray)
+                                    Text(email)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.primary)
+                                }
+                                Spacer()
+                            }
+                            .padding(12)
+                        }
+                    }
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(color: .black.opacity(0.01), radius: 4, x: 0, y: 2)
+                }
+            }
 
             if let description = dataModel.description {
                 Text(description)
@@ -318,6 +395,18 @@ struct DiscoverDetailEventView: View {
                 .aspectRatio(1.2, contentMode: .fit) // adjust height ratio
         }
         .frame(height: kImageHeight)
+    }
+    
+    private func openWhatsApp(phone: String, eventTitle: String) {
+        let rawMessage = "Hi, I would like to ask about the event: \(eventTitle)"
+        guard let encodedMessage = rawMessage.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+        
+        let cleanPhone = phone.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        let urlString = "https://wa.me/\(cleanPhone)?text=\(encodedMessage)"
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
+        }
     }
 }
 
