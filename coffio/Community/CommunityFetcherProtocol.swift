@@ -15,6 +15,8 @@ protocol CommunityFetcherProtocol {
     func fetchCommunityEvents(communityId: String) async throws -> [DiscoverEventItem]
     func fetchTopCommunities(limit: Int) async throws -> [CommunityItem]
     func fetchAllCommunities() async throws -> [CommunityItem]
+    func requestToJoinCommunity(communityId: String, userId: String) async throws
+    func fetchMembershipStatus(communityId: String, userId: String) async throws -> CommunityJoinRequestStatus?
 }
 
 final class CommunityFetcher: CommunityFetcherProtocol {
@@ -112,5 +114,33 @@ final class CommunityFetcher: CommunityFetcherProtocol {
             .limit(limit)
             .execute()
             .value
+    }
+    
+    func requestToJoinCommunity(communityId: String, userId: String) async throws {
+        let payload = CommunityJoinRequestPayload(communityId: communityId, userId: userId, status: .pending)
+        try await supabaseClient
+            .from("community_members")
+            .insert(payload)
+            .execute()
+    }
+    
+    func fetchMembershipStatus(communityId: String, userId: String) async throws -> CommunityJoinRequestStatus? {
+        struct StatusPayload: Decodable {
+            let status: CommunityJoinRequestStatus?
+        }
+        
+        do {
+            let response: [StatusPayload] = try await supabaseClient
+                .from("community_members")
+                .select("status")
+                .eq("community_id", value: communityId)
+                .eq("user_id", value: userId)
+                .execute()
+                .value
+                
+            return response.first?.status
+        } catch {
+            return nil
+        }
     }
 }

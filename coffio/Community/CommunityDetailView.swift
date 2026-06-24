@@ -16,21 +16,34 @@ struct CommunityDetailView: View {
     }
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 24) {
-                if viewModel.isLoading {
-                    renderSkeleton()
-                } else if viewModel.isError {
-                    renderErrorState()
-                } else if let community = viewModel.community {
-                    renderHeaderSection(community)
-                    renderSocialsRow(community)
-                    renderEventsSection()
-                    renderPostsSection()
+        ZStack(alignment: .bottom) {
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    if viewModel.isLoading {
+                        renderSkeleton()
+                    } else if viewModel.isError {
+                        renderErrorState()
+                    } else if let community = viewModel.community {
+                        renderHeaderSection(community)
+                        renderSocialsRow(community)
+                        renderEventsSection()
+                        
+                        // MARK: - Protected Privacy Layer Gate (💡 UPDATED)
+                        if viewModel.isApprovedMember {
+                            renderPostsSection()
+                        } else {
+                            renderLockedPostsPrivacyCard()
+                        }
+                    }
                 }
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+                .padding(.bottom, 100)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
+            
+            if !viewModel.isLoading && !viewModel.isError && !viewModel.isApprovedMember {
+                renderStickyJoinFooterActionRow()
+            }
         }
         .background(Color(hex: "f2efed").ignoresSafeArea())
         .navigationTitle("Community")
@@ -193,6 +206,58 @@ struct CommunityDetailView: View {
                 }
             }
         }
+    }
+    
+    private func renderLockedPostsPrivacyCard() -> some View {
+        VStack(spacing: 14) {
+            Image(systemName: "lock.shield.fill")
+                .font(.system(size: 38))
+                .foregroundStyle(Color(hex: "ad6928").opacity(0.8))
+            
+            Text("Discussions are Private")
+                .font(.headline)
+                .foregroundStyle(Color(hex: "642e13"))
+            
+            Text("Only approved members can browse and post within this space. Tap the join button below to request access.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 16)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
+        .background(RoundedRectangle(cornerRadius: 20).fill(.white))
+        .shadow(color: .black.opacity(0.02), radius: 6, x: 0, y: 2)
+    }
+    
+    private func renderStickyJoinFooterActionRow() -> some View {
+        VStack {
+            Button {
+                Task { await viewModel.submitJoinRequest() }
+            } label: {
+                HStack {
+                    if viewModel.isSubmittingJoin {
+                        ProgressView().tint(.white).padding(.trailing, 8)
+                    }
+                    Text(viewModel.joinButtonLabel)
+                        .font(.body).bold()
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(viewModel.hasRequestedToJoin ? Color.gray.opacity(0.4) : Color(hex: "642e13"))
+                .foregroundStyle(viewModel.hasRequestedToJoin ? .secondary : Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .disabled(viewModel.hasRequestedToJoin || viewModel.isSubmittingJoin)
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 14)
+        .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom == 0 ? 14 : 0)
+        .background(
+            Color.white
+                .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: -4)
+                .ignoresSafeArea()
+        )
     }
     
     private func renderSkeleton() -> some View {

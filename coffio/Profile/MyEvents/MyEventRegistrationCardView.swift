@@ -34,24 +34,28 @@ struct MyEventRegistrationCardView: View {
             }
             
             if let phone = registration.userProfile.phone, !phone.isEmpty {
-                Button {
-                    openWhatsAppToParticipant(
-                        phone: phone,
-                        participantName: registration.userProfile.safeName,
-                        eventTitle: registration.eventDetail.title
-                    )
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "bubble.left.and.bubble.right.fill")
-                            .font(.system(size: 11))
-                        Text(phone)
-                            .font(.subheadline)
-                            .underline()
+                let evaluation = PhoneUtil.formatIndonesianId(from: phone)
+                
+                if evaluation.isValid {
+                    Button {
+                        openWhatsAppToParticipant(
+                            phone: evaluation.phoneNumber,
+                            participantName: registration.userProfile.safeName,
+                            eventTitle: registration.eventDetail.title
+                        )
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "bubble.left.and.bubble.right.fill")
+                                .font(.system(size: 11))
+                            Text(phone)
+                                .font(.subheadline)
+                                .underline()
+                        }
+                        .foregroundStyle(Color(hex: "ad6928"))
+                        .padding(.top, 2)
                     }
-                    .foregroundStyle(Color(hex: "ad6928"))
-                    .padding(.top, 2)
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
             
             // Context Notes Block
@@ -110,7 +114,8 @@ struct MyEventRegistrationCardView: View {
     
     private func openWhatsAppToParticipant(phone: String, participantName: String, eventTitle: String) {
         // Build your precise message template structure
-        let rawMessage = "Hi \(participantName), I'm the host for \(eventTitle). I would like to "
+        let participantSplitName = participantName.split(separator: " ")
+        let rawMessage = "Hi \(participantSplitName.first ?? ""), I'm the host for \(eventTitle). I would like to "
         
         // Escape spaces and special string blocks for safe URL streaming
         guard let encodedMessage = rawMessage.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }

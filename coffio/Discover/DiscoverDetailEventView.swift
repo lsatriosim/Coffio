@@ -218,33 +218,37 @@ struct DiscoverDetailEventView: View {
                     
                     VStack(spacing: 0) {
                         if let phone = dataModel.ownerPhone, !phone.isEmpty {
-                            Button {
-                                openWhatsApp(phone: phone, eventTitle: dataModel.title)
-                            } label: {
-                                HStack(spacing: 12) {
-                                    ZStack {
-                                        Circle().fill(Color(hex: "e8f5e9"))
-                                        Image(systemName: "phone.fill")
-                                            .font(.system(size: 12))
-                                            .foregroundStyle(Color(hex: "2e7d32"))
+                            let evaluation = PhoneUtil.formatIndonesianId(from: phone)
+                            
+                            if evaluation.isValid {
+                                Button {
+                                    openWhatsApp(phone: evaluation.phoneNumber, eventTitle: dataModel.title)
+                                } label: {
+                                    HStack(spacing: 12) {
+                                        ZStack {
+                                            Circle().fill(Color(hex: "e8f5e9"))
+                                            Image(systemName: "phone.fill")
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(Color(hex: "2e7d32"))
+                                        }
+                                        .frame(width: 28, height: 28)
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("WhatsApp")
+                                                .font(.caption)
+                                                .foregroundStyle(.gray)
+                                            Text(phone)
+                                                .font(.subheadline)
+                                                .bold()
+                                                .foregroundStyle(Color(hex: "642e13"))
+                                        }
+                                        Spacer()
+                                        Image(systemName: "arrow.up.forward.app.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundStyle(Color(hex: "ad6928"))
                                     }
-                                    .frame(width: 28, height: 28)
-                                    
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("WhatsApp")
-                                            .font(.caption)
-                                            .foregroundStyle(.gray)
-                                        Text(phone)
-                                            .font(.subheadline)
-                                            .bold()
-                                            .foregroundStyle(Color(hex: "642e13"))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "arrow.up.forward.app.fill")
-                                        .font(.system(size: 14))
-                                        .foregroundStyle(Color(hex: "ad6928"))
+                                    .padding(12)
                                 }
-                                .padding(12)
                             }
                             
                             if let email = dataModel.ownerEmail, !email.isEmpty {
