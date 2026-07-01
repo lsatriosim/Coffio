@@ -8,12 +8,22 @@
 import Foundation
 import SwiftUI
 
+enum EventRegistrationStatus: String, JSONDecodable {
+    case approved
+    case paymentSubmitted = "payment_submitted"
+    case awaitingPayment = "awaiting_payment"
+    case rejected
+    case expired
+    case pending
+    case cancelled
+}
+
 struct EventRegistrationItem: JSONDecodable, Identifiable {
     let id: String
     let eventDetail: EventRegistrationEventDetail
     let userProfile: UserProfileDetail
     let registeredAt: Date
-    let status: RegistrationStatus
+    let status: EventRegistrationStatus
     let cancelReason: String?
     let menuNotes: String?
     let paymentProofUrl: String?
@@ -33,16 +43,6 @@ struct EventRegistrationItem: JSONDecodable, Identifiable {
         case paymentDeadlineAt = "payment_deadline_at"
         case paymentSubmittedAt = "payment_submitted_at"
         case referralCode = "referral_code"
-    }
-    
-    enum RegistrationStatus: String, JSONDecodable {
-        case approved
-        case paymentSubmitted = "payment_submitted"
-        case awaitingPayment = "awaiting_payment"
-        case rejected
-        case expired
-        case pending
-        case cancelled
     }
     
     struct EventRegistrationEventDetail: JSONDecodable {
@@ -78,7 +78,7 @@ struct EventRegistrationItem: JSONDecodable, Identifiable {
     }
 }
 
-extension EventRegistrationItem.RegistrationStatus {
+extension EventRegistrationStatus {
     var color: Color {
         switch self {
         case .approved: return .green

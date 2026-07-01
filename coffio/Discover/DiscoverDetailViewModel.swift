@@ -13,10 +13,26 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isError: Bool = false
     @Published var errorMessage: String = ""
-    @Published var isAlreadyRegistered: Bool = false
     @Published var isAuthor: Bool = false
+    @Published var registerStatus: EventRegistrationStatus? = nil
+    @Published var registerId: String? = nil
+    @Published var registerPaymentDeadlineTime: Date? = nil
     @Published var isEditEventSheetPresented: Bool = false
     @Published var selectedImageData: Data? = nil
+    
+    var isAlreadyRegistered: Bool {
+        if let registerStatus {
+            switch registerStatus {
+            case .approved, .paymentSubmitted , .awaitingPayment, .rejected:
+                return true
+            default:
+                return false
+            }
+        }
+        else {
+            return false
+        }
+    }
     
     private let fetcher = EventFetcher()
     let authService: AuthenticationService = .shared
@@ -44,42 +60,33 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         }
     }
     
-    func registerEvent(eventId: String, fullname: String, phoneNumber: String, paymentProofImage: Image, completion: @escaping () -> Void) {
-        isLoading = true
-        guard let user = authService.user
-        else {
+    func createAwaitingPaymentSlot(
+            id: String,
+            eventId: String,
+            fullname: String,
+            phoneNumber: String,
+            notes: String,
+            deadline: Date
+    ) async throws {
+        guard let user = authService.user else {
             authService.showLoginPage()
-            return
+            throw NSError(domain: "AuthError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User session not active"])
         }
         
-        Task {
-            do {
-                guard let selectedImageData else { return}
-                _ = try await fetcher.uploadPaymentProof(
-                    image: selectedImageData,
-                    eventId: eventId,
-                    userId: user.id
-                )
-                
-                let eventRegistrationRequest: EventRegistrationRequest = EventRegistrationRequest(
-                    id: UUID().uuidString,
-                    eventId: eventId,
-                    userId: user.id,
-                    userPhone: phoneNumber,
-                    userName: fullname
-                )
-                
-                try await fetcher.registerEvent(request: eventRegistrationRequest)
-                isAlreadyRegistered = true
-                isLoading = false
-                completion()
-            }
-            catch {
-                isLoading = false
-                isError = true
-                errorMessage = "Server Error! Please try again"
-            }
-        }
+        // Match your updated EventRegistrationItem model schema fields
+        let eventRegistrationRequest = EventRegistrationRequest(
+            id: id,
+            eventId: eventId,
+            userId: user.id,
+            userPhone: phoneNumber,
+            userName: fullname,
+            notes: notes,
+            paymentDeadline: deadline
+        )
+        
+        try await fetcher.registerEvent(request: eventRegistrationRequest)
+        
+        await checkRegistrationStatus()
     }
     
     @MainActor
@@ -87,11 +94,15 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         guard let userId = authService.user?.id else { return }
         
         do {
-            let registered = try await fetcher.isUserRegistered(
-                eventId: self.eventId,
-                userId: userId
-            )
-            self.isAlreadyRegistered = registered
+            if let registration = try await fetcher.fetchUserRegistration(eventId: self.eventId, userId: userId) {
+                self.registerStatus = registration.status
+                self.registerId = registration.id
+                self.registerPaymentDeadlineTime = registration.paymentDeadlineTime
+            } else {
+                self.registerStatus = nil
+                self.registerId = nil
+                self.registerPaymentDeadlineTime = nil
+            }
         } catch {
             print("Error checking registration: \(error)")
         }

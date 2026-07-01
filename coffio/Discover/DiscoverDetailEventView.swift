@@ -14,6 +14,8 @@ struct DiscoverDetailEventView: View {
     
     @State var showRegistrationSheet: Bool = false
     @State private var navigateToRegistrations = false
+    @State private var navigateToPaymentPage = false
+    @State private var latestRegistrationId: String = ""
     
     @StateObject private var viewModel: DiscoverDetailEventViewModel
     @State private var isShowingPreview: Bool = false
@@ -53,15 +55,20 @@ struct DiscoverDetailEventView: View {
             EventFormSheet(editingEvent: viewModel.event)
                 .presentationDetents([.large])
         }
+        .navigationDestination(isPresented: $navigateToPaymentPage) {
+            if let dataModel = viewModel.event, let paymentDeadlineTime = viewModel.registerPaymentDeadlineTime {
+                EventPaymentSheet(registrationId: latestRegistrationId, event: dataModel, paymentDeadlineTime: paymentDeadlineTime)
+            }
+        }
+        .navigationDestination(isPresented: $navigateToRegistrations) {
+            MyEventRegistrationListView(eventId: viewModel.eventId)
+        }
         .onChange(of: viewModel.isEditEventSheetPresented) { oldValue, newValue in
             if newValue == false {
                 Task {
                     await viewModel.fetchEventDetails()
                 }
             }
-        }
-        .navigationDestination(isPresented: $navigateToRegistrations) {
-            MyEventRegistrationListView(eventId: viewModel.eventId)
         }
         .overlay {
             if isShowingPreview {
@@ -95,7 +102,14 @@ struct DiscoverDetailEventView: View {
         }
         .ignoresSafeArea(edges: .top)
         .sheet(isPresented: $showRegistrationSheet) {
-            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo)
+            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo) { registrationId in
+                self.latestRegistrationId = registrationId
+                self.showRegistrationSheet = false
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    self.navigateToPaymentPage = true
+                }
+            }
                 .environmentObject(viewModel)
                 .presentationDetents([.large])
         }
@@ -312,6 +326,14 @@ struct DiscoverDetailEventView: View {
                             CoffioButton(title: viewModel.event?.eventStatus == .approved ? "See Participant" : "Waiting for Approval", isDisabled: viewModel.event?.eventStatus == .pending) {
                                 navigateToRegistrations = true
                             }
+                        }
+                    }
+                }
+                else if viewModel.isAlreadyRegistered && viewModel.registerStatus == .awaitingPayment {
+                    CoffioButton(title: "Complete Payment", style: .primary) {
+                        if let currentRegId = viewModel.registerId {
+                            self.latestRegistrationId = currentRegId
+                            self.navigateToPaymentPage = true
                         }
                     }
                 }

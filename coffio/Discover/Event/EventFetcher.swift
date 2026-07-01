@@ -143,6 +143,13 @@ final class EventFetcher: SupabaseParsable {
         return publicURL.absoluteString
     }
     
+    func insertUploadRecord(request: UploadTransactionRequest) async throws {
+        try await supabaseClient
+            .from("uploads")
+            .insert(request)
+            .execute()
+    }
+    
     func fetchEventById(id: String) async throws -> DiscoverEventItem {
         let response = try await supabaseClient
             .from("discover_events_view")
@@ -355,5 +362,72 @@ extension EventFetcher {
             .update(request)
             .eq("id", value: id)
             .execute()
+    }
+    
+    func reserveSlot(request: EventRegistrationRequest) async throws {
+        try await supabaseClient
+            .from("event_registrations")
+            .insert(request)
+            .execute()
+    }
+    
+    func submitPaymentProof(registrationId: String) async throws {
+        let isoFormatter = ISO8601DateFormatter()
+        let payload = EventPaymentSubmissionPayload(
+            paymentSubmittedAt: isoFormatter.string(from: Date())
+        )
+        
+        try await supabaseClient
+            .from("event_registrations")
+            .update(payload)
+            .eq("id", value: registrationId)
+            .execute()
+    }
+    
+    func fetchUserRegistration(eventId: String, userId: String) async throws -> EventRegistrationResponse? {
+        let response = try await supabaseClient
+            .from("event_registrations")
+            .select("id, status, payment_deadline_at")
+            .eq("event_id", value: eventId)
+            .eq("user_id", value: userId)
+            .limit(1)
+            .execute()
+        
+        let decoder = JSONDecoder()
+        let formatter = ISO8601DateFormatter()
+        // Handles optional fractional seconds from Postgres timestamp columns securely
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let string = try container.decode(String.self)
+            
+            // Try standard internet timestamp formatting, fallback to non-fractional fallback
+            if let date = formatter.date(from: string) { return date }
+            
+            let backupFormatter = ISO8601DateFormatter()
+            backupFormatter.formatOptions = [.withInternetDateTime]
+            if let date = backupFormatter.date(from: string) { return date }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid date parsing configuration format threshold: \(string)"
+            )
+        }
+
+        let registrations = try decoder.decode([EventRegistrationResponse].self, from: response.data)
+        return registrations.first
+    }
+
+    struct EventRegistrationResponse: JSONDecodable {
+        let id: String
+        let status: EventRegistrationStatus
+        let paymentDeadlineTime: Date?
+        
+        enum CodingKeys: String, CodingKey {
+            case id
+            case status
+            case paymentDeadlineTime = "payment_deadline_at"
+        }
     }
 }

@@ -10,12 +10,15 @@ import PhotosUI
 
 struct EventRegistrationSheet: View {
     @Environment(\.dismiss) private var dismiss
+    
     let eventId: String
     let paymentInfo: PaymentInfo?
+    var onReservationSuccess: (String) -> Void // 💡 Added callback closure to trigger parent navigation push
+    
     @State private var fullName: String = ""
     @State private var contactNumber: String = ""
-    @State private var selectedPhotoItem: PhotosPickerItem?
-    @State private var selectedImage: Image?
+    @State private var selectionNotes: String = "" // 💡 Added optional notes selection field state
+    @State private var isSubmitting: Bool = false  // 💡 Local safety UI submission lock status flag
     
     @EnvironmentObject private var viewModel: DiscoverDetailEventViewModel
     
@@ -28,52 +31,44 @@ struct EventRegistrationSheet: View {
                     .padding(.top, 12)
                 
                 VStack(spacing: 8.0) {
-                    Text("Event Registration")
+                    Text("Secure Your Slot")
                         .font(.title2)
                         .bold()
                     
-                    Text("Please fill in your details to join")
+                    Text("Please enter your details below to hold your vacancy vacancy reservation slot.")
                         .font(.subheadline)
                         .foregroundStyle(.gray)
+                        .multilineTextAlignment(.center)
                 }
                 .padding(.top, 8)
+                .padding(.horizontal, 16)
 
                 VStack(alignment: .leading, spacing: 16.0) {
-                    if let paymentInfo {
-                        PaymentInfoCardView(paymentInfo: paymentInfo)
-                    }
-                    
                     // Full Name Field
                     inputField(label: "Full Name", placeholder: "Enter your full name", text: $fullName)
                     
                     // Contact Number Field
                     inputField(label: "Contact Number", placeholder: "08xxxxxxx", text: $contactNumber, keyboardType: .phonePad)
                     
-                    photoPickerField()
+                    // Optional Menu Selection Notes Field
+                    inputTextArea(label: "Menu Selection / Special Requests", placeholder: "Specify bundle items or beverage preferences (Optional)", text: $selectionNotes)
                 }
                 .padding(.horizontal, 24)
 
+                // Confirm Action Button Layout Component
                 Button(
                     action: {
-                        guard let selectedImage else { return }
-                        viewModel.registerEvent(
-                            eventId: eventId,
-                            fullname: fullName,
-                            phoneNumber: contactNumber,
-                            paymentProofImage: selectedImage
-                        ) {
-                        dismiss()
+                        executeFormReservationSubmission()
                     }
-                }) {
+                ) {
                     HStack {
                         Spacer()
-                        if viewModel.isLoading {
-                            ProgressView().progressViewStyle(.circular)
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                        }
-                        else {
-                            Text("Confirm Registration")
+                        if isSubmitting {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(.white)
+                        } else {
+                            Text("Reserve My Slot")
                                 .font(.headline)
                                 .foregroundStyle(.white)
                                 .bold()
@@ -88,8 +83,9 @@ struct EventRegistrationSheet: View {
                     }
                 }
                 .padding(.horizontal, 24)
-                .disabled(fullName.isEmpty || contactNumber.isEmpty || selectedPhotoItem == nil)
-                .opacity(fullName.isEmpty || contactNumber.isEmpty || selectedPhotoItem == nil ? 0.6 : 1.0)
+                // Form validation requirement: fields must not be empty
+                .disabled(fullName.isEmpty || contactNumber.isEmpty || isSubmitting)
+                .opacity(fullName.isEmpty || contactNumber.isEmpty || isSubmitting ? 0.6 : 1.0)
 
                 Spacer()
             }
@@ -142,74 +138,73 @@ struct EventRegistrationSheet: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                         )
-                        .shadow(color: .black.opacity(0.05), radius: 5)
+                        .shadow(color: .black.opacity(0.02), radius: 4)
                 }
         }
     }
     
     @ViewBuilder
-    private func photoPickerField() -> some View {
-        CoffioPhotoPickerField(
-            label: "Payment Proof",
-            placeholder: selectedImage == nil ? "Choose payment proof" : "Change payment proof",
-            selectedItem: $selectedPhotoItem,
-            selectedImage: $selectedImage,
-            selectedData: $viewModel.selectedImageData,
-            remoteUrlString: nil
-        )
-    }
-    
-    private var fieldBackground: some View {
-        RoundedRectangle(cornerRadius: 12)
-            .fill(.white)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(0.05), radius: 5)
+    private func inputTextArea(label: String, placeholder: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 4.0) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.gray)
+                .padding(.leading, 4)
+            
+            TextEditor(text: text)
+                .frame(minHeight: 100)
+                .padding(8)
+                .background {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                        )
+                        .shadow(color: .black.opacity(0.02), radius: 4)
+                }
+                .overlay(alignment: .topLeading) {
+                    if text.wrappedValue.isEmpty {
+                        Text(placeholder)
+                            .font(.body)
+                            .foregroundStyle(.gray.opacity(0.6))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 14)
+                            .allowsHitTesting(false)
+                    }
+                }
+        }
     }
 }
 
-private struct PaymentInfoCardView: View {
-    let paymentInfo: PaymentInfo
+// MARK: - Core Execution Logic Extension
+private extension EventRegistrationSheet {
     
-    var body: some View {
-        HStack(alignment: .center, spacing: 12.0) {
-            Image(systemName: "dollarsign.circle")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 20.0, height: 20.0)
-                .foregroundStyle(Color(hex: "ad6928"))
-            VStack(alignment: .leading, spacing: 4.0) {
-                Text("Payment Info")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+    func executeFormReservationSubmission() {
+        isSubmitting = true
+        
+        let generatedRegistrationId = UUID().uuidString.lowercased()
+        let trackingDeadlineString = Date().addingTimeInterval(3600)
+        
+        Task {
+            do {
+                try await viewModel.createAwaitingPaymentSlot(
+                    id: generatedRegistrationId,
+                    eventId: eventId,
+                    fullname: fullName,
+                    phoneNumber: contactNumber,
+                    notes: selectionNotes,
+                    deadline: trackingDeadlineString
+                )
                 
-                HStack(spacing: 8.0) {
-                    Text("\(paymentInfo.bankName ?? "") \(paymentInfo.bankAccount ?? "")")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    
-                    Button {
-                        UIPasteboard.general.string = paymentInfo.bankAccount ?? ""
-                    } label: {
-                        Image(systemName: "doc.on.doc")
-                            .foregroundStyle(Color(hex: "ad6928"))
-                    }
-                    .buttonStyle(.plain)
-                }
+                isSubmitting = false
                 
-                Text("\(paymentInfo.bankHolder ?? "")")
-                    .font(.caption)
-                    .foregroundStyle(.primary)
+                onReservationSuccess(generatedRegistrationId)
+            } catch {
+                isSubmitting = false
+                viewModel.errorMessage = error.localizedDescription
+                viewModel.isError = true
             }
-            Spacer()
-        }
-        .padding(.leading, 12.0)
-        .padding(.vertical, 8.0)
-        .background {
-            RoundedRectangle(cornerRadius: 16.0)
-                .fill(.white)
         }
     }
 }

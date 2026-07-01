@@ -43,10 +43,10 @@ struct ProfileView: View {
                                 
                                 VStack(spacing: 0) {
                                     SettingsRow(icon: "envelope", title: "Email", subtitle: viewModel.email) { }
-                                    Divider().padding(.leading, 50)
-                                    SettingsRow(icon: "bell", title: "Notifications") { }
-                                    Divider().padding(.leading, 50)
-                                    SettingsRow(icon: "lock", title: "Privacy & Security") { }
+//                                    Divider().padding(.leading, 50)
+////                                    SettingsRow(icon: "bell", title: "Notifications") { }
+//                                    Divider().padding(.leading, 50)
+//                                    SettingsRow(icon: "lock", title: "Privacy & Security") { }
                                 }
                                 .background(RoundedCardBackground())
                             }
@@ -111,7 +111,25 @@ struct ProfileView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 sectionHeader("Support")
                                 
-                                SettingsRow(icon: "questionmark.circle", title: "Help Center") { }
+                                SettingsRow(icon: "questionmark.circle", title: "Help Center") {
+                                    let urlString = "https://www.coffio.id/help/"
+                                        
+                                    guard let url = URL(string: urlString) else {
+                                        print("Invalid URL: \(urlString)")
+                                        return
+                                    }
+                                    
+                                    // 2. Check if the device is capable of opening the URL, then open it
+                                    if UIApplication.shared.canOpenURL(url) {
+                                        UIApplication.shared.open(url, options: [:]) { success in
+                                            if success {
+                                                print("Successfully redirected to Coffio help page.")
+                                            } else {
+                                                print("Failed to open the URL.")
+                                            }
+                                        }
+                                    }
+                                }
                                     .background(RoundedCardBackground())
                             }
                             .padding(.horizontal)
