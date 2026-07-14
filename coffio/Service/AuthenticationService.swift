@@ -58,6 +58,7 @@ final class AuthenticationService: ObservableObject {
     
     func signUp(email: String, password: String) async throws {
         try await supabaseClient.auth.signUp(email: email, password: password)
+        await fetchUserProfile()
         showAuthPage = false
     }
     
@@ -136,5 +137,14 @@ final class AuthenticationService: ObservableObject {
         
         // 5. Refresh user profile to sync the UI
         await fetchUserProfile()
+    }
+    
+    func deleteAccount() async throws {
+        // 1. Call the Postgres function via RPC
+        try await supabaseClient.rpc("delete_current_user").execute()
+        
+        // 2. Clear local state and kick them back to login page
+        user = nil
+        showAuthPage = true
     }
 }

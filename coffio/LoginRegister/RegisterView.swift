@@ -12,6 +12,8 @@ struct RegisterView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: AuthViewModel
     let onDismissTray: () -> Void
+    
+    @State private var isEULAAgreed = false
 
     var body: some View {
         VStack(spacing: -80.0) {
@@ -107,6 +109,8 @@ struct RegisterView: View {
                         .shadow(color: .black.opacity(0.1), radius: 10)
                 }
                 
+                eulaCheckboxToggle
+                
                 if let errorMessage: String = viewModel.errorMessage {
                     Text(errorMessage)
                         .font(.body)
@@ -114,6 +118,7 @@ struct RegisterView: View {
                 }
                 
                 Button(action: {
+                    guard isEULAAgreed else { return }
                     Task {
                         await viewModel.register()
                     }
@@ -136,10 +141,11 @@ struct RegisterView: View {
                     .padding(.vertical, 16.0)
                     .background {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(hex: "b17e54"))
+                            .fill(Color(hex: "b17e54").opacity(isEULAAgreed ? 1.0 : 0.5))
                             .shadow(color: .black.opacity(0.1), radius: 10)
                     }
                 }
+                .disabled(!isEULAAgreed || viewModel.isLoading)
                 
                 legalFooterLinks
                 
@@ -148,26 +154,49 @@ struct RegisterView: View {
         }
     }
     
+    private var eulaCheckboxToggle: some View {
+        Button(action: {
+            withAnimation(.easeOut(duration: 0.2)) {
+                isEULAAgreed.toggle()
+            }
+        }) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: isEULAAgreed ? "checkmark.square.fill" : "square")
+                    .font(.body)
+                    .foregroundStyle(isEULAAgreed ? Color(hex: "b17e54") : .gray)
+                
+                Text("I agree to the End User License Agreement (EULA). I understand Coffio has zero tolerance for objectionable content or abusive users.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.leading)
+            }
+        }
+        .buttonStyle(.plain)
+        .padding(.vertical, 4)
+    }
+    
     private var legalFooterLinks: some View {
-        HStack(spacing: 4) {
-            Spacer()
-            Text("By Signing up, you agree to our")
-                .foregroundStyle(.secondary)
-            
-            Link("Terms", destination: URL(string: "https://www.coffio.id/terms")!)
-                .bold()
-                .foregroundStyle(Color(hex: "b17e54"))
-            
-            Text("&")
-                .foregroundStyle(.secondary)
-            
-            Link("Privacy", destination: URL(string: "https://www.coffio.id/privacy")!)
-                .bold()
-                .foregroundStyle(Color(hex: "b17e54"))
-            Spacer()
+        VStack(spacing: 4) {
+            HStack(spacing: 4) {
+                Spacer()
+                Text("Read our full")
+                    .foregroundStyle(.secondary)
+                
+                Link("EULA / Terms", destination: URL(string: "https://www.coffio.id/terms")!)
+                    .bold()
+                    .foregroundStyle(Color(hex: "b17e54"))
+                
+                Text("&")
+                    .foregroundStyle(.secondary)
+                
+                Link("Privacy Policy", destination: URL(string: "https://www.coffio.id/privacy")!)
+                    .bold()
+                    .foregroundStyle(Color(hex: "b17e54"))
+                Spacer()
+            }
         }
         .font(.caption2)
-        .padding(.top, 8)
+        .padding(.top, 4)
     }
 }
 

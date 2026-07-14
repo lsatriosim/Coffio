@@ -47,6 +47,14 @@ struct ProfileView: View {
 ////                                    SettingsRow(icon: "bell", title: "Notifications") { }
 //                                    Divider().padding(.leading, 50)
 //                                    SettingsRow(icon: "lock", title: "Privacy & Security") { }
+                                    
+                                    SettingsRow(
+                                        icon: "trash",
+                                        title: "Delete Account",
+                                        color: .red
+                                    ) {
+                                        viewModel.showDeleteAlert = true
+                                    }
                                 }
                                 .background(RoundedCardBackground())
                             }
@@ -199,6 +207,16 @@ struct ProfileView: View {
                     }
                 }
             }
+        }
+        .alert("Delete Account?", isPresented: $viewModel.showDeleteAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete Permanently", role: .destructive) {
+                Task {
+                    await viewModel.deleteAccount()
+                }
+            }
+        } message: {
+            Text("This action cannot be undone. All registration history, tickets, and profile data will be permanently cleared from Coffio.")
         }
         .sheet(isPresented: $viewModel.showEditProfile) {
             EditProfileView()

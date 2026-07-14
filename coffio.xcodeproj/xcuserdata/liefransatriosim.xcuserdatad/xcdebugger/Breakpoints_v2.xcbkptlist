@@ -30,8 +30,8 @@
             filePath = "coffio/Service/AuthenticationService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
             landmarkName = "fetchUserProfile()"
             landmarkType = "7">
             <Locations>
@@ -76,6 +76,48 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "72"
                   endingLineNumber = "72">
+               </Location>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 232c827d2ee2ae83"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "73"
+                  endingLineNumber = "73">
+               </Location>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - e8870b4c42b98176"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) await resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "73"
+                  endingLineNumber = "73">
+               </Location>
+               <Location
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 63d97bb8acc972c9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "73"
+                  endingLineNumber = "73">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -138,13 +180,13 @@
             filePath = "coffio/Profile/ProfileViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
             landmarkName = "onProfileImageSelected(item:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "024BF6EB-5168-4894-BC24-C217A0C5B6D9 - 14d7c711dee707f9"
+                  uuid = "024BF6EB-5168-4894-BC24-C217A0C5B6D9 - 14d7c711dee70937"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -154,11 +196,11 @@
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Profile/ProfileViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "105"
-                  endingLineNumber = "105">
+                  startingLineNumber = "119"
+                  endingLineNumber = "119">
                </Location>
                <Location
-                  uuid = "024BF6EB-5168-4894-BC24-C217A0C5B6D9 - 416076b2f08955f0"
+                  uuid = "024BF6EB-5168-4894-BC24-C217A0C5B6D9 - 416076b2f0895b3e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -168,8 +210,8 @@
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Profile/ProfileViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "105"
-                  endingLineNumber = "105">
+                  startingLineNumber = "119"
+                  endingLineNumber = "119">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -216,8 +258,8 @@
             filePath = "coffio/LoginRegister/AuthViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
             landmarkName = "login()"
             landmarkType = "7">
          </BreakpointContent>

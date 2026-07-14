@@ -22,6 +22,8 @@ final class ProfileViewModel: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var isLoading: Bool = false
     @Published var isLoadingImage: Bool = false
+    @Published var isDeleteLoading = false
+    @Published var showDeleteAlert = false
     
     @Published var isLogoutLoading: Bool = false
     @Published var selectedItem: PhotosPickerItem? = nil {
@@ -62,6 +64,18 @@ final class ProfileViewModel: ObservableObject {
                 print(error)
             }
         }
+    }
+    
+    func deleteAccount() async {
+        isDeleteLoading = true
+        do {
+            // Calls the shared AuthenticationService we updated earlier
+            try await AuthenticationService.shared.deleteAccount()
+        } catch {
+            // Handle any errors gracefully
+            print("Failed to delete account: \(error.localizedDescription)")
+        }
+        isDeleteLoading = false
     }
 }
 

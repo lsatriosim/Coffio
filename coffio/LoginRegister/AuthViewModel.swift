@@ -19,6 +19,7 @@ final class AuthViewModel: ObservableObject {
     @Published var popUpErrorMessage: String = ""
     @Published var isError: Bool = false
     @Published var showRegister: Bool = false
+    @Published var showDeleteAlert = false
     
     func updateShowRegister(isPresented: Bool) {
         showRegister = isPresented
@@ -97,5 +98,17 @@ final class AuthViewModel: ObservableObject {
         catch {
             print("Failed to logout")
         }
+    }
+    
+    func deleteAccount() async {
+        isLoading = true
+        do {
+            try await AuthenticationService.shared.deleteAccount()
+            resetState()
+        } catch {
+            isError = true
+            popUpErrorMessage = "Failed to delete account. Please try again later."
+        }
+        isLoading = false
     }
 }
