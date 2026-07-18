@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GoogleSignIn
 
 @main
 struct coffioApp: App {
@@ -18,6 +19,9 @@ struct coffioApp: App {
                 .environmentObject(authService)
                 .task {
                     print("INFO DICT:", Bundle.main.infoDictionary ?? [:])
+                }
+                .onOpenURL { url in
+                    _ = GIDSignIn.sharedInstance.handle(url)
                 }
         }
     }

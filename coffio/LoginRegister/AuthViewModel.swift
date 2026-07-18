@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import GoogleSignIn
 
 @MainActor
 final class AuthViewModel: ObservableObject {
@@ -110,5 +111,51 @@ final class AuthViewModel: ObservableObject {
             popUpErrorMessage = "Failed to delete account. Please try again later."
         }
         isLoading = false
+    }
+    
+    func performGoogleSupabaseSignIn() {
+        // 1. Get the top-most root view controller to present the Google prompt
+        guard let rootViewController = UIApplication.shared.connectedScenes
+            .compactMap({ ($0 as? UIWindowScene)?.keyWindow?.rootViewController })
+            .first else { return }
+        
+        isLoading = true
+        errorMessage = nil
+        
+        // 2. Trigger native Google Sign-In
+        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
+            if let error = error {
+                self.isLoading = false
+                
+                // Swift alternative to check if the user canceled the login sheet
+                if let signError = error as? GIDSignInError, signError.code == .canceled {
+                    return
+                }
+                
+                self.isError = true
+                self.popUpErrorMessage = error.localizedDescription
+                return
+            }
+            
+            guard let user = signInResult?.user,
+                  let idToken = user.idToken?.tokenString else {
+                self.isLoading = false
+                self.isError = true
+                self.popUpErrorMessage = "Failed to retrieve ID Token from Google."
+                return
+            }
+            
+            // 3. Forward token string to the centralized AuthenticationService
+            Task {
+                do {
+                    try await AuthenticationService.shared.loginWithGoogle(idToken: idToken)
+                    self.resetState()
+                } catch {
+                    self.isError = true
+                    self.popUpErrorMessage = error.localizedDescription
+                }
+                self.isLoading = false
+            }
+        }
     }
 }

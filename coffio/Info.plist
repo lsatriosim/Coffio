@@ -2,6 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BUNDLE_ID</key>
+	<string>com.coffio.coffio</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Google Sign In</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.46766020031-i6eqfdf11kfreg5o2qqi3fd44hgv3n1v</string>
+			</array>
+		</dict>
+	</array>
+	<key>CLIENT_ID</key>
+	<string>46766020031-i6eqfdf11kfreg5o2qqi3fd44hgv3n1v.apps.googleusercontent.com</string>
+	<key>GIDClientID</key>
+	<string>46766020031-i6eqfdf11kfreg5o2qqi3fd44hgv3n1v.apps.googleusercontent.com</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.46766020031-i6eqfdf11kfreg5o2qqi3fd44hgv3n1v</string>
 	<key>SUPABASE_ANON_KEY</key>
 	<string>$(SUPABASE_ANON_KEY)</string>
 	<key>SUPABASE_HOST</key>

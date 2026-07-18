@@ -49,6 +49,20 @@ final class AuthenticationService: ObservableObject {
         showAuthPage = false
     }
     
+    func loginWithGoogle(idToken: String) async throws {
+        // Exchange the OIDC token with Supabase
+        try await supabaseClient.auth.signInWithIdToken(
+            credentials: .init(
+                provider: .google,
+                idToken: idToken
+            )
+        )
+        
+        // Fetch the profile matching the newly authenticated Supabase UUID
+        await fetchUserProfile()
+        showAuthPage = false
+    }
+    
     func logout() async throws {
         try await supabaseClient.auth.signOut()
         user = nil
