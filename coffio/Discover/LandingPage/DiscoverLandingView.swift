@@ -39,7 +39,7 @@ struct DiscoverLandingView: View {
                                     }
                                 } else {
                                     ForEach(viewModel.topEvents, id:\.id) { event in
-                                        NavigationLink(destination: DiscoverDetailEventView(eventId: event.id, event: event)) {
+                                        NavigationLink(destination: DiscoverDetailEventView(eventId: event.id, event: event, delegate: viewModel)) {
                                             DiscoverLandingEventCard(dataModel: event)
                                         }
                                         .buttonStyle(PlainButtonStyle())

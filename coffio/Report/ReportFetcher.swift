@@ -19,7 +19,7 @@ final class ReportFetcher {
     func fetchMyReports(reporterId: String) async throws -> [UserReportItem] {
         let response = try await supabaseClient
             .from("reports")
-            .select("reporter_id, report_type, thread_id, reported_user_id")
+            .select("reporter_id, report_type, thread_id, reported_user_id, event_id")
             .eq("reporter_id", value: reporterId.lowercased())
             .execute()
             

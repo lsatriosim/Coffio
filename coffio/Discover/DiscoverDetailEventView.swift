@@ -20,8 +20,8 @@ struct DiscoverDetailEventView: View {
     @StateObject private var viewModel: DiscoverDetailEventViewModel
     @State private var isShowingPreview: Bool = false
 
-    init(eventId: String, event: DiscoverEventItem? = nil) {
-        _viewModel = StateObject(wrappedValue: DiscoverDetailEventViewModel(eventId: eventId, initialEvent: event))
+    init(eventId: String, event: DiscoverEventItem? = nil, delegate: DiscoverDetailEventViewModelDelegate? = nil) {
+        _viewModel = StateObject(wrappedValue: DiscoverDetailEventViewModel(eventId: eventId, initialEvent: event, delegate: delegate))
     }
     
     var body: some View {
@@ -50,10 +50,45 @@ struct DiscoverDetailEventView: View {
                         .foregroundStyle(.black)
                 }
             }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                if let event = viewModel.event, !viewModel.isAuthor {
+                    Button(action: {
+                        // Prepare the active reporting payload before showing dialog option sheets
+                        viewModel.activeReportTarget = (type: .event, userId: event.createdBy ?? "", eventId: event.id)
+                        viewModel.isReportAlertPresented = true
+                    }) {
+                        Image(systemName: "flag")
+                            .foregroundStyle(.red)
+                    }
+                    .disabled(viewModel.isReporting)
+                }
+            }
         }
         .sheet(isPresented: $viewModel.isEditEventSheetPresented) {
             EventFormSheet(editingEvent: viewModel.event)
                 .presentationDetents([.large])
+        }
+        .confirmationDialog(
+            "Report Event",
+            isPresented: $viewModel.isReportAlertPresented,
+            titleVisibility: .visible
+        ) {
+            Button("Report Inappropriate Content", role: .destructive) {
+                Task {
+                    await viewModel.submitReport()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to report this event? This action will flag the event for admin moderation review.")
+        }
+        .alert("Thank You", isPresented: $viewModel.showReportSuccessAlert) {
+            Button("OK", role: .cancel) {
+                dismiss()
+            }
+        } message: {
+            Text("We have received your report and will review it within 24 hours. Action will be taken if terms are violated.")
         }
         .navigationDestination(isPresented: $navigateToPaymentPage) {
             if let dataModel = viewModel.event, let paymentDeadlineTime = viewModel.registerPaymentDeadlineTime {
@@ -76,6 +111,15 @@ struct DiscoverDetailEventView: View {
                     imageUrl: viewModel.event?.imageUrl,
                     isPresented: $isShowingPreview
                 )
+            }
+            
+            if viewModel.isReporting {
+                ZStack {
+                    Color.black.opacity(0.15).ignoresSafeArea()
+                    ProgressView()
+                        .padding()
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                }
             }
         }
     }

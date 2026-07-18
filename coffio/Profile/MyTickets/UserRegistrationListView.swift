@@ -24,7 +24,7 @@ struct UserRegistrationListView: View {
                     ScrollView {
                         LazyVStack(spacing: 16) {
                             ForEach(viewModel.registrations, id: \.id) { registration in
-                                NavigationLink(destination: DiscoverDetailEventView(eventId: registration.eventDetail.id)) {
+                                NavigationLink(destination: DiscoverDetailEventView(eventId: registration.eventDetail.id, delegate: viewModel)) {
                                     EventRegistrationCardView(registration: registration)
                                         .padding(.horizontal, 20)
                                 }

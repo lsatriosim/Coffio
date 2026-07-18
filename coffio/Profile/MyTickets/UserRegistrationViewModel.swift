@@ -17,6 +17,9 @@ final class UserRegistrationViewModel: ObservableObject {
     private let fetcher = EventFetcher()
     private let authService = AuthenticationService.shared
     
+    // MARK: - Report Tracking Dependencies
+    private let reportFetcher = ReportFetcher()
+    
     func onViewDidLoad() {
         Task {
             await fetchRegistrations()
@@ -32,14 +35,48 @@ final class UserRegistrationViewModel: ObservableObject {
         
         isLoading = true
         do {
-            let items = try await fetcher.fetchUserRegistrations(userId: user.id)
-            self.registrations = items
+            // 1. Concurrently pull both registration list and reported events history matching this user session
+            async let itemsTask = fetcher.fetchUserRegistrations(userId: user.id)
+            async let reportedEventIdsTask = fetchUserReportedEventIds(userId: user.id)
+            
+            let (items, reportedEventIds) = try await (itemsTask, reportedEventIdsTask)
+            
+            // 2. Filter out registrations where the corresponding nested event has been reported
+            // Note: Update item.eventDetail.id based on the property name inside your EventRegistrationItem structural model
+            self.registrations = items.filter { item in
+                !reportedEventIds.contains(item.eventDetail.id.lowercased())
+            }
+            
             self.isLoading = false
         } catch {
             self.isLoading = false
             self.isError = true
             self.errorMessage = "Failed to load registrations"
             print("Error: \(error)")
+        }
+    }
+}
+
+// MARK: - Safe Exclusions Helpers
+private extension UserRegistrationViewModel {
+    /// Safe internal helper to parse out all reported event primary keys
+    func fetchUserReportedEventIds(userId: String) async -> Set<String> {
+        do {
+            let userReports = try await reportFetcher.fetchMyReports(reporterId: userId.lowercased())
+            let mappedIds = userReports.compactMap { $0.eventId?.lowercased() }
+            return Set(mappedIds)
+        } catch {
+            print("Non-fatal exclusion framework error inside UserRegistration data streaming: \(error)")
+            return []
+        }
+    }
+}
+
+// MARK: - Delegate Event Update Extension
+extension UserRegistrationViewModel: @MainActor DiscoverDetailEventViewModelDelegate {
+    func notifyToUpdateEventList() {
+        Task {
+            await fetchRegistrations()
         }
     }
 }

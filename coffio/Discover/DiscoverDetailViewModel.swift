@@ -7,8 +7,14 @@
 
 import SwiftUI
 
+protocol DiscoverDetailEventViewModelDelegate: AnyObject {
+    func notifyToUpdateEventList()
+}
+
 @MainActor
 final class DiscoverDetailEventViewModel: ObservableObject {
+    weak var delegate: DiscoverDetailEventViewModelDelegate?
+    
     @Published var event: DiscoverEventItem?
     @Published var isLoading: Bool = false
     @Published var isError: Bool = false
@@ -19,6 +25,14 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     @Published var registerPaymentDeadlineTime: Date? = nil
     @Published var isEditEventSheetPresented: Bool = false
     @Published var selectedImageData: Data? = nil
+    
+    @Published var activeReportTarget: (type: ReportType, userId: String, eventId: String?)? = nil
+    @Published var selectedReason: ReportReason = .spam
+    @Published var isReporting: Bool = false
+    @Published var showReportSuccessAlert: Bool = false
+    @Published var isReportAlertPresented: Bool = false
+    
+    private let reportFetcher = ReportFetcher()
     
     var isAlreadyRegistered: Bool {
         if let registerStatus {
@@ -38,9 +52,10 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     let authService: AuthenticationService = .shared
     let eventId: String
     
-    init(eventId: String, initialEvent: DiscoverEventItem? = nil) {
+    init(eventId: String, initialEvent: DiscoverEventItem? = nil, delegate: DiscoverDetailEventViewModelDelegate? = nil) {
         self.eventId = eventId
         self.event = initialEvent
+        self.delegate = delegate
     }
     
     func fetchEventDetails() async {
@@ -112,5 +127,45 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     func checkAuthor() async {
         guard let userId = authService.user?.id else { return }
         self.isAuthor = event?.createdBy == userId
+    }
+    
+    func submitReport() async {
+        // 1. Ensure a valid reporting target exists and a user is signed in
+        guard let target = activeReportTarget,
+              let currentUserId = authService.user?.id else { return }
+        
+        isReporting = true
+        
+        // 2. Build the exact ReportRequest model matching your system structure
+        let request = ReportRequest(
+            reporterId: currentUserId.lowercased(),
+            reportType: target.type, // e.g., .event
+            reason: selectedReason.rawValue,
+            threadId: nil,
+            reportedUserId: target.userId.lowercased(),
+            eventId: target.eventId?.lowercased()
+        )
+        
+        do {
+            // 3. Perform network call via ReportFetcher
+            try await reportFetcher.submitReport(request: request)
+            
+            // 4. Reset target and trigger confirmation updates
+            self.activeReportTarget = nil
+            self.showReportSuccessAlert = true
+            self.delegate?.notifyToUpdateEventList()
+            
+            // 5. ⚡️ Immediately hide/dismiss the content locally for this user session
+            // If they report the event itself, clear out the local instance so the UI falls back
+            if target.type == .event {
+                self.event = nil
+            }
+            
+        } catch {
+            print("Error submitting event report: \(error)")
+            self.isError = true
+        }
+        
+        isReporting = false
     }
 }

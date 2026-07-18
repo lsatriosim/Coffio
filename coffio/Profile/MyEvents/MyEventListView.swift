@@ -25,7 +25,7 @@ struct MyEventListView: View {
                     ScrollView(.vertical) {
                         LazyVStack(spacing: 16.0) {
                             ForEach(viewModel.events) { cardModel in
-                                NavigationLink(destination: DiscoverDetailEventView(eventId: cardModel.id)) {
+                                NavigationLink(destination: DiscoverDetailEventView(eventId: cardModel.id, delegate: viewModel)) {
                                     MyEventCardView(dataModel: cardModel)
                                 }
                                 .buttonStyle(PlainButtonStyle())

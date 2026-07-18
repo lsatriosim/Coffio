@@ -56,11 +56,13 @@ struct UserReportItem: JSONDecodable {
     let reportType: String
     let threadId: String?
     let reportedUserId: String?
+    let eventId: String?
 
     enum CodingKeys: String, CodingKey {
         case reporterId = "reporter_id"
         case reportType = "report_type"
         case threadId = "thread_id"
         case reportedUserId = "reported_user_id"
+        case eventId = "event_id"
     }
 }
