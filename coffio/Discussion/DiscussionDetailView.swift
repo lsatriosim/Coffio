@@ -5,15 +5,24 @@
 //  Created by Liefran Satrio Sim on 10/05/26.
 //
 
-
 import SwiftUI
 
 struct DiscussionDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: DiscussionDetailViewModel
     
-    init(threadId: String, thread: DiscussionThreadItem? = nil) {
-        _viewModel = StateObject(wrappedValue: DiscussionDetailViewModel(threadId: threadId, initialThread: thread))
+    init(
+        threadId: String,
+        thread: DiscussionThreadItem? = nil,
+        detailViewModelDelegate: DiscussionDetailViewModelDelegate? = nil
+    ) {
+        _viewModel = StateObject(
+            wrappedValue: DiscussionDetailViewModel(
+                threadId: threadId,
+                initialThread: thread,
+                detailViewModelDelegate: detailViewModelDelegate
+            )
+        )
     }
     
     var body: some View {
@@ -24,7 +33,6 @@ struct DiscussionDetailView: View {
                 if let thread = viewModel.thread {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
-                            // Main Thread Content
                             headerView(thread)
                             
                             Text(thread.title)
@@ -41,7 +49,6 @@ struct DiscussionDetailView: View {
                             
                             Divider()
                             
-                            // Comments List
                             if viewModel.isLoading {
                                 ProgressView().padding()
                             } else {
@@ -51,7 +58,7 @@ struct DiscussionDetailView: View {
                             }
                         }
                         .padding(20)
-                        .padding(.bottom, 80) // Space for sticky input
+                        .padding(.bottom, 80)
                     }
                 } else {
                     ProgressView()
@@ -69,6 +76,20 @@ struct DiscussionDetailView: View {
                     Image(systemName: "chevron.left").foregroundStyle(.black)
                 }
             }
+        }
+        .sheet(item: Binding(
+            get: { viewModel.activeReportTarget != nil ? ReportTargetContainer(target: viewModel.activeReportTarget!) : nil },
+            set: { newValue in viewModel.activeReportTarget = newValue?.target }
+        )) { container in
+            reportReasonSelectionSheet(for: container.target.type)
+        }
+        .alert("Thank You", isPresented: $viewModel.showReportSuccessAlert) {
+            Button("OK", role: .cancel) {
+                // ⚡️ Automatically pop the user back out to the main timeline feed
+                dismiss()
+            }
+        } message: {
+            Text("We have received your report and will review it within 24 hours. Action will be taken if terms are violated.")
         }
     }
     
@@ -88,10 +109,96 @@ struct DiscussionDetailView: View {
                 Text(thread.user.fullName ?? "User").font(.headline)
                 Text("@\(thread.user.username ?? "user")").font(.subheadline).foregroundStyle(.secondary)
             }
+            
             Spacer()
+            
+            // UGC Moderation Access Context Dropdown
+            Menu {
+                Button(role: .destructive) {
+                    viewModel.activeReportTarget = (type: .post, userId: thread.user.id, threadId: thread.id)
+                } label: {
+                    Label("Report Post", systemImage: "flag")
+                }
+                
+                Button(role: .destructive) {
+                    viewModel.activeReportTarget = (type: .user, userId: thread.user.id, threadId: nil)
+                } label: {
+                    Label("Report User Account", systemImage: "person.crop.circle.badge.exclam")
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.primary)
+                    .padding(8)
+            }
         }
     }
     
+    private func reportReasonSelectionSheet(for type: ReportType) -> some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Why are you reporting this \(type == .post ? "post" : "user")?")
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
+                    .padding(.top, 10)
+                
+                List(ReportReason.reasons(for: type)) { reason in
+                    HStack {
+                        Text(reason.rawValue)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        if viewModel.selectedReason == reason {
+                            Image(systemName: "checkmark")
+                                .bold()
+                                .foregroundColor(Color(hex: "ad6928"))
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        viewModel.selectedReason = reason
+                    }
+                }
+                .listStyle(.plain)
+                
+                Button(action: {
+                    Task {
+                        await viewModel.submitReport()
+                    }
+                }) {
+                    HStack {
+                        Spacer()
+                        if viewModel.isReporting {
+                            ProgressView().tint(.white)
+                        } else {
+                            Text("Submit Report")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                        }
+                        Spacer()
+                    }
+                    .frame(height: 50)
+                    .background(Color(hex: "ad6928"))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding()
+                }
+                .disabled(viewModel.isReporting)
+            }
+            .navigationTitle("Report Content")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Cancel") {
+                        viewModel.activeReportTarget = nil
+                    }
+                    .foregroundColor(.primary)
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+    
+    // Existing components preserved below ...
     private func commentRow(_ comment: DiscussionCommentItem) -> some View {
         HStack(alignment: .top, spacing: 12) {
             AsyncImage(url: URL(string: comment.user.avatarUrl ?? "")) { img in
@@ -125,18 +232,14 @@ struct DiscussionDetailView: View {
                     .background(Color.gray.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .lineLimit(1...5)
-                    .disabled(viewModel.isSubmitting) // Disable input while submitting
+                    .disabled(viewModel.isSubmitting)
                 
                 Button(action: {
-                    Task {
-                        await viewModel.submitComment()
-                    }
+                    Task { await viewModel.submitComment() }
                 }) {
                     ZStack {
                         if viewModel.isSubmitting {
-                            ProgressView()
-                                .tint(.white)
-                                .scaleEffect(0.8)
+                            ProgressView().tint(.white).scaleEffect(0.8)
                         } else {
                             Image(systemName: "paperplane.fill")
                                 .font(.system(size: 18, weight: .bold))
@@ -145,10 +248,7 @@ struct DiscussionDetailView: View {
                     }
                     .frame(width: 44, height: 44)
                     .background(
-                        Circle()
-                            .fill(viewModel.commentText.isEmpty || viewModel.isSubmitting
-                                  ? Color.gray.opacity(0.5)
-                                  : Color(hex: "ad6928"))
+                        Circle().fill(viewModel.commentText.isEmpty || viewModel.isSubmitting ? Color.gray.opacity(0.5) : Color(hex: "ad6928"))
                     )
                 }
                 .disabled(viewModel.commentText.isEmpty || viewModel.isSubmitting)
@@ -158,4 +258,13 @@ struct DiscussionDetailView: View {
             .background(.white)
         }
     }
+}
+
+// MARK: - Identifiable Wrapper for Sheet Presentation Target
+struct ReportTargetContainer: Identifiable {
+    var id: String {
+        "\(target.type.rawValue)_\(target.userId)_\(target.threadId ?? "none")"
+    }
+    
+    let target: (type: ReportType, userId: String, threadId: String?)
 }

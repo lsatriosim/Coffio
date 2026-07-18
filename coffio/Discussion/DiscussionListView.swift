@@ -90,7 +90,7 @@ struct DiscussionListView: View {
                 }
                 else {
                     ForEach(viewModel.threads) { thread in
-                        NavigationLink(destination: DiscussionDetailView(threadId: thread.id, thread: thread)) {
+                        NavigationLink(destination: DiscussionDetailView(threadId: thread.id, thread: thread, detailViewModelDelegate: viewModel)) {
                             DiscussionThreadCardView(thread: thread)
                         }
                         .buttonStyle(PlainButtonStyle())
