@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import GoogleSignInSwift
 
 struct RegisterView: View {
     @Environment(\.dismiss) private var dismiss
@@ -147,6 +148,13 @@ struct RegisterView: View {
                 }
                 .disabled(!isEULAAgreed || viewModel.isLoading)
                 
+                separatorLine
+                    .padding(.vertical, 8)
+
+                GoogleSignInButton(scheme: .light, style: .wide, state: .normal) {
+                    viewModel.performGoogleSupabaseSignIn()
+                }
+                
                 legalFooterLinks
                 
             }
@@ -197,6 +205,22 @@ struct RegisterView: View {
         }
         .font(.caption2)
         .padding(.top, 4)
+    }
+    
+    private var separatorLine: some View {
+        HStack {
+            Rectangle()
+                .fill(.gray)
+                .frame(height: 1.0)
+            
+            Text("Or")
+                .font(.caption)
+                .foregroundStyle(.black)
+            
+            Rectangle()
+                .fill(.gray)
+                .frame(height: 1.0)
+        }
     }
 }
 

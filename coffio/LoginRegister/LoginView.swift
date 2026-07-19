@@ -171,8 +171,6 @@ struct LoginView: View {
                 GoogleSignInButton(scheme: .light, style: .wide, state: .normal) {
                     viewModel.performGoogleSupabaseSignIn()
                 }
-                .frame(height: 48)
-                .cornerRadius(12)
             }
             .padding(.horizontal, 16.0)
         }
