@@ -14,7 +14,7 @@ struct EventRegistrationRequest: Encodable {
     let userPhone: String
     let userName: String
     let notes: String
-    let status: String = "awaiting_payment"
+    let status: String
     let paymentDeadline: Date?
     
     enum CodingKeys: String, CodingKey {

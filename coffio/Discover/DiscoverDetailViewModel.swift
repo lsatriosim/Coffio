@@ -96,6 +96,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
             userPhone: phoneNumber,
             userName: fullname,
             notes: notes,
+            status: event?.price == 0 ? "awaiting_payment" : "payment_submitted",
             paymentDeadline: deadline
         )
         
