@@ -146,12 +146,18 @@ struct DiscoverDetailEventView: View {
         }
         .ignoresSafeArea(edges: .top)
         .sheet(isPresented: $showRegistrationSheet) {
-            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo) { registrationId in
+            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo) { registrationId, callbackAction in
                 self.latestRegistrationId = registrationId
                 self.showRegistrationSheet = false
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    self.navigateToPaymentPage = true
+                switch callbackAction {
+                case .toPayment:
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        self.navigateToPaymentPage = true
+                    }
+                default:
+                    break
+                    // do nothing
                 }
             }
                 .environmentObject(viewModel)
