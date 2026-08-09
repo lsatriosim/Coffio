@@ -11,9 +11,10 @@ struct DiscoverLandingView: View {
     @StateObject private var viewModel = DiscoverLandingViewModel()
     
     // State indicators for deep navigation mapping
-    @State private var navigateToAllCafes = false
-    @State private var navigateToAllEvents = false
-    @State private var navigateToAllCommunities = false
+    @State private var navigateToAllCafes: Bool = false
+    @State private var navigateToAllEvents: Bool = false
+    @State private var navigateToAllCommunities: Bool = false
+    @State private var navigateToPaymentPage: Bool = false
     
     private let cardWidth: CGFloat = 200
     private let cardHeight: CGFloat = 250
@@ -22,6 +23,14 @@ struct DiscoverLandingView: View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 28) {
+                    
+                    if let highlighted = viewModel.highlightedRegistration, !viewModel.isLoading, highlighted.status == .awaitingPayment {
+                        HighlightedRegistrationCard(registration: highlighted) {
+                            navigateToPaymentPage = true
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                    }
                     
                     // MARK: - Section 1: Standout Highlighted Events
                     VStack(alignment: .leading, spacing: 12) {
@@ -102,6 +111,18 @@ struct DiscoverLandingView: View {
             }
             .navigationDestination(isPresented: $navigateToAllCommunities) {
                 DiscoverCommunityListView() // 💡 Your dedicated list screen
+            }
+            .navigationDestination(isPresented: $navigateToPaymentPage) {
+                if let highlightedRegistration = viewModel.highlightedRegistration, let paymentDeadlineTime = highlightedRegistration.paymentDeadlineAt, let highlightedEvent = viewModel.highlightedEvent {
+                    EventPaymentSheet(registrationId: highlightedRegistration.id, event: highlightedEvent, paymentDeadlineTime: paymentDeadlineTime)
+                        .onChange(of: navigateToPaymentPage) { oldValue, newValue in
+                            if !newValue {
+                                Task {
+                                    await viewModel.loadDashboardContent()
+                                }
+                            }
+                        }
+                }
             }
         }
     }
