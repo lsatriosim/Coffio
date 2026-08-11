@@ -48,7 +48,7 @@ class DiscoverLandingViewModel: ObservableObject {
             
             // 2. Filter out events reported by the active logged-in User ID
             let filteredEvents = fetchedEvents.filter { event in
-                !reportedEventIds.contains(event.id.lowercased())
+                !reportedEventIds.contains(event.id.lowercased()) && (event.visibility == .public || event.createdBy == authService.user?.id)
             }
             
             // 3. Parse raw coffee shops into your populated data models with distance calculations

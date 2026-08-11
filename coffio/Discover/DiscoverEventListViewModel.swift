@@ -121,7 +121,7 @@ private extension DiscoverEventListViewModel {
         let approvedEvents = newEvents.filter { $0.eventStatus == .approved }
         
         // Filter out items that match the user's flagged reports history locally
-        let filteredEvents = approvedEvents.filter { !reportedIds.contains($0.id.lowercased()) }
+        let filteredEvents = approvedEvents.filter { !reportedIds.contains($0.id.lowercased()) && ($0.visibility == .public || $0.createdBy == authService.user?.id) }
         
         self.events.append(contentsOf: filteredEvents)
     }

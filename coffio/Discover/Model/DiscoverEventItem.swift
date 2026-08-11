@@ -29,6 +29,7 @@ struct DiscoverEventItem: JSONDecodable {
     let communityInfo: CommunityInfo?
     let ownerPhone: String?
     let ownerEmail: String?
+    let visibility: EventVisibility
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -52,6 +53,7 @@ struct DiscoverEventItem: JSONDecodable {
         case communityInfo = "community_info"
         case ownerPhone = "owner_phone"
         case ownerEmail = "owner_email"
+        case visibility = "visibility"
     }
 }
 
@@ -78,6 +80,11 @@ struct CommunityInfo: JSONDecodable {
 enum RegistrationType: String, JSONDecodable {
     case `internal`
     case external
+}
+
+enum EventVisibility: String, JSONCodable {
+    case `private` = "private"
+    case `public` = "public"
 }
 
 enum EventStatus: String, JSONDecodable {
