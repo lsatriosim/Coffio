@@ -161,6 +161,17 @@ struct EventFormSheet: View {
                                 Text("External URL").tag(RegistrationType.external)
                             }
                             
+                            if viewModel.registrationMethod == .external {
+                                inputField(label: "External registration url", placeholder: "e.g., www.google-form.com", text: $viewModel.externalRegistrationUrl)
+                            }
+                            
+                            //TODO: Need universal link for it
+//                            segmentedControlField(label: "Visibility", selection: $viewModel.visibilityType) {
+//                                ForEach(VisibilityOption.allCases) { type in
+//                                    Text(type.rawValue).tag(type)
+//                                }
+//                            }
+                            
                             segmentedControlField(label: "Ticket Type", selection: $viewModel.ticketType) {
                                 ForEach(TicketType.allCases) { type in
                                     Text(type.rawValue).tag(type)

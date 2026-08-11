@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+enum VisibilityOption: String, CaseIterable, Identifiable {
+    case `public` = "Public"
+    case `private` = "Private"
+    var id: String { self.rawValue }
+}
+
 @MainActor
 final class EventFormViewModel: ObservableObject {
     enum FormMode {
@@ -32,9 +38,18 @@ final class EventFormViewModel: ObservableObject {
     @Published var startTime: Date = Date()
     @Published var endTime: Date = Date().addingTimeInterval(7200)
     @Published var registrationMethod: RegistrationType = .internal
+    @Published var externalRegistrationUrl: String = ""
     @Published var ticketType: TicketType = .free
     @Published var coffeeShops: [CoffeeShopLookupItem] = []
     @Published var selectedCoffeeShopId: String? = nil
+    
+    @Published var visibilityType: VisibilityOption = .public
+    var selectedVisibilityType: EventVisibility {
+        switch visibilityType {
+        case .public: .public
+        case .private: .private
+        }
+    }
     
     // Financial Targets
     @Published var ticketPrice: String = ""
@@ -112,6 +127,8 @@ final class EventFormViewModel: ObservableObject {
                 let parsedCapacity = Int(capacity) ?? 0
                 let parsedPrice = ticketType == .paid ? (Int(ticketPrice) ?? 0) : nil
                 
+                let parsedExtRegistrationUrl: String? = externalRegistrationUrl.isEmpty ? nil : externalRegistrationUrl
+                
                 let requestPayload = CreateEventRequest(
                     title: title,
                     description: description,
@@ -123,11 +140,13 @@ final class EventFormViewModel: ObservableObject {
                     location: fullAddress,
                     capacity: parsedCapacity,
                     registrationType: registrationMethod.rawValue,
+                    externalRegistrationUrl: parsedExtRegistrationUrl,
                     price: parsedPrice,
                     bankName: ticketType == .paid ? bankName : nil,
                     bankAccount: ticketType == .paid ? accountNumber : nil,
                     bankHolder: ticketType == .paid ? accountHolderName : nil,
-                    createdBy: user.id
+                    createdBy: user.id,
+                    visibility: selectedVisibilityType
                 )
                 
                 switch mode {
