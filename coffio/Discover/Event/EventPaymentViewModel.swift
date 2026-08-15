@@ -64,7 +64,9 @@ final class EventPaymentViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                let uploadedUrl = try await fetcher.uploadPaymentProof(image: receiptData, eventId: event.id, userId: userId)
+                let filePath = "payment-proofs\(event.id)/\(userId).jpg"
+                
+                let uploadedUrl = try await fetcher.uploadPaymentProof(image: receiptData, filePath: filePath)
                 
                 let uploadRecordPayload = UploadTransactionRequest(
                     userId: userId,

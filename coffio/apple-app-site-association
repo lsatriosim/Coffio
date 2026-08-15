@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appID": "DJFUU6576B.com.coffio.coffio",
+        "paths": [
+            "/",
+            "/event/*",
+            "/event/",
+            "/event"
+        ]
+      }
+    ]
+  }
+}

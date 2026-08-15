@@ -120,11 +120,8 @@ final class EventFetcher: SupabaseParsable {
     
     func uploadPaymentProof(
         image: Data,
-        eventId: String,
-        userId: String
+        filePath: String
     ) async throws -> String {
-        let filePath = "\(eventId)/\(userId).jpg"
-        
         try await supabaseClient.storage
             .from("payment-proofs")
             .upload(
@@ -132,7 +129,7 @@ final class EventFetcher: SupabaseParsable {
                 data: image,
                 options: FileOptions(
                     contentType: "image/jpeg",
-                    upsert: true
+                    upsert: false
                 )
             )
         
@@ -299,11 +296,10 @@ extension EventFetcher {
     }
     
     func fetchUserRegistrations(userId: String) async throws -> [EventRegistrationItem] {
-        // Querying the view you specified
         let response = try await supabaseClient
             .from("view_event_registration_items")
             .select()
-            .eq("user_id", value: userId) // Filter by the current user
+            .eq("user_id", value: userId)
             .execute()
         
         let decoder = JSONDecoder()

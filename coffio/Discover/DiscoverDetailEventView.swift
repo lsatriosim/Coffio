@@ -53,6 +53,17 @@ struct DiscoverDetailEventView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
+                if let event = viewModel.event {
+                    ShareLink(
+                        item: "https://www.coffio.id/event/\(event.id)/",
+                        subject: Text(event.title),
+                        message: Text("Check out this event on Coffio!")
+                    ) {
+                        Image(systemName: "square.and.arrow.up")
+                            .foregroundStyle(.black)
+                    }
+                }
+                
                 if let event = viewModel.event, !viewModel.isAuthor {
                     Button(action: {
                         // Prepare the active reporting payload before showing dialog option sheets
@@ -161,8 +172,8 @@ struct DiscoverDetailEventView: View {
                     // do nothing
                 }
             }
-                .environmentObject(viewModel)
-                .presentationDetents([.large])
+            .environmentObject(viewModel)
+            .presentationDetents([.large])
         }
     }
 
@@ -386,6 +397,15 @@ struct DiscoverDetailEventView: View {
                 }
                 else if viewModel.isAlreadyRegistered && viewModel.registerStatus == .awaitingPayment {
                     CoffioButton(title: "Complete Payment", style: .primary) {
+                        if let currentRegId = viewModel.registerId {
+                            self.latestRegistrationId = currentRegId
+                            self.navigateToPaymentPage = true
+                        }
+                    }
+                }
+                else if viewModel.isAlreadyRegistered && viewModel.registerStatus == .expired {
+                    CoffioButton(title: "Reregister", style: .primary) {
+                        showRegistrationSheet = true
                         if let currentRegId = viewModel.registerId {
                             self.latestRegistrationId = currentRegId
                             self.navigateToPaymentPage = true
