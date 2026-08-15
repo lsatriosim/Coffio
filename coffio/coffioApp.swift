@@ -40,18 +40,25 @@ struct coffioApp: App {
     let authService: AuthenticationService = AuthenticationService.shared
     let locationProvider: LocationProvider = LocationProvider.shared
     
+    @StateObject private var navigationRouter = AppNavigationRouter()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(authService)
-                .task {
-                    print("INFO DICT:", Bundle.main.infoDictionary ?? [:])
-                    // 3. Request push permissions on app launch (or after login)
-                    await PushNotificationManager.shared.requestPermission()
-                }
-                .onOpenURL { url in
+            .environmentObject(authService)
+            .environmentObject(navigationRouter) // Inject into environment for child views
+            .task {
+                await PushNotificationManager.shared.requestPermission()
+            }
+            .onOpenURL { url in
+                // 2. Intercept URL with our own App Deeplink Handler first
+                let wasDeeplinkHandled = navigationRouter.processIncomingURL(url)
+                
+                // 3. If our handler didn't care about it, pass it to Google Sign-In as a fallback
+                if !wasDeeplinkHandled {
                     _ = GIDSignIn.sharedInstance.handle(url)
                 }
+            }
         }
     }
 }

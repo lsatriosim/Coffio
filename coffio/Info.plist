@@ -16,6 +16,16 @@
 				<string>com.googleusercontent.apps.46766020031-i6eqfdf11kfreg5o2qqi3fd44hgv3n1v</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.coffio.coffio</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>coffio</string>
+			</array>
+		</dict>
 	</array>
 	<key>CLIENT_ID</key>
 	<string>46766020031-i6eqfdf11kfreg5o2qqi3fd44hgv3n1v.apps.googleusercontent.com</string>

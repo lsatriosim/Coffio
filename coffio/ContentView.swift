@@ -8,18 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab = 0
     @EnvironmentObject var authService: AuthenticationService
-    @Namespace private var animation // For the smooth sliding highlight
-    @SceneStorage("selectedTab") private var selectedTabIndex = 0
+    @EnvironmentObject var navigationRouter: AppNavigationRouter
+    
+    @Namespace private var animation
     
     var body: some View {
         ZStack(alignment: .bottom) {
             // MARK: - Main Content
-            TabView(selection: $selectedTab) {
+            // 2. Bind the TabView directly to the router's published selectedTab
+            TabView(selection: $navigationRouter.selectedTab) {
                 Tab("Discover", systemImage: "cup.and.saucer", value: 0) {
-                    NavigationStack {
+                    NavigationStack(path: $navigationRouter.discoverPath) {
                         DiscoverLandingView()
+                            .navigationDestination(for: AppNavigationRouter.DiscoverDestination.self) { route in
+                                switch route {
+                                case .eventDetail:
+                                    Text("migrated")
+                                }
+                            }
                     }
                 }
                 
@@ -36,7 +43,9 @@ struct ContentView: View {
                 }
                 
                 Tab("Profile", systemImage: "person.circle", value: 3) {
-                    ProfileView()
+                    NavigationStack {
+                        ProfileView()
+                    }
                 }
             }
             .tint(Color(hex: "ad6928"))
@@ -44,9 +53,8 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $authService.showAuthPage) {
             LoginView()
         }
+        .onChange(of: navigationRouter.discoverPath) { oldPath, newPath in
+            print("➡️ ContentView detected path change: \(newPath)")
+        }
     }
-}
-
-#Preview {
-    ContentView()
 }
