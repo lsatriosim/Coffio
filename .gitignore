@@ -16,3 +16,4 @@ DerivedData/
 ## =========================================================================
 .build/
 .swiftpm/
+coffio.xcodeproj/xcuserdata/*

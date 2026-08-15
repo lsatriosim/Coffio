@@ -120,11 +120,8 @@ final class EventFetcher: SupabaseParsable {
     
     func uploadPaymentProof(
         image: Data,
-        eventId: String,
-        userId: String
+        filePath: String
     ) async throws -> String {
-        let filePath = "\(eventId)/\(userId).jpg"
-        
         try await supabaseClient.storage
             .from("payment-proofs")
             .upload(
@@ -132,7 +129,7 @@ final class EventFetcher: SupabaseParsable {
                 data: image,
                 options: FileOptions(
                     contentType: "image/jpeg",
-                    upsert: true
+                    upsert: false
                 )
             )
         

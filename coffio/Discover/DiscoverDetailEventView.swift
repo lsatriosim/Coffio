@@ -392,6 +392,15 @@ struct DiscoverDetailEventView: View {
                         }
                     }
                 }
+                else if viewModel.isAlreadyRegistered && viewModel.registerStatus == .expired {
+                    CoffioButton(title: "Reregister", style: .primary) {
+                        showRegistrationSheet = true
+                        if let currentRegId = viewModel.registerId {
+                            self.latestRegistrationId = currentRegId
+                            self.navigateToPaymentPage = true
+                        }
+                    }
+                }
                 else if viewModel.isAlreadyRegistered {
                     Button(action: {}) {
                         Text("You've already registered")
