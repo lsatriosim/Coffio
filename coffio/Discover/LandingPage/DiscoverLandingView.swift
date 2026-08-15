@@ -11,19 +11,27 @@ struct DiscoverLandingView: View {
     @StateObject private var viewModel = DiscoverLandingViewModel()
     
     // State indicators for deep navigation mapping
-    @State private var navigateToAllCafes = false
-    @State private var navigateToAllEvents = false
-    @State private var navigateToAllCommunities = false
+    @State private var navigateToAllCafes: Bool = false
+    @State private var navigateToAllEvents: Bool = false
+    @State private var navigateToAllCommunities: Bool = false
+    @State private var navigateToPaymentPage: Bool = false
     
     private let cardWidth: CGFloat = 200
     private let cardHeight: CGFloat = 250
 
     var body: some View {
-        NavigationStack {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 28) {
-                    
-                    // MARK: - Section 1: Standout Highlighted Events
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 28) {
+                if let highlighted = viewModel.highlightedRegistration, !viewModel.isLoading, highlighted.status == .awaitingPayment {
+                    HighlightedRegistrationCard(registration: highlighted) {
+                        navigateToPaymentPage = true
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                }
+                
+                // MARK: - Section 1: Standout Highlighted Events
+                if viewModel.isLoading || !viewModel.topEvents.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         sectionHeader(title: "Featured Events", actionTitle: "See All") {
                             navigateToAllEvents = true
@@ -52,56 +60,68 @@ struct DiscoverLandingView: View {
                             .padding(.horizontal, 20)
                         }
                     }
-                    
-                    communitySection
-                    
-                    // MARK: - Section 2: Top 10 Coffee Shops
-                    VStack(alignment: .leading, spacing: 12) {
-                        sectionHeader(title: "Top Coffee Shops", actionTitle: "See All") {
-                            navigateToAllCafes = true
-                        }
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                if viewModel.isLoading {
-                                    ForEach(0..<3) { _ in
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .fill(.gray.opacity(0.12))
-                                            .frame(width: 260, height: 100)
-                                    }
-                                } else {
-                                    ForEach(viewModel.topCoffeeShops, id:\.id) { shop in
-                                        // Update to target your detailed coffee shop overview sheet or navigation link destination
-                                        DiscoverLandingCoffeeShopCard(dataModel: shop)
-                                    }
-                                    
-                                    seeMoreCard(width: 260, height: 100, action: { navigateToAllCafes = true })
-                                }
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 8)
-                        }
-                        .frame(height: 120)
-                    }
                 }
             }
-            .background(Color(hex: "f2efed")) // Keeping brand background structure uniform
-            .navigationTitle("Discover")
-            .refreshable {
-                await viewModel.loadDashboardContent()
+            
+            communitySection
+            
+            // MARK: - Section 2: Top 10 Coffee Shops
+            VStack(alignment: .leading, spacing: 12) {
+                sectionHeader(title: "Top Coffee Shops", actionTitle: "See All") {
+                    navigateToAllCafes = true
+                }
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        if viewModel.isLoading {
+                            ForEach(0..<3) { _ in
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(.gray.opacity(0.12))
+                                    .frame(width: 260, height: 100)
+                            }
+                        } else {
+                            ForEach(viewModel.topCoffeeShops, id:\.id) { shop in
+                                // Update to target your detailed coffee shop overview sheet or navigation link destination
+                                DiscoverLandingCoffeeShopCard(dataModel: shop)
+                            }
+                            
+                            seeMoreCard(width: 260, height: 100, action: { navigateToAllCafes = true })
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
+                }
+                .frame(height: 120)
             }
-            .task {
-                await viewModel.loadDashboardContent()
-            }
-            // Hidden navigation destination bindings managed by headers and tail cards
-            .navigationDestination(isPresented: $navigateToAllCafes) {
-                DiscoverFrontCardListView()
-            }
-            .navigationDestination(isPresented: $navigateToAllEvents) {
-                DiscoverEventListView()
-            }
-            .navigationDestination(isPresented: $navigateToAllCommunities) {
-                DiscoverCommunityListView() // 💡 Your dedicated list screen
+        }
+        .background(Color(hex: "f2efed")) // Keeping brand background structure uniform
+        .navigationTitle("Discover")
+        .refreshable {
+            await viewModel.loadDashboardContent()
+        }
+        .task {
+            await viewModel.loadDashboardContent()
+        }
+        // Hidden navigation destination bindings managed by headers and tail cards
+        .navigationDestination(isPresented: $navigateToAllCafes) {
+            DiscoverFrontCardListView()
+        }
+        .navigationDestination(isPresented: $navigateToAllEvents) {
+            DiscoverEventListView()
+        }
+        .navigationDestination(isPresented: $navigateToAllCommunities) {
+            DiscoverCommunityListView() // 💡 Your dedicated list screen
+        }
+        .navigationDestination(isPresented: $navigateToPaymentPage) {
+            if let highlightedRegistration = viewModel.highlightedRegistration, let paymentDeadlineTime = highlightedRegistration.paymentDeadlineAt, let highlightedEvent = viewModel.highlightedEvent {
+                EventPaymentSheet(registrationId: highlightedRegistration.id, event: highlightedEvent, paymentDeadlineTime: paymentDeadlineTime)
+                    .onChange(of: navigateToPaymentPage) { oldValue, newValue in
+                        if !newValue {
+                            Task {
+                                await viewModel.loadDashboardContent()
+                            }
+                        }
+                    }
             }
         }
     }

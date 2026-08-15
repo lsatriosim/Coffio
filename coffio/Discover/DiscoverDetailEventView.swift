@@ -19,6 +19,7 @@ struct DiscoverDetailEventView: View {
     
     @StateObject private var viewModel: DiscoverDetailEventViewModel
     @State private var isShowingPreview: Bool = false
+    @State private var previewImageUrl: String? = nil
 
     init(eventId: String, event: DiscoverEventItem? = nil, delegate: DiscoverDetailEventViewModelDelegate? = nil) {
         _viewModel = StateObject(wrappedValue: DiscoverDetailEventViewModel(eventId: eventId, initialEvent: event, delegate: delegate))
@@ -52,6 +53,17 @@ struct DiscoverDetailEventView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
+                if let event = viewModel.event {
+                    ShareLink(
+                        item: "https://www.coffio.id/event/\(event.id)/",
+                        subject: Text(event.title),
+                        message: Text("Check out this event on Coffio!")
+                    ) {
+                        Image(systemName: "square.and.arrow.up")
+                            .foregroundStyle(.black)
+                    }
+                }
+                
                 if let event = viewModel.event, !viewModel.isAuthor {
                     Button(action: {
                         // Prepare the active reporting payload before showing dialog option sheets
@@ -108,7 +120,7 @@ struct DiscoverDetailEventView: View {
         .overlay {
             if isShowingPreview {
                 InteractiveImagePreview(
-                    imageUrl: viewModel.event?.imageUrl,
+                    imageUrl: previewImageUrl,
                     isPresented: $isShowingPreview
                 )
             }
@@ -146,16 +158,22 @@ struct DiscoverDetailEventView: View {
         }
         .ignoresSafeArea(edges: .top)
         .sheet(isPresented: $showRegistrationSheet) {
-            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo) { registrationId in
+            EventRegistrationSheet(eventId: dataModel.id, paymentInfo: dataModel.paymentInfo) { registrationId, callbackAction in
                 self.latestRegistrationId = registrationId
                 self.showRegistrationSheet = false
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    self.navigateToPaymentPage = true
+                switch callbackAction {
+                case .toPayment:
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        self.navigateToPaymentPage = true
+                    }
+                default:
+                    break
+                    // do nothing
                 }
             }
-                .environmentObject(viewModel)
-                .presentationDetents([.large])
+            .environmentObject(viewModel)
+            .presentationDetents([.large])
         }
     }
 
@@ -349,6 +367,10 @@ struct DiscoverDetailEventView: View {
                     .foregroundStyle(.primary)
             }
             
+            if let menuImageUrl = dataModel.menuImageUrl, !menuImageUrl.isEmpty {
+                menuImageCard(menuImageUrl)
+            }
+            
             switch dataModel.registrationType {
             case .internal:
                 if viewModel.isAuthor {
@@ -381,6 +403,15 @@ struct DiscoverDetailEventView: View {
                         }
                     }
                 }
+                else if viewModel.isAlreadyRegistered && viewModel.registerStatus == .expired {
+                    CoffioButton(title: "Reregister", style: .primary) {
+                        showRegistrationSheet = true
+                        if let currentRegId = viewModel.registerId {
+                            self.latestRegistrationId = currentRegId
+                            self.navigateToPaymentPage = true
+                        }
+                    }
+                }
                 else if viewModel.isAlreadyRegistered {
                     Button(action: {}) {
                         Text("You've already registered")
@@ -407,10 +438,6 @@ struct DiscoverDetailEventView: View {
                 }
             case .external:
                 Button(action: {
-                    guard viewModel.authService.user != nil else {
-                        viewModel.authService.showLoginPage()
-                        return
-                    }
                     if let urlStr = dataModel.externalRegistrationURL, let url = URL(string: urlStr) {
                         UIApplication.shared.open(url)
                     }
@@ -449,11 +476,60 @@ struct DiscoverDetailEventView: View {
             .background(Color.clear)
             .onTapGesture {
                 withAnimation(.easeInOut(duration: 0.25)) {
+                    previewImageUrl = imageUrl
                     isShowingPreview = true
                 }
             }
         } else {
             placeholderView
+        }
+    }
+    
+    @ViewBuilder
+    private func menuImageCard(_ menuImageUrl: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Event Menu")
+                .font(.caption)
+                .bold()
+                .textCase(.uppercase)
+                .foregroundStyle(.gray)
+                .padding(.top, 4)
+
+            Button {
+                // Trigger full screen image preview if needed
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    previewImageUrl = menuImageUrl
+                    isShowingPreview = true
+                }
+            } label: {
+                if let url = URL(string: menuImageUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 180)
+                                .clipped()
+                        case .failure(_), .empty:
+                            ZStack {
+                                Color(hex: "fcede1")
+                                ProgressView()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 180)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.black.opacity(0.05), lineWidth: 1)
+                    )
+                }
+            }
         }
     }
     

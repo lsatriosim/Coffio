@@ -8,12 +8,17 @@
 import SwiftUI
 import PhotosUI
 
+enum EventRegistrationCallbackAction {
+    case toPayment
+    case none
+}
+
 struct EventRegistrationSheet: View {
     @Environment(\.dismiss) private var dismiss
     
     let eventId: String
     let paymentInfo: PaymentInfo?
-    var onReservationSuccess: (String) -> Void // 💡 Added callback closure to trigger parent navigation push
+    var onReservationSuccess: (String, EventRegistrationCallbackAction) -> Void // 💡 Added callback closure to trigger parent navigation push
     
     @State private var fullName: String = ""
     @State private var contactNumber: String = ""
@@ -188,7 +193,7 @@ private extension EventRegistrationSheet {
         
         Task {
             do {
-                try await viewModel.createAwaitingPaymentSlot(
+                let callbackAction = try await viewModel.createAwaitingPaymentSlot(
                     id: generatedRegistrationId,
                     eventId: eventId,
                     fullname: fullName,
@@ -199,7 +204,7 @@ private extension EventRegistrationSheet {
                 
                 isSubmitting = false
                 
-                onReservationSuccess(generatedRegistrationId)
+                onReservationSuccess(generatedRegistrationId, callbackAction)
             } catch {
                 isSubmitting = false
                 viewModel.errorMessage = error.localizedDescription

@@ -5,12 +5,15 @@
 //  Created by Liefran Satrio Sim on 05/04/26.
 //
 
+import AuthenticationServices
+import CryptoKit
 import Foundation
-import SwiftUI
 import GoogleSignIn
+import Security
+import SwiftUI
 
 @MainActor
-final class AuthViewModel: ObservableObject {
+final class AuthViewModel: NSObject, ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var confirmPassword = ""
@@ -21,6 +24,7 @@ final class AuthViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var showRegister: Bool = false
     @Published var showDeleteAlert = false
+    private var currentNonce: String?
     
     func updateShowRegister(isPresented: Bool) {
         showRegister = isPresented
@@ -157,5 +161,75 @@ final class AuthViewModel: ObservableObject {
                 self.isLoading = false
             }
         }
+    }
+        
+    func handleAppleSignInCompletion(_ result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                  let identityTokenData = appleIDCredential.identityToken,
+                  let idTokenString = String(data: identityTokenData, encoding: .utf8) else {
+                isError = true
+                popUpErrorMessage = "Failed to retrieve ID Token from Apple."
+                return
+            }
+            
+            var fullName: String?
+            if let nameComponents = appleIDCredential.fullName {
+                fullName = PersonNameComponentsFormatter().string(from: nameComponents)
+            }
+            
+            let rawNonce = currentNonce ?? ""
+            isLoading = true
+            
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                defer { self.isLoading = false }
+                
+                do {
+                    try await AuthenticationService.shared.loginWithApple(
+                        idToken: idTokenString,
+                        nonce: rawNonce,
+                        fullName: fullName
+                    )
+                    self.resetState()
+                } catch {
+                    self.isError = true
+                    self.popUpErrorMessage = error.localizedDescription
+                }
+            }
+            
+        case .failure(let error):
+            if let authError = error as? ASAuthorizationError, authError.code == .canceled {
+                return
+            }
+            isError = true
+            popUpErrorMessage = error.localizedDescription
+        }
+    }
+
+    func prepareAppleNonce() -> String {
+        let rawNonce = randomNonceString()
+        currentNonce = rawNonce
+        return sha256(rawNonce)
+    }
+}
+
+private extension AuthViewModel {
+    func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        var randomBytes = [UInt8](repeating: 0, count: length)
+        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
+        if errorCode != errSecSuccess {
+            fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+        }
+        let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        return String(randomBytes.map { charset[Int($0) % charset.count] })
+    }
+
+    func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        return hashedData.compactMap { String(format: "%02x", $0) }.joined()
     }
 }

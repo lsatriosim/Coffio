@@ -12,6 +12,8 @@ class DiscoverLandingViewModel: ObservableObject {
     @Published var topCoffeeShops: [DiscoverCoffeeShopItemDataModel] = []
     @Published var topEvents: [DiscoverEventItem] = []
     @Published var topCommunities: [CommunityItem] = []
+    @Published var highlightedRegistration: EventRegistrationItem? = nil
+    @Published var highlightedEvent: DiscoverEventItem? = nil
     @Published var isLoading = false
     @Published var isError = false
     
@@ -30,20 +32,23 @@ class DiscoverLandingViewModel: ObservableObject {
             async let coffeeShopsTask = coffeeShopFetcher.fetchTopCoffeeShops(limit: 10)
             async let eventsTask = eventFetcher.fetchTopEvents(limit: 5)
             async let communitiesTask = communityFetcher.fetchTopCommunities(limit: 6)
-            
-            // Fetch reports submitted by the active user session if available
             async let reportedEventIdsTask = fetchUserReportedEventIds()
+            async let registrationsTask: [EventRegistrationItem] = {
+                guard let userId = await authService.user?.id else { return [] }
+                return try await eventFetcher.fetchUserRegistrations(userId: userId)
+            }()
             
-            let (rawShops, fetchedEvents, fetchedCommunities, reportedEventIds) = try await (
+            let (rawShops, fetchedEvents, fetchedCommunities, reportedEventIds, userRegistrations) = try await (
                 coffeeShopsTask,
                 eventsTask,
                 communitiesTask,
-                reportedEventIdsTask
+                reportedEventIdsTask,
+                registrationsTask
             )
             
             // 2. Filter out events reported by the active logged-in User ID
             let filteredEvents = fetchedEvents.filter { event in
-                !reportedEventIds.contains(event.id.lowercased())
+                !reportedEventIds.contains(event.id.lowercased()) && (event.visibility == .public || event.createdBy == authService.user?.id)
             }
             
             // 3. Parse raw coffee shops into your populated data models with distance calculations
@@ -82,12 +87,19 @@ class DiscoverLandingViewModel: ObservableObject {
                 }
             }
             
+            let awaitingPaymentRegistration = checkAwaitingPaymentRegistration(registrations: userRegistrations)
+            var highlightedEvent: DiscoverEventItem? = nil
+            if let highlightedRegistration = awaitingPaymentRegistration {
+                highlightedEvent = try await eventFetcher.fetchEventById(id: highlightedRegistration.eventDetail.id)
+            }
+            
             // 5. Update landing state streams
             guard !Task.isCancelled else { return }
             self.topCoffeeShops = parsedShopsBatch
             self.topEvents = filteredEvents
             self.topCommunities = fetchedCommunities
-            
+            self.highlightedRegistration = awaitingPaymentRegistration
+            self.highlightedEvent = highlightedEvent
         } catch {
             guard !(error is CancellationError) else { return }
             self.isError = true
@@ -96,6 +108,7 @@ class DiscoverLandingViewModel: ObservableObject {
         
         self.isLoading = false
     }
+    
     
     /// Internal safe helper to get array string of eventIds flagged by this user
     private func fetchUserReportedEventIds() async -> Set<String> {
@@ -130,6 +143,10 @@ class DiscoverLandingViewModel: ObservableObject {
             print("Non-fatal exception reading past event reports history: \(error)")
             return []
         }
+    }
+    
+    private func checkAwaitingPaymentRegistration(registrations: [EventRegistrationItem]) -> EventRegistrationItem? {
+        return registrations.first { $0.status == .awaitingPayment }
     }
 }
 

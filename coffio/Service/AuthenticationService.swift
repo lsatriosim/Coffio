@@ -63,6 +63,28 @@ final class AuthenticationService: ObservableObject {
         showAuthPage = false
     }
     
+    func loginWithApple(idToken: String, nonce: String, fullName: String?) async throws {
+        // 1. Exchange the Apple OIDC token and raw nonce with Supabase
+        try await supabaseClient.auth.signInWithIdToken(
+            credentials: .init(
+                provider: .apple,
+                idToken: idToken,
+                nonce: nonce
+            )
+        )
+        
+        // 2. Apple only returns the full name on the FIRST sign-in. Save it to user metadata if provided.
+        if let fullName = fullName, !fullName.isEmpty {
+            _ = try? await supabaseClient.auth.update(
+                user: UserAttributes(data: ["full_name": .string(fullName)])
+            )
+        }
+        
+        // 3. Fetch user profile and dismiss auth page
+        await fetchUserProfile()
+        showAuthPage = false
+    }
+    
     func logout() async throws {
         try await supabaseClient.auth.signOut()
         user = nil
@@ -99,6 +121,7 @@ final class AuthenticationService: ObservableObject {
             
             let userProfile: ProfileUser = try JSONDecoder().decode(ProfileUser.self, from: response.data)
             self.user = userProfile
+            await PushNotificationManager.shared.attemptToSaveToken()
         }
         catch {
             self.user = nil

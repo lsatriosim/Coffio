@@ -16,11 +16,13 @@ struct CreateEventRequest: Encodable {
     let location: String?            // Full Structural Street Address
     let capacity: Int?
     let registrationType: String     // 'internal' or 'external'
+    let externalRegistrationUrl: String?
     let price: Int?
     let bankName: String?
     let bankAccount: String?
     let bankHolder: String?
     let createdBy: String?           // Host User Profile ID link
+    let visibility: EventVisibility
 
     enum CodingKeys: String, CodingKey {
         case title, description, price, capacity, location
@@ -30,10 +32,12 @@ struct CreateEventRequest: Encodable {
         case endDate = "end_date"
         case cafeName = "cafe_name"
         case registrationType = "registration_type"
+        case externalRegistrationUrl = "external_registration_url"
         case bankName = "bank_name"
         case bankAccount = "bank_account"
         case bankHolder = "bank_holder"
         case createdBy = "created_by"
+        case visibility
     }
 }
 

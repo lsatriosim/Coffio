@@ -82,7 +82,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
             phoneNumber: String,
             notes: String,
             deadline: Date
-    ) async throws {
+    ) async throws -> EventRegistrationCallbackAction {
         guard let user = authService.user else {
             authService.showLoginPage()
             throw NSError(domain: "AuthError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User session not active"])
@@ -96,12 +96,15 @@ final class DiscoverDetailEventViewModel: ObservableObject {
             userPhone: phoneNumber,
             userName: fullname,
             notes: notes,
+            status: event?.price != 0 ? "awaiting_payment" : "payment_submitted",
             paymentDeadline: deadline
         )
         
         try await fetcher.registerEvent(request: eventRegistrationRequest)
         
         await checkRegistrationStatus()
+        
+        return event?.price != 0 ? .toPayment : .none
     }
     
     @MainActor

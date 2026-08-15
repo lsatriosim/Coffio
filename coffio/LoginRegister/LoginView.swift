@@ -7,6 +7,7 @@
 
 import SwiftUI
 import GoogleSignInSwift
+import _AuthenticationServices_SwiftUI
 
 struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
@@ -168,8 +169,20 @@ struct LoginView: View {
                 separatorLine
                     .padding(.vertical, 8)
 
-                GoogleSignInButton(scheme: .light, style: .wide, state: .normal) {
-                    viewModel.performGoogleSupabaseSignIn()
+                VStack(spacing: 12.0) {
+                    SignInWithAppleButton(.signIn) { request in
+                        request.requestedScopes = [.fullName, .email]
+                    } onCompletion: { result in
+                        viewModel.handleAppleSignInCompletion(result)
+                    }
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(height: 48)
+                    .cornerRadius(12)
+                    
+                    GoogleSignInButton(scheme: .light, style: .wide, state: .normal) {
+                        viewModel.performGoogleSupabaseSignIn()
+                    }
+                    .frame(height: 48)
                 }
             }
             .padding(.horizontal, 16.0)

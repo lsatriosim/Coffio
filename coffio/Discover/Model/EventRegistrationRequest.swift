@@ -14,8 +14,9 @@ struct EventRegistrationRequest: Encodable {
     let userPhone: String
     let userName: String
     let notes: String
-    let status: String = "awaiting_payment"
+    let status: String
     let paymentDeadline: Date?
+    let funnelSource: String = "APP"
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -26,6 +27,7 @@ struct EventRegistrationRequest: Encodable {
         case notes = "menu_notes"
         case status
         case paymentDeadline = "payment_deadline_at"
+        case funnelSource = "funnel_source"
     }
 }
 
