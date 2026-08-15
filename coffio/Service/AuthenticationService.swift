@@ -121,6 +121,7 @@ final class AuthenticationService: ObservableObject {
             
             let userProfile: ProfileUser = try JSONDecoder().decode(ProfileUser.self, from: response.data)
             self.user = userProfile
+            await PushNotificationManager.shared.attemptToSaveToken()
         }
         catch {
             self.user = nil

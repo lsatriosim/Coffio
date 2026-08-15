@@ -296,11 +296,10 @@ extension EventFetcher {
     }
     
     func fetchUserRegistrations(userId: String) async throws -> [EventRegistrationItem] {
-        // Querying the view you specified
         let response = try await supabaseClient
             .from("view_event_registration_items")
             .select()
-            .eq("user_id", value: userId) // Filter by the current user
+            .eq("user_id", value: userId)
             .execute()
         
         let decoder = JSONDecoder()

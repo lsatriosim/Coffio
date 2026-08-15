@@ -16,11 +16,11 @@ class AppNavigationRouter: ObservableObject {
     private let deeplinkHandler = DeeplinkHandler()
     
     public enum DiscoverDestination: Codable, Hashable {
-        case eventDetail
+        case eventDetail(id: String)
     }
          
     func navigateToEvent(id: String) {
-        discoverPath.append(DiscoverDestination.eventDetail)
+        discoverPath.append(DiscoverDestination.eventDetail(id: id))
     }
     
     @discardableResult

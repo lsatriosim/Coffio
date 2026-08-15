@@ -50,11 +50,11 @@
                   endingLineNumber = "109">
                </Location>
                <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - e8870b4c42b985d2"
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 60681f3654cdb1c8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(6) await resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  symbolName = "(8) await resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
@@ -64,11 +64,11 @@
                   endingLineNumber = "109">
                </Location>
                <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 63d97bb8acc9766d"
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 98522b8d5cfaebeb"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
+                  symbolName = "(11) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"

@@ -13,6 +13,34 @@ import Supabase
 final class PushNotificationManager {
     static let shared = PushNotificationManager()
     private init() {}
+    private var pendingDeviceToken: String?
+    
+    func handleDeviceToken(_ token: String) async {
+        print("📱 APNs token received")
+
+        // Keep the token regardless of authentication state
+        pendingDeviceToken = token
+
+        await attemptToSaveToken()
+    }
+    
+    func attemptToSaveToken() async {
+        guard let token = pendingDeviceToken else {
+            return
+        }
+
+        do {
+            try await saveTokenToSupabase(
+                token: token
+            )
+
+            // Token has successfully been persisted
+            pendingDeviceToken = nil
+
+        } catch {
+            print("❌ Failed to save push token: \(error)")
+        }
+    }
 
     func requestPermission() async {
         do {

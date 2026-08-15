@@ -23,8 +23,8 @@ struct ContentView: View {
                         DiscoverLandingView()
                             .navigationDestination(for: AppNavigationRouter.DiscoverDestination.self) { route in
                                 switch route {
-                                case .eventDetail:
-                                    Text("migrated")
+                                case .eventDetail(let eventId):
+                                    DiscoverDetailEventView(eventId: eventId, event: nil, delegate: nil)
                                 }
                             }
                     }

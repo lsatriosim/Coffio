@@ -23,8 +23,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         // Pass the token to your auth or push service
         Task {
-            await PushNotificationManager.shared.saveTokenToSupabase(token: pushToken)
-        }
+                await PushNotificationManager.shared.handleDeviceToken(pushToken)
+            }
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
