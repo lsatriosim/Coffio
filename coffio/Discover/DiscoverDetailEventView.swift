@@ -161,8 +161,8 @@ struct DiscoverDetailEventView: View {
                     // do nothing
                 }
             }
-                .environmentObject(viewModel)
-                .presentationDetents([.large])
+            .environmentObject(viewModel)
+            .presentationDetents([.large])
         }
     }
 

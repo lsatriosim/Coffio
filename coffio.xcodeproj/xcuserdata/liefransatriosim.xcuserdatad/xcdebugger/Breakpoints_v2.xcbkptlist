@@ -36,11 +36,11 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 20731ff0c2fcdc84"
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 232c827d2ee2aa27"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for coffio.AuthenticationService.updateProfile(fullName: Swift.String) async throws -&gt; ()"
+                  symbolName = "(3) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
@@ -50,11 +50,11 @@
                   endingLineNumber = "109">
                </Location>
                <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - f584d507c3843a7"
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - e8870b4c42b985d2"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(2) await resume partial function for coffio.AuthenticationService.updateProfile(fullName: Swift.String) async throws -&gt; ()"
+                  symbolName = "(6) await resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
@@ -64,11 +64,11 @@
                   endingLineNumber = "109">
                </Location>
                <Location
-                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 2be3a22c67756abb"
+                  uuid = "3FA6A89D-862B-41A2-B431-0457FBA20731 - 63d97bb8acc9766d"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(8) suspend resume partial function for coffio.AuthenticationService.updateProfile(fullName: Swift.String) async throws -&gt; ()"
+                  symbolName = "(9) suspend resume partial function for coffio.AuthenticationService.fetchUserProfile() async -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Service/AuthenticationService.swift"
@@ -204,36 +204,6 @@
             endingLineNumber = "51"
             landmarkName = "login()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "30FB4BA9-3867-488B-9FD9-796183EA919F - 983705416ee5b6b1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for coffio.AuthViewModel.login() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/LoginRegister/AuthViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "51"
-                  endingLineNumber = "51">
-               </Location>
-               <Location
-                  uuid = "30FB4BA9-3867-488B-9FD9-796183EA919F - 698bd60bf4a1e0b2"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for coffio.AuthViewModel.login() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/LoginRegister/AuthViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "51"
-                  endingLineNumber = "51">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -250,6 +220,36 @@
             endingLineNumber = "158"
             landmarkName = "loadCoffeeShopLookupData()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "0101BB1D-572C-449B-8063-FECDC498891B - 83d431cb94ba0354"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "160"
+                  endingLineNumber = "160">
+               </Location>
+               <Location
+                  uuid = "0101BB1D-572C-449B-8063-FECDC498891B - d9705bf731534756"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(9) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "160"
+                  endingLineNumber = "160">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -268,11 +268,11 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 4d2dd21b541cfbcd"
+                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 3e120669a363620"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for coffio.EventFormViewModel.loadCoffeeShopLookupData() async -&gt; ()"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
@@ -282,11 +282,11 @@
                   endingLineNumber = "154">
                </Location>
                <Location
-                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 762f97a8872c3437"
+                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 590d4a02c0ec8a26"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(2) await resume partial function for coffio.EventFormViewModel.loadCoffeeShopLookupData() async -&gt; ()"
+                  symbolName = "(3) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
@@ -296,11 +296,53 @@
                   endingLineNumber = "154">
                </Location>
                <Location
-                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 3e603299cb713dd3"
+                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - b6a8ec2e6e85ce24"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for coffio.EventFormViewModel.loadCoffeeShopLookupData() async -&gt; ()"
+                  symbolName = "(5) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "154"
+                  endingLineNumber = "154">
+               </Location>
+               <Location
+                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 81071713c0e31dd3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) await resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "154"
+                  endingLineNumber = "154">
+               </Location>
+               <Location
+                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 83d431cb94ba0354"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "160"
+                  endingLineNumber = "160">
+               </Location>
+               <Location
+                  uuid = "257D85DF-6365-4A1A-8844-10C00FF8033C - 6856b1a7e3a89fa0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(12) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
                   moduleName = "coffio.debug.dylib"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
@@ -326,6 +368,50 @@
             endingLineNumber = "155"
             landmarkName = "loadCoffeeShopLookupData()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E612EF6A-6712-4193-88CB-47B802C4E852 - 3e120669a363603"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+               <Location
+                  uuid = "E612EF6A-6712-4193-88CB-47B802C4E852 - 590d4a02c0ec8a05"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+               <Location
+                  uuid = "E612EF6A-6712-4193-88CB-47B802C4E852 - b6a8ec2e6e85ce07"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for closure #1 () async -&gt; () in coffio.EventFormViewModel.publishEvent(posterData: Swift.Optional&lt;Foundation.Data&gt;, menuData: Swift.Optional&lt;Foundation.Data&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/Event/CreateEventViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -388,36 +474,6 @@
             endingLineNumber = "53"
             landmarkName = "loadDashboardContent()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "9E4D5B1B-8A40-4CB1-AAD0-7FC718F827A0 - 483ecf3f9ed52af2"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(6) suspend resume partial function for coffio.DiscoverLandingViewModel.loadDashboardContent() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/LandingPage/DiscoverLandingViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "54"
-                  endingLineNumber = "54">
-               </Location>
-               <Location
-                  uuid = "9E4D5B1B-8A40-4CB1-AAD0-7FC718F827A0 - b43365fcbae4ed0f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(13) suspend resume partial function for coffio.DiscoverLandingViewModel.loadDashboardContent() async -&gt; ()"
-                  moduleName = "coffio.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/LandingPage/DiscoverLandingViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "54"
-                  endingLineNumber = "54">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -434,6 +490,36 @@
             endingLineNumber = "140"
             landmarkName = "fetchUserReportedEventIds()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6691FFBF-3785-4DB0-95AB-B475AC0D1785 - ba10b27c9b21793b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for coffio.DiscoverLandingViewModel.fetchUserReportedEventIds() async -&gt; Swift.Set&lt;Swift.String&gt;"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/LandingPage/DiscoverLandingViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "140"
+                  endingLineNumber = "140">
+               </Location>
+               <Location
+                  uuid = "6691FFBF-3785-4DB0-95AB-B475AC0D1785 - 7f3d7d08e22446f5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (coffio.UserReportItem) -&gt; Swift.Optional&lt;Swift.String&gt; in coffio.DiscoverLandingViewModel.fetchUserReportedEventIds() async -&gt; Swift.Set&lt;Swift.String&gt;"
+                  moduleName = "coffio.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/liefransatriosim/Documents/Coffio/coffio/coffio/Discover/LandingPage/DiscoverLandingViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "140"
+                  endingLineNumber = "140">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -61,29 +61,6 @@ struct DiscoverLandingView: View {
                         }
                     }
                 }
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        if viewModel.isLoading {
-                            ForEach(0..<3) { _ in
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(.gray.opacity(0.12))
-                                    .frame(width: cardWidth, height: cardHeight)
-                            }
-                        } else {
-                            ForEach(viewModel.topEvents, id:\.id) { event in
-                                NavigationLink(destination: DiscoverDetailEventView(eventId: event.id, event: event, delegate: viewModel)) {
-                                    DiscoverLandingEventCard(dataModel: event)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            
-                            // Sized "See More" Card Component
-                            seeMoreCard(width: cardWidth, height: cardHeight, action: { navigateToAllEvents = true })
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                }
             }
             
             communitySection
