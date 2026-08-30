@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 final class MyEventRegistrationListViewModel: ObservableObject {
     @Published var registrations: [EventRegistrationItem] = []
+    @Published var internalGuests: [DiscoverInternalGuestItem] = []
     @Published var isLoading: Bool = false
     @Published var isError: Bool = false
     @Published var errorMessage: String = ""
@@ -31,8 +32,14 @@ final class MyEventRegistrationListViewModel: ObservableObject {
     func fetchRegistrations() async {
         isLoading = true
         do {
-            let items = try await fetcher.fetchRegistrationsForEvent(eventId: eventId)
-            self.registrations = items
+            async let fetchedRegistrations = fetcher.fetchRegistrationsForEvent(eventId: eventId)
+            async let fetchedGuests = fetcher.fetchInternalGuests(forEventId: eventId)
+            
+            let (registrationsResult, guestsResult) = try await (fetchedRegistrations, fetchedGuests)
+            
+            self.registrations = registrationsResult
+            self.internalGuests = guestsResult
+            
             self.isLoading = false
         } catch {
             self.isLoading = false
@@ -78,4 +85,25 @@ final class MyEventRegistrationListViewModel: ObservableObject {
             print("Rejection Error: \(error)")
         }
     }
+    
+    func removeInternalGuest(id: String) async {
+        do {
+            try await fetcher.removeInternalGuest(id: id)
+            print("Successfully removed internal guest: \(id)")
+            
+            await fetchRegistrations()
+        } catch {
+            self.isError = true
+            self.errorMessage = "Could not remove internal guest. Please try again."
+            print("Remove Internal Guest Error: \(error)")
+        }
+    }
 }
+
+
+extension MyEventRegistrationListViewModel: @MainActor DiscoverInternalGuestRegistrationViewModelDelegate {
+    func notifyRegistrationSuccess() {
+        Task { await fetchRegistrations() }
+    }
+}
+

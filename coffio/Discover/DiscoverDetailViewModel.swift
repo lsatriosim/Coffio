@@ -172,3 +172,11 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         isReporting = false
     }
 }
+
+extension DiscoverDetailEventViewModel: @MainActor DiscoverInternalGuestRegistrationViewModelDelegate {
+    func notifyRegistrationSuccess() {
+        Task {
+            await fetchEventDetails()
+        }
+    }
+}

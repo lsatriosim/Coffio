@@ -13,6 +13,7 @@ struct DiscoverDetailEventView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State var showRegistrationSheet: Bool = false
+    @State private var showInternalGuestSheet: Bool = false
     @State private var navigateToRegistrations = false
     @State private var navigateToPaymentPage = false
     @State private var latestRegistrationId: String = ""
@@ -173,6 +174,13 @@ struct DiscoverDetailEventView: View {
                 }
             }
             .environmentObject(viewModel)
+            .presentationDetents([.large])
+        }
+        .sheet(isPresented: $showInternalGuestSheet) {
+            DiscoverInternalGuestRegistrationSheet(
+                eventId: dataModel.id,
+                delegate: viewModel
+            )
             .presentationDetents([.large])
         }
     }
@@ -377,6 +385,10 @@ struct DiscoverDetailEventView: View {
                     VStack(spacing: 12.0) {
                         CoffioButton(title: "Edit Event", style: .secondary) {
                             viewModel.isEditEventSheetPresented = true
+                        }
+                        
+                        CoffioButton(title: "Register Internal Guest", style: .secondary, isDisabled: (viewModel.event?.slotLeft ?? 0) <= 0) {
+                            showInternalGuestSheet = true
                         }
                         
                         if dataModel.eventStatus == .rejected {
