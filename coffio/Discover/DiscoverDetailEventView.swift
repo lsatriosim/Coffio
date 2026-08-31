@@ -41,7 +41,7 @@ struct DiscoverDetailEventView: View {
             }
         }
         .task {
-            await viewModel.fetchEventDetails()
+            await viewModel.onViewDidLoad()
         }
         .navigationBarBackButtonHidden()
         .toolbar(.hidden, for: .tabBar)
@@ -387,8 +387,10 @@ struct DiscoverDetailEventView: View {
                             viewModel.isEditEventSheetPresented = true
                         }
                         
-                        CoffioButton(title: "Register Internal Guest", style: .secondary, isDisabled: (viewModel.event?.slotLeft ?? 0) <= 0) {
-                            showInternalGuestSheet = true
+                        if viewModel.isInternalGuestEnabled {
+                            CoffioButton(title: "Register Internal Guest", style: .secondary, isDisabled: (viewModel.event?.slotLeft ?? 0) <= 0) {
+                                showInternalGuestSheet = true
+                            }
                         }
                         
                         if dataModel.eventStatus == .rejected {

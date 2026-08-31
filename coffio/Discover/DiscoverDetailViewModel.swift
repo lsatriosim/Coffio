@@ -31,6 +31,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     @Published var isReporting: Bool = false
     @Published var showReportSuccessAlert: Bool = false
     @Published var isReportAlertPresented: Bool = false
+    @Published var isInternalGuestEnabled: Bool = false
     
     private let reportFetcher = ReportFetcher()
     
@@ -56,6 +57,13 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         self.eventId = eventId
         self.event = initialEvent
         self.delegate = delegate
+    }
+    
+    func onViewDidLoad() {
+        Task {
+            await setupFeatureConfigValue()
+            await fetchEventDetails()
+        }
     }
     
     func fetchEventDetails() async {
@@ -170,6 +178,12 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         }
         
         isReporting = false
+    }
+}
+
+private extension DiscoverDetailEventViewModel {
+    func setupFeatureConfigValue() async {
+        isInternalGuestEnabled = await FeatureControlService.sharedInstance.isInternalGuestEnabled()
     }
 }
 
