@@ -414,16 +414,39 @@ extension EventFetcher {
         let registrations = try decoder.decode([EventRegistrationResponse].self, from: response.data)
         return registrations.first
     }
-
-    struct EventRegistrationResponse: JSONDecodable {
-        let id: String
-        let status: EventRegistrationStatus
-        let paymentDeadlineTime: Date?
+    
+    // MARK: - Internal Guest
+    func createInternalGuest(request: DiscoverInternalGuestRequest) async throws {
+        try await supabaseClient
+            .from("event_internal_guests")
+            .insert(request)
+            .execute()
+    }
+    
+    func fetchInternalGuests(forEventId eventId: String) async throws -> [DiscoverInternalGuestItem] {
+        let response: [DiscoverInternalGuestItem] = try await supabaseClient
+            .from("event_internal_guests")
+            .select()
+            .eq("event_id", value: eventId)
+            .execute()
+            .value
         
-        enum CodingKeys: String, CodingKey {
-            case id
-            case status
-            case paymentDeadlineTime = "payment_deadline_at"
-        }
+        return response
+    }
+    
+    func removeInternalGuest(id: String) async throws {
+        try await supabaseClient
+            .from("event_internal_guests") // Sesuaikan nama tabel di database Anda
+            .delete()
+            .eq("id", value: id)
+            .execute()
+    }
+    
+    func updateInternalGuest(request: DiscoverInternalGuestRequest) async throws {
+        try await supabaseClient
+            .from("event_internal_guests")
+            .update(request)
+            .eq("id", value: request.id)
+            .execute()
     }
 }
