@@ -84,12 +84,12 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     }
     
     func createAwaitingPaymentSlot(
-            id: String,
-            eventId: String,
-            fullname: String,
-            phoneNumber: String,
-            notes: String,
-            deadline: Date
+        id: String,
+        eventId: String,
+        fullname: String,
+        phoneNumber: String,
+        notes: String,
+        deadline: Date
     ) async throws -> EventRegistrationCallbackAction {
         guard let user = authService.user else {
             authService.showLoginPage()
