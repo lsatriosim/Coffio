@@ -27,23 +27,27 @@ struct DiscoverEventFrontCardItemView: View {
                                 image
                                     .resizable()
                                     .scaledToFill()
-                                
+                                    .frame(maxWidth: .infinity) // 👈 Force full width
+                                    .frame(height: cardHeight)
+                                    .clipped()
+                                    
                             case .failure(_), .empty:
                                 placeholderView
-                                
+                                    
                             @unknown default:
                                 placeholderView
                             }
                         }
-                        .frame(width: .infinity, height: cardHeight)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .frame(maxWidth: .infinity) // 👈 Force full width on container
+                        .frame(height: cardHeight)
                         
                     } else {
                         placeholderView
                     }
                 }
-                .frame(width: .infinity, height: cardHeight)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .frame(maxWidth: .infinity) // 👈 Ensure ZStack fills the card width
+                .frame(height: cardHeight)
+                .clipShape(RoundedRectangle(cornerRadius: 20)) // 👈 Single clean clip for the whole block
                 
                 VStack(alignment: .leading, spacing: 4.0) {
                     Text(dataModel.title)
@@ -61,26 +65,27 @@ struct DiscoverEventFrontCardItemView: View {
                         }
                     }
                     
-                    HStack(alignment: .bottom) {
-                        Text(dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price))
-                            .font(.title3)
-                            .bold()
-                            .foregroundStyle(Color(hex: "ad6928"))
-                        Spacer()
-                        if dataModel.slotLeft <= 0 {
-                            Text("Sold Out")
-                                .font(.caption)
-                                .foregroundStyle(.red)
-                        }
-                        else {
-                            Text("\(dataModel.slotLeft) slot(s) left")
-                                .font(.caption)
-                                .foregroundStyle(.primary)
+                    if dataModel.registrationType == .internal {
+                        HStack(alignment: .bottom) {
+                            Text(dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price))
+                                .font(.title3)
+                                .bold()
+                                .foregroundStyle(Color(hex: "ad6928"))
+                            Spacer()
+                            if dataModel.slotLeft <= 0 {
+                                Text("Sold Out")
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                            }
+                            else {
+                                Text("\(dataModel.slotLeft) slot(s) left")
+                                    .font(.caption)
+                                    .foregroundStyle(.primary)
+                            }
                         }
                     }
                 }
             }
-            .frame(width: .infinity)
         }
         .buttonStyle(.plain)
     }
@@ -88,8 +93,9 @@ struct DiscoverEventFrontCardItemView: View {
     var placeholderView: some View {
         Image("il_cafe")
             .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: .infinity, height: cardHeight)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .scaledToFill()
+            .frame(maxWidth: .infinity)
+            .frame(height: cardHeight)
+            .clipped()
     }
 }

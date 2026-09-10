@@ -271,21 +271,23 @@ struct DiscoverDetailEventView: View {
                 )
             }
 
-            HStack(alignment: .center, spacing: 8.0) {
-                GeneralInfoCardItemView(
-                    imageName: "person",
-                    title: "Quota",
-                    value: dataModel.registrationType == .internal ?
-                        "\(dataModel.participantRegistered)/\(dataModel.capacity)" : "\(dataModel.capacity)",
-                    subtitle: nil
-                )
+            if dataModel.registrationType == .internal {
+                HStack(alignment: .center, spacing: 8.0) {
+                    GeneralInfoCardItemView(
+                        imageName: "person",
+                        title: "Quota",
+                        value: dataModel.registrationType == .internal ?
+                            "\(dataModel.participantRegistered)/\(dataModel.capacity)" : "\(dataModel.capacity)",
+                        subtitle: nil
+                    )
 
-                GeneralInfoCardItemView(
-                    imageName: "dollarsign.circle",
-                    title: "Price",
-                    value: dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price),
-                    subtitle: nil
-                )
+                    GeneralInfoCardItemView(
+                        imageName: "dollarsign.circle",
+                        title: "Price",
+                        value: dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price),
+                        subtitle: nil
+                    )
+                }
             }
             
             // MARK: - Contact Person Card Layout Block (💡 NEW FIELDS)
@@ -451,17 +453,39 @@ struct DiscoverDetailEventView: View {
                     }
                 }
             case .external:
-                Button(action: {
-                    if let urlStr = dataModel.externalRegistrationURL, let url = URL(string: urlStr) {
-                        UIApplication.shared.open(url)
+                if viewModel.isAuthor {
+                    VStack(spacing: 12.0) {
+                        CoffioButton(title: "Edit Event", style: .secondary) {
+                            viewModel.isEditEventSheetPresented = true
+                        }
+                        
+                        if dataModel.eventStatus == .rejected {
+                            CoffioInfoBox(
+                                type: .failed,
+                                title: "Submission Rejected",
+                                description: "Please edit and review your event verification details, location description, or ticket pricing format before submitting for verification again."
+                            )
+                            .padding(.top, 2)
+                        }
+                        
+                        if viewModel.event?.eventStatus != .pending {
+                            CoffioButton(title: "Waiting for Approval", isDisabled: true) {}
+                        }
                     }
-                }) {
-                    Text("Register")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "ad6928")))
+                }
+                else {
+                    Button(action: {
+                        if let urlStr = dataModel.externalRegistrationURL, let url = URL(string: urlStr) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Text("Register")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "ad6928")))
+                    }
                 }
             }
         }
