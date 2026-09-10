@@ -153,8 +153,11 @@ struct EventFormSheet: View {
                             inputField(label: "Venue / Cafe Name", placeholder: "e.g., Yellow Fox - Pluit", text: $viewModel.cafeName)
                             inputField(label: "Full Address", placeholder: "Enter complete structural street address details", text: $viewModel.fullAddress)
                             
-                            // 5. Logistics Configuration Segment Card
-                            inputField(label: "Capacity Limit", placeholder: "e.g., 16", text: $viewModel.capacity, keyboardType: .numberPad)
+                            segmentedControlField(label: "Visibility", selection: $viewModel.visibilityType) {
+                                ForEach(VisibilityOption.allCases) { type in
+                                    Text(type.rawValue).tag(type)
+                                }
+                            }
                             
                             segmentedControlField(label: "Registration System", selection: $viewModel.registrationMethod) {
                                 Text("Internal (App)").tag(RegistrationType.internal)
@@ -165,40 +168,35 @@ struct EventFormSheet: View {
                                 inputField(label: "External registration url", placeholder: "e.g., www.google-form.com", text: $viewModel.externalRegistrationUrl)
                             }
                             
-                            //TODO: Need universal link for it
-//                            segmentedControlField(label: "Visibility", selection: $viewModel.visibilityType) {
-//                                ForEach(VisibilityOption.allCases) { type in
-//                                    Text(type.rawValue).tag(type)
-//                                }
-//                            }
-                            
-                            segmentedControlField(label: "Ticket Type", selection: $viewModel.ticketType) {
-                                ForEach(TicketType.allCases) { type in
-                                    Text(type.rawValue).tag(type)
+                            if viewModel.registrationMethod == .internal {
+                                inputField(label: "Capacity Limit", placeholder: "e.g., 16", text: $viewModel.capacity, keyboardType: .numberPad)
+                                
+                                segmentedControlField(label: "Ticket Type", selection: $viewModel.ticketType) {
+                                    ForEach(TicketType.allCases) { type in
+                                        Text(type.rawValue).tag(type)
+                                    }
                                 }
-                            }
-                            
-                            // 6. Paid Fields Inset Card (Animated Conditional Transition Block)
-                            if viewModel.ticketType == .paid {
-                                VStack(alignment: .leading, spacing: 16) {
-                                    Text("Financial Payment Routing Info")
-                                        .font(.caption)
-                                        .foregroundStyle(.gray)
-                                        .bold()
-                                        .padding(.leading, 4)
-                                    
-                                    inputField(label: "Ticket Price (IDR)", placeholder: "e.g., 90000", text: $viewModel.ticketPrice, keyboardType: .numberPad)
-                                    inputField(label: "Bank / E-Wallet Name", placeholder: "e.g., BCA, Mandiri, GoPay", text: $viewModel.bankName)
-                                    inputField(label: "Account Number", placeholder: "Enter routing account destination number", text: $viewModel.accountNumber, keyboardType: .numberPad)
-                                    inputField(label: "Account Holder Name", placeholder: "e.g., Novani Sutikno", text: $viewModel.accountHolderName)
+                                if viewModel.ticketType == .paid {
+                                    VStack(alignment: .leading, spacing: 16) {
+                                        Text("Financial Payment Routing Info")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                            .bold()
+                                            .padding(.leading, 4)
+                                        
+                                        inputField(label: "Ticket Price (IDR)", placeholder: "e.g., 90000", text: $viewModel.ticketPrice, keyboardType: .numberPad)
+                                        inputField(label: "Bank / E-Wallet Name", placeholder: "e.g., BCA, Mandiri, GoPay", text: $viewModel.bankName)
+                                        inputField(label: "Account Number", placeholder: "Enter routing account destination number", text: $viewModel.accountNumber, keyboardType: .numberPad)
+                                        inputField(label: "Account Holder Name", placeholder: "e.g., Novani Sutikno", text: $viewModel.accountHolderName)
+                                    }
+                                    .padding(16)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .fill(Color.orange.opacity(0.04))
+                                            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color(hex: "ad6928").opacity(0.15), lineWidth: 1))
+                                    }
+                                    .transition(.move(edge: .top).combined(with: .opacity))
                                 }
-                                .padding(16)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.orange.opacity(0.04))
-                                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color(hex: "ad6928").opacity(0.15), lineWidth: 1))
-                                }
-                                .transition(.move(edge: .top).combined(with: .opacity))
                             }
                         }
                         .padding(.horizontal, 24)
@@ -262,14 +260,13 @@ private extension EventFormSheet {
     }
     
     var isFormInvalid: Bool {
-        // 💡 Adjusted verification condition: a valid form needs EITHER a new local image input OR an existing storage URL reference from Supabase
         let missingPoster = (posterImage == nil && viewModel.existingPosterUrl == nil)
         
         return viewModel.title.isEmpty ||
                viewModel.description.isEmpty ||
                viewModel.cafeName.isEmpty ||
                viewModel.fullAddress.isEmpty ||
-               viewModel.capacity.isEmpty ||
+        (viewModel.registrationMethod == .internal && viewModel.capacity.isEmpty) ||
                missingPoster
     }
     

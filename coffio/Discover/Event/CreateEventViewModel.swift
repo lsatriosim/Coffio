@@ -81,7 +81,12 @@ final class EventFormViewModel: ObservableObject {
     
     // Validation Engine
     var isFormValid: Bool {
-        guard !title.isEmpty, !description.isEmpty, !cafeName.isEmpty, !fullAddress.isEmpty, !capacity.isEmpty else { return false }
+        guard !title.isEmpty,
+              !description.isEmpty,
+              !cafeName.isEmpty,
+              !fullAddress.isEmpty,
+              !(registrationMethod == .internal && capacity.isEmpty)
+        else { return false }
         if ticketType == .paid {
             return !ticketPrice.isEmpty && !bankName.isEmpty && !accountNumber.isEmpty && !accountHolderName.isEmpty
         }
@@ -124,8 +129,8 @@ final class EventFormViewModel: ObservableObject {
                 let eventDateString = isoFormatter.string(from: startTime)
                 let endDateString = isoFormatter.string(from: endTime)
                 
-                let parsedCapacity = Int(capacity) ?? 0
-                let parsedPrice = ticketType == .paid ? (Int(ticketPrice) ?? 0) : nil
+                let parsedCapacity = registrationMethod == .internal ? (Int(capacity) ?? 0) : nil
+                let parsedPrice = ticketType == .paid && registrationMethod == .internal ? (Int(ticketPrice) ?? 0) : nil
                 
                 let parsedExtRegistrationUrl: String? = externalRegistrationUrl.isEmpty ? nil : externalRegistrationUrl
                 
@@ -142,9 +147,9 @@ final class EventFormViewModel: ObservableObject {
                     registrationType: registrationMethod.rawValue,
                     externalRegistrationUrl: parsedExtRegistrationUrl,
                     price: parsedPrice,
-                    bankName: ticketType == .paid ? bankName : nil,
-                    bankAccount: ticketType == .paid ? accountNumber : nil,
-                    bankHolder: ticketType == .paid ? accountHolderName : nil,
+                    bankName: ticketType == .paid && registrationMethod == .internal ? bankName : nil,
+                    bankAccount: ticketType == .paid && registrationMethod == .internal ? accountNumber : nil,
+                    bankHolder: ticketType == .paid && registrationMethod == .internal ? accountHolderName : nil,
                     createdBy: user.id,
                     visibility: selectedVisibilityType
                 )
