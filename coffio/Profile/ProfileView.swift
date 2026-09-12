@@ -119,26 +119,27 @@ struct ProfileView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 sectionHeader("Support")
                                 
-                                SettingsRow(icon: "questionmark.circle", title: "Give Feedback") {
-                                    viewModel.showCreateFeedbackSheet = true
-                                }
-                                .background(RoundedCardBackground())
-                                
-                                SettingsRow(icon: "questionmark.circle", title: "Help Center") {
-                                    let urlString = "https://www.coffio.id/help/"
-                                        
-                                    guard let url = URL(string: urlString) else {
-                                        print("Invalid URL: \(urlString)")
-                                        return
+                                VStack(spacing: 0) {
+                                    SettingsRow(icon: "person.bubble", title: "Give Feedback") {
+                                        viewModel.showCreateFeedbackSheet = true
                                     }
                                     
-                                    // 2. Check if the device is capable of opening the URL, then open it
-                                    if UIApplication.shared.canOpenURL(url) {
-                                        UIApplication.shared.open(url, options: [:]) { success in
-                                            if success {
-                                                print("Successfully redirected to Coffio help page.")
-                                            } else {
-                                                print("Failed to open the URL.")
+                                    SettingsRow(icon: "questionmark.circle", title: "Help Center") {
+                                        let urlString = "https://www.coffio.id/help/"
+                                            
+                                        guard let url = URL(string: urlString) else {
+                                            print("Invalid URL: \(urlString)")
+                                            return
+                                        }
+                                        
+                                        // 2. Check if the device is capable of opening the URL, then open it
+                                        if UIApplication.shared.canOpenURL(url) {
+                                            UIApplication.shared.open(url, options: [:]) { success in
+                                                if success {
+                                                    print("Successfully redirected to Coffio help page.")
+                                                } else {
+                                                    print("Failed to open the URL.")
+                                                }
                                             }
                                         }
                                     }
