@@ -119,6 +119,11 @@ struct ProfileView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 sectionHeader("Support")
                                 
+                                SettingsRow(icon: "questionmark.circle", title: "Give Feedback") {
+                                    viewModel.showCreateFeedbackSheet = true
+                                }
+                                .background(RoundedCardBackground())
+                                
                                 SettingsRow(icon: "questionmark.circle", title: "Help Center") {
                                     let urlString = "https://www.coffio.id/help/"
                                         
@@ -138,7 +143,7 @@ struct ProfileView: View {
                                         }
                                     }
                                 }
-                                    .background(RoundedCardBackground())
+                                .background(RoundedCardBackground())
                             }
                             .padding(.horizontal)
                             
@@ -220,6 +225,9 @@ struct ProfileView: View {
         }
         .sheet(isPresented: $viewModel.showEditProfile) {
             EditProfileView()
+        }
+        .sheet(isPresented: $viewModel.showCreateFeedbackSheet) {
+            CreateFeedbackSheet()
         }
     }
     
