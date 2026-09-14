@@ -468,7 +468,7 @@ struct DiscoverDetailEventView: View {
                             .padding(.top, 2)
                         }
                         
-                        if viewModel.event?.eventStatus != .pending {
+                        if dataModel.eventStatus == .pending {
                             CoffioButton(title: "Waiting for Approval", isDisabled: true) {}
                         }
                     }

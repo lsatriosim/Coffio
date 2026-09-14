@@ -35,7 +35,7 @@ extension NetworkServiceProtocol {
 }
 
 final class NetworkService: NetworkServiceProtocol {
-    private let baseURL = "http://localhost:8080/api"
+    private let baseURL = "https://coffio-api-46766020031.asia-southeast2.run.app/api"
     
     func request<T: Decodable>(
         endpoint: String,
