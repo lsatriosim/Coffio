@@ -316,12 +316,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = coffio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Coffio;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a picture of your daily coffee cup and automatically extract it.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points and utilize map feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -351,12 +353,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = coffio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Coffio;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a picture of your daily coffee cup and automatically extract it.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points and utilize map feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

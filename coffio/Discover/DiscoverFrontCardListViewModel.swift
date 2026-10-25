@@ -122,7 +122,7 @@ private extension DiscoverFrontCardListViewModel {
         var parsedPageBatch: [DiscoverCoffeeShopItemDataModel] = []
         
         for shop in response {
-            let locationInfo = LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
+            let locationInfo = await LocationProvider.shared.calculateDistance(latitude: Double(shop.latitude), longitude: Double(shop.longitude))
             let images = try await fetcher.fetchCoffeeShopImage(shopId: shop.id)
             let reviews = try await fetcher.fetchCoffeeShopReviews(shopId: shop.id)
             
