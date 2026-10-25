@@ -445,8 +445,3 @@ private extension EventFormSheet {
 #Preview {
     EventFormSheet()
 }
-
-// MARK: - Preview Engine Wrapper
-#Preview {
-    EventFormSheet()
-}
