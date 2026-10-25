@@ -65,34 +65,36 @@ struct DiscoverLandingEventCard: View {
                     .foregroundStyle(.white.opacity(0.8))
                     .lineLimit(1)
                 
-                HStack(alignment: .bottom) {
-                    Text(dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price))
-                        .font(.caption)
-                        .bold()
-                        .foregroundStyle(Color(hex: "f3b375"))
-                    
-                    Spacer()
-                    
-                    if dataModel.capacity - dataModel.participantRegistered == 0 {
-                        Text("Sold Out")
-                            .font(.system(size: 9, weight: .bold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.white.opacity(0.2))
-                            .clipShape(Capsule())
-                            .foregroundStyle(.white)
+                if dataModel.registrationType == .internal {
+                    HStack(alignment: .bottom) {
+                        Text(dataModel.price == 0 ? "Free" : PriceUtil.formatLong(dataModel.price))
+                            .font(.caption)
+                            .bold()
+                            .foregroundStyle(Color(hex: "f3b375"))
+                        
+                        Spacer()
+                        
+                        if dataModel.capacity - dataModel.participantRegistered == 0 {
+                            Text("Sold Out")
+                                .font(.system(size: 9, weight: .bold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(.white.opacity(0.2))
+                                .clipShape(Capsule())
+                                .foregroundStyle(.white)
+                        }
+                        else {
+                            Text("\(dataModel.capacity - dataModel.participantRegistered) left")
+                                .font(.system(size: 9, weight: .bold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(.white.opacity(0.2))
+                                .clipShape(Capsule())
+                                .foregroundStyle(.white)
+                        }
                     }
-                    else {
-                        Text("\(dataModel.capacity - dataModel.participantRegistered) left")
-                            .font(.system(size: 9, weight: .bold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.white.opacity(0.2))
-                            .clipShape(Capsule())
-                            .foregroundStyle(.white)
-                    }
+                    .padding(.top, 2)
                 }
-                .padding(.top, 2)
             }
             .padding(12)
         }

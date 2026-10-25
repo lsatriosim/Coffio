@@ -31,6 +31,7 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     @Published var isReporting: Bool = false
     @Published var showReportSuccessAlert: Bool = false
     @Published var isReportAlertPresented: Bool = false
+    @Published var isInternalGuestEnabled: Bool = false
     
     private let reportFetcher = ReportFetcher()
     
@@ -58,6 +59,13 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         self.delegate = delegate
     }
     
+    func onViewDidLoad() {
+        Task {
+            await setupFeatureConfigValue()
+            await fetchEventDetails()
+        }
+    }
+    
     func fetchEventDetails() async {
         // If we already have the event, we can skip loading state for a smoother transition
         if event == nil { isLoading = true }
@@ -76,12 +84,12 @@ final class DiscoverDetailEventViewModel: ObservableObject {
     }
     
     func createAwaitingPaymentSlot(
-            id: String,
-            eventId: String,
-            fullname: String,
-            phoneNumber: String,
-            notes: String,
-            deadline: Date
+        id: String,
+        eventId: String,
+        fullname: String,
+        phoneNumber: String,
+        notes: String,
+        deadline: Date
     ) async throws -> EventRegistrationCallbackAction {
         guard let user = authService.user else {
             authService.showLoginPage()
@@ -170,5 +178,19 @@ final class DiscoverDetailEventViewModel: ObservableObject {
         }
         
         isReporting = false
+    }
+}
+
+private extension DiscoverDetailEventViewModel {
+    func setupFeatureConfigValue() async {
+        isInternalGuestEnabled = await FeatureControlService.sharedInstance.isInternalGuestEnabled()
+    }
+}
+
+extension DiscoverDetailEventViewModel: @MainActor DiscoverInternalGuestRegistrationViewModelDelegate {
+    func notifyRegistrationSuccess() {
+        Task {
+            await fetchEventDetails()
+        }
     }
 }

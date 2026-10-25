@@ -24,6 +24,7 @@ final class ProfileViewModel: ObservableObject {
     @Published var isLoadingImage: Bool = false
     @Published var isDeleteLoading = false
     @Published var showDeleteAlert = false
+    @Published var showCreateFeedbackSheet: Bool = false
     
     @Published var isLogoutLoading: Bool = false
     @Published var selectedItem: PhotosPickerItem? = nil {

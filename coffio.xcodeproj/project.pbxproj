@@ -13,6 +13,7 @@
 		DE6739322F822CFF0091F49D /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = DE6739312F822CFF0091F49D /* Realtime */; };
 		DE6739342F822CFF0091F49D /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = DE6739332F822CFF0091F49D /* Storage */; };
 		DE6739362F822CFF0091F49D /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = DE6739352F822CFF0091F49D /* Supabase */; };
+		DE8A6AAE305308550026515C /* FactoryKit in Frameworks */ = {isa = PBXBuildFile; productRef = DE8A6AAD305308550026515C /* FactoryKit */; };
 		DED24E42300BDE7500379719 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = DED24E41300BDE7500379719 /* GoogleSignIn */; };
 		DED24E44300BDE7500379719 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DED24E43300BDE7500379719 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
@@ -50,6 +51,7 @@
 				DE6739302F822CFF0091F49D /* PostgREST in Frameworks */,
 				DE67392E2F822CFF0091F49D /* Functions in Frameworks */,
 				DE6739362F822CFF0091F49D /* Supabase in Frameworks */,
+				DE8A6AAE305308550026515C /* FactoryKit in Frameworks */,
 				DED24E44300BDE7500379719 /* GoogleSignInSwift in Frameworks */,
 				DE67392C2F822CFF0091F49D /* Auth in Frameworks */,
 				DE6739342F822CFF0091F49D /* Storage in Frameworks */,
@@ -105,6 +107,7 @@
 				DE6739352F822CFF0091F49D /* Supabase */,
 				DED24E41300BDE7500379719 /* GoogleSignIn */,
 				DED24E43300BDE7500379719 /* GoogleSignInSwift */,
+				DE8A6AAD305308550026515C /* FactoryKit */,
 			);
 			productName = coffio;
 			productReference = DEF49A302F6AAC0100CCD901 /* coffio.app */;
@@ -137,6 +140,7 @@
 			packageReferences = (
 				DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				DED24E40300BDE7500379719 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				DE8A6AAC305308550026515C /* XCRemoteSwiftPackageReference "Factory" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DEF49A312F6AAC0100CCD901 /* Products */;
@@ -305,24 +309,26 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = coffio/coffio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"coffio/Preview Content\"";
 				DEVELOPMENT_TEAM = DJFUU6576B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = coffio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Coffio;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a picture of your daily coffee cup and automatically extract it.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points and utilize map feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.coffio.coffio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -340,24 +346,26 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = coffio/coffio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"coffio/Preview Content\"";
 				DEVELOPMENT_TEAM = DJFUU6576B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = coffio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Coffio;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a picture of your daily coffee cup and automatically extract it.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate the distance to nearby points and utilize map feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.coffio.coffio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -396,6 +404,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.5.1;
+			};
+		};
+		DE8A6AAC305308550026515C /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.3.2;
 			};
 		};
 		DED24E40300BDE7500379719 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
@@ -438,6 +454,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE67392A2F822CFF0091F49D /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		DE8A6AAD305308550026515C /* FactoryKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE8A6AAC305308550026515C /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = FactoryKit;
 		};
 		DED24E41300BDE7500379719 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
