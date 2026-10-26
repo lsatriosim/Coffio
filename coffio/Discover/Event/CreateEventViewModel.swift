@@ -66,9 +66,12 @@ final class EventFormViewModel: ObservableObject {
     @Published var posterData: Data? = nil
     @Published var menuData: Data? = nil
     
+    @Published var isNewMapLookupEnabled: Bool = false
+    
     private let fetcher = EventFetcher()
     private let shopFetcher = CoffeeShopFetcher()
     private let authService: AuthenticationService = .shared
+    private let featureControlService: FeatureControlService = FeatureControlService.sharedInstance
     
     init(editingEvent event: DiscoverEventItem? = nil) {
         if let event = event {
@@ -77,6 +80,7 @@ final class EventFormViewModel: ObservableObject {
         } else {
             self.mode = .create
         }
+        self.fetchFeatureControl()
     }
     
     // Validation Engine
@@ -209,5 +213,11 @@ private extension EventFormViewModel {
         // Retain current URLs in case the images are left unchanged during an edit
         self.existingPosterUrl = event.imageUrl
         self.existingMenuUrl = event.menuImageUrl
+    }
+    
+    func fetchFeatureControl() {
+        Task {
+            self.isNewMapLookupEnabled = await featureControlService.isMapLookupEnabled()
+        }
     }
 }

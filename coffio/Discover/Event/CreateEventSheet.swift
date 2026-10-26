@@ -109,49 +109,81 @@ struct EventFormSheet: View {
                             }
                             
                             // 4. Location Details Block
-                            VStack(alignment: .leading, spacing: 4.0) {
-                                Text("Coffee Shop Partner")
-                                    .font(.caption)
-                                    .foregroundStyle(.gray)
-                                    .padding(.leading, 4)
-                                
-                                NavigationLink {
-                                    CoffeeShopSelectionView(
-                                        coffeeShops: viewModel.coffeeShops,
-                                        selectedId: $viewModel.selectedCoffeeShopId
-                                    )
-                                } label: {
-                                    HStack {
-                                        Text(selectedShopName)
-                                            .foregroundStyle(viewModel.selectedCoffeeShopId == nil ? .gray.opacity(0.8) : .primary)
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "chevron.down")
-                                            .font(.footnote)
-                                            .foregroundStyle(.gray)
-                                    }
-                                    .padding(14.0)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(.white)
-                                    .cornerRadius(12)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color(hex: "ad6928").opacity(0.4), lineWidth: 1.5)
+                            if viewModel.isNewMapLookupEnabled {
+                                VStack(alignment: .leading, spacing: 4.0) {
+                                    Text("Coffee Shop Partner")
+                                        .font(.caption)
+                                        .foregroundStyle(.gray)
+                                        .padding(.leading, 4)
+                                    
+                                    ApplePlacesTextField(
+                                        cafeName: $viewModel.cafeName,
+                                        fullAddress: $viewModel.fullAddress,
+                                        placeholder: "Search Apple Maps or type name..."
                                     )
                                 }
-                                .buttonStyle(.plain)
-                                .onChange(of: viewModel.selectedCoffeeShopId) { oldValue, selectedId in
-                                    if let selectedId = selectedId,
-                                       let chosenShop = viewModel.coffeeShops.first(where: { "\($0.id)".description.lowercased() == selectedId.lowercased() }) {
-                                        viewModel.cafeName = chosenShop.name
-                                        viewModel.fullAddress = chosenShop.address
-                                    }
+                                
+                                VStack(alignment: .leading, spacing: 4.0) {
+                                    Text("Full Address")
+                                        .font(.caption)
+                                        .foregroundStyle(.gray)
+                                        .padding(.leading, 4)
+                                    
+                                    TextField("Enter complete structural street address details", text: $viewModel.fullAddress)
+                                        .padding(14.0)
+                                        .background(.white)
+                                        .cornerRadius(12)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color(hex: "ad6928").opacity(0.4), lineWidth: 1.5)
+                                        )
                                 }
                             }
-                            
-                            inputField(label: "Venue / Cafe Name", placeholder: "e.g., Yellow Fox - Pluit", text: $viewModel.cafeName)
-                            inputField(label: "Full Address", placeholder: "Enter complete structural street address details", text: $viewModel.fullAddress)
+                            else {
+                                VStack(alignment: .leading, spacing: 4.0) {
+                                    Text("Coffee Shop Partner")
+                                        .font(.caption)
+                                        .foregroundStyle(.gray)
+                                        .padding(.leading, 4)
+                                    
+                                    NavigationLink {
+                                        CoffeeShopSelectionView(
+                                            coffeeShops: viewModel.coffeeShops,
+                                            selectedId: $viewModel.selectedCoffeeShopId
+                                        )
+                                    } label: {
+                                        HStack {
+                                            Text(selectedShopName)
+                                                .foregroundStyle(viewModel.selectedCoffeeShopId == nil ? .gray.opacity(0.8) : .primary)
+                                            
+                                            Spacer()
+                                            
+                                            Image(systemName: "chevron.down")
+                                                .font(.footnote)
+                                                .foregroundStyle(.gray)
+                                        }
+                                        .padding(14.0)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(.white)
+                                        .cornerRadius(12)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color(hex: "ad6928").opacity(0.4), lineWidth: 1.5)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .onChange(of: viewModel.selectedCoffeeShopId) { oldValue, selectedId in
+                                        if let selectedId = selectedId,
+                                           let chosenShop = viewModel.coffeeShops.first(where: { "\($0.id)".description.lowercased() == selectedId.lowercased() }) {
+                                            viewModel.cafeName = chosenShop.name
+                                            viewModel.fullAddress = chosenShop.address
+                                        }
+                                    }
+                                }
+                                
+                                inputField(label: "Venue / Cafe Name", placeholder: "e.g., Yellow Fox - Pluit", text: $viewModel.cafeName)
+                                inputField(label: "Full Address", placeholder: "Enter complete structural street address details", text: $viewModel.fullAddress)
+                            }
                             
                             segmentedControlField(label: "Visibility", selection: $viewModel.visibilityType) {
                                 ForEach(VisibilityOption.allCases) { type in

@@ -18,4 +18,9 @@ final class FeatureControlService {
         let variant = await fetcher.getFeatureControlVariant(key: "spending_revamp")
         return variant == "ENABLED"
     }
+    
+    func isMapLookupEnabled() async -> Bool {
+        let variant = await fetcher.getFeatureControlVariant(key: "map_lookup")
+        return variant == "ENABLED"
+    }
 }
